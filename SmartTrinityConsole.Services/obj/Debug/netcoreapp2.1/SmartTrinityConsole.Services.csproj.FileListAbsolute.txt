@@ -1,0 +1,12 @@
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.csprojAssemblyReference.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.csproj.CoreCompileInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.AssemblyInfoInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.AssemblyInfo.cs
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\bin\Debug\netcoreapp2.1\SmartTrinityConsole.Services.deps.json
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\bin\Debug\netcoreapp2.1\SmartTrinityConsole.Services.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\bin\Debug\netcoreapp2.1\SmartTrinityConsole.Services.pdb
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\bin\Debug\netcoreapp2.1\SmartTrinityApi.Core.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\bin\Debug\netcoreapp2.1\SmartTrinityApi.Core.pdb
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.csproj.CopyComplete
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Services\obj\Debug\netcoreapp2.1\SmartTrinityConsole.Services.pdb

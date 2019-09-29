@@ -1,0 +1,15 @@
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\SmartTrinityConsole.deps.json
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\SmartTrinityConsole.runtimeconfig.json
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\SmartTrinityConsole.runtimeconfig.dev.json
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\SmartTrinityConsole.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\SmartTrinityConsole.pdb
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.csprojAssemblyReference.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.csproj.CoreCompileInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.RazorAssemblyInfo.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.RazorAssemblyInfo.cs
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.AssemblyInfoInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.AssemblyInfo.cs
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.RazorTargetAssemblyInfo.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityConsole.pdb
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole\bin\Debug\netcoreapp2.1\logger.config

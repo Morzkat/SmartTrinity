@@ -1,0 +1,9 @@
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.csprojAssemblyReference.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.csproj.CoreCompileInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.AssemblyInfoInputs.cache
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.AssemblyInfo.cs
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\bin\Debug\netcoreapp2.1\SmartTrinityApi.Common.deps.json
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\bin\Debug\netcoreapp2.1\SmartTrinityApi.Common.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\bin\Debug\netcoreapp2.1\SmartTrinityApi.Common.pdb
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.dll
+D:\Felix\SmartTrinityConsole\SmartTrinityConsole.Common\obj\Debug\netcoreapp2.1\SmartTrinityApi.Common.pdb
