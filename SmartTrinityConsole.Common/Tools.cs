@@ -4,7 +4,7 @@ namespace SmartTrinityApi.Common
 {
     public class Tools
     {
-        public char[] EncryptMessage () 
+        public char[] EncryptMessage()
         {
             return null;
         }
@@ -12,6 +12,11 @@ namespace SmartTrinityApi.Common
         public char[] DecryptMessage()
         {
             return null;
+        }
+
+        public int GetSeeds()
+        {
+            return 0;
         }
     }
 }
