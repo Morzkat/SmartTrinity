@@ -16,7 +16,6 @@ namespace SmartTrinityApi
             {
                 logger.Debug("init main");
                 CreateWebHostBuilder(args).Build().Run();
-
             }
             catch (Exception ex)
             {
@@ -35,9 +34,7 @@ namespace SmartTrinityApi
                 .UseStartup<Startup>().ConfigureLogging(logger =>
                 {
                     logger.ClearProviders();
-
                     logger.SetMinimumLevel(LogLevel.Trace);
-
                 })
             .UseNLog();
     }

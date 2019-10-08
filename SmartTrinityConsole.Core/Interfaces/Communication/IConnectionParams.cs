@@ -6,8 +6,9 @@ namespace SmartTrinityApi.Core.Interfaces.Communication
 {
     public interface IConnectionParams
     {
-        string portName { get; set; }
-        long connectionTimeOut { get; set; }
+        string Host { get; set; }
+        int Port { get; set; }
+        long ConnectionTimeOut { get; set; }
 
         ICommunication BuildClient();
 
