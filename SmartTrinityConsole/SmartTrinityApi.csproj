@@ -16,6 +16,7 @@
 
 <ItemGroup>
     <ProjectReference Include="..\SmartTrinityConsole.Core\SmartTrinityApi.Core.csproj" />
+    <ProjectReference Include="..\SmartTrinityConsole.Infrastructure\SmartTrinityApi.Infrastructure.csproj" />
     <ProjectReference Include="..\SmartTrinityConsole.Services\SmartTrinityConsole.Services.csproj" />
   </ItemGroup>
 
