@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using SmartTrinityApi.Core.Interfaces;
 using SmartTrinityApi.Core.Interfaces.Communication;
 
-namespace SmartTrinityConsole.Services.Tcp.Communication
+namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 {
     public class TcpCommunication : ICommunication
     {
@@ -40,7 +41,6 @@ namespace SmartTrinityConsole.Services.Tcp.Communication
 
         public void Disconnect()
         {
-            // TODO: shutdown the socket before close...
             try
             {
                 if (_socket != null)
@@ -80,27 +80,45 @@ namespace SmartTrinityConsole.Services.Tcp.Communication
 
         public char[] Recv()
         {
-            byte[] byteArray = new byte[_recvBufferSize];
             int totalBytesRead = 0;
+            _socket.ReceiveTimeout = 5000;
+            byte[] byteArray = new byte[_recvBufferSize];
+            char[] charArray = new char[totalBytesRead];
 
             try
             {
-                if (totalBytesRead < 0)
-                    totalBytesRead = 0;
+                while (Thread.CurrentThread.IsAlive)
+                {
+                    try
+                    {
+                        if (totalBytesRead < 0)
+                            totalBytesRead = 0;
 
-                int dataLength = _socket.Receive(byteArray, totalBytesRead, _recvBufferSize - totalBytesRead, SocketFlags.None);
+                        int dataLength = _socket.Receive(byteArray, totalBytesRead, _recvBufferSize - totalBytesRead, SocketFlags.None);
 
-                if (dataLength < 0) throw new Exception("Socket is closed...");
+                        if (dataLength < 0) throw new Exception("Socket is closed...");
 
-                totalBytesRead += dataLength;
+                        totalBytesRead += dataLength;
+                    }
+                    catch (Exception e) { throw e; }
+
+                    if (totalBytesRead >= _recvBufferSize) break;
+                }
             }
-            catch (Exception e) { throw e; }
+            catch (Exception e2)
+            {
+                _bytesRead = totalBytesRead;
+                charArray = new char[totalBytesRead];
+                for (int i = 0; i < totalBytesRead; i++)
+                { charArray[i] = (char)(byteArray[i] & 0xFF); }
 
-            if (totalBytesRead >= _recvBufferSize) return null;
+                _lastReply = new string(charArray);
+
+                throw e2;
+            }
 
             _bytesRead = totalBytesRead;
-            char[] charArray = new char[totalBytesRead];
-
+            charArray = new char[totalBytesRead];
             for (int i = 0; i < totalBytesRead; i++)
             { charArray[i] = (char)(byteArray[i] & 0xFF); }
 

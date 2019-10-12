@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SmartTrinityApi.Core.Interfaces;
 using SmartTrinityApi.Core.Interfaces.Communication;
 
-namespace SmartTrinityConsole.Services.Tcp.Communication
+namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 {
     public class TcpConnectionParams : IConnectionParams
     {

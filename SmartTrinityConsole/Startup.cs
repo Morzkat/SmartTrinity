@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using SmartTrinityConsole.Services.Sales;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Interfaces.Communication;
-using SmartTrinityConsole.Services.CommunicationManager;
+using SmartTrinityConsole.Infrastructure.CommunicationManager;
+using SmartTrinityApi.Core.Interfaces.Process;
+using SmartTrinityConsole.Infrastructure.Process;
 
 namespace SmartTrinityApi
 {
@@ -29,8 +25,9 @@ namespace SmartTrinityApi
         {
             services.AddMvc();
             
-            // TODO: Inject dependencies...
             services.AddSingleton<ICommunicationManager, MessageManager>();
+            services.AddScoped<ISalesServices, SalesService>();
+            services.AddScoped<IServiceProcess, ServiceProcess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

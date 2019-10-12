@@ -102,5 +102,10 @@ namespace SmartTrinityApi.Common
             }
             return lValueToPad;
         }
+
+        public static string GetComputerId()
+        {
+            return System.Net.Dns.GetHostName().ToUpper();
+        }
     }
 }

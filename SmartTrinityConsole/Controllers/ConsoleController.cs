@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Core.Interfaces.Communication;
 using SmartTrinityConsole.Interfaces.Communication;
-using SmartTrinityConsole.Services.Tcp.Communication;
-using SmartTrinityConsole.Services.CommunicationManager;
+using SmartTrinityConsole.Infrastructure.Tcp.Communication;
+using System.Threading;
+using SmartTrinityConsole.Services.Sales;
+using SmartTrinityConsole.Infrastructure.Process;
+using SmartTrinityApi.Core.Interfaces.Process;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -17,17 +16,18 @@ namespace SmartTrinityApi.Controllers
     public class ConsoleController : ControllerBase
     {
         ILogger<ConsoleController> _logger;
+        IServiceProcess _serviceProcess;
 
         // Test params
         IConnectionParams connectionParams = new TcpConnectionParams("127.0.0.1", 3011);
         ICommunicationManager _messageManager;
 
-        public ConsoleController(ILogger<ConsoleController> logger, ICommunicationManager messageManager)
+        public ConsoleController(ILogger<ConsoleController> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess)
         {
             _logger = logger;
             _messageManager = messageManager;
-
-            _messageManager.SetConnectionParams(connectionParams);
+            _serviceProcess = serviceProcess;
+            _messageManager.ConnectionParams = connectionParams;
         }
 
         [HttpGet("ConnectToServer")]
@@ -40,11 +40,46 @@ namespace SmartTrinityApi.Controllers
         [HttpGet("SendMessage")]
         public ActionResult<string> SendMessage()
         {
-            _logger.LogDebug("Sending EVT");
-            _messageManager.SendMsg("SUBSCRIBE", "EVT_PAYMENT_SALE_WARNING_ON", "");
+            //TODO: Move logic to other class
+            bool config = false;
+            _serviceProcess.ProccessStationData();
+            while (Thread.CurrentThread.IsAlive)
+            {
+                try
+                {
+
+                    _messageManager.ReceiveSubscribedMessages();
+                    _serviceProcess.ProcessMessage(_messageManager.MsgType);
+
+                    if (_messageManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
+                    {
+                        //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
+                        break;
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    _logger.LogError($"Error: {e.Message}");
+                }
+            }
+
+            _serviceProcess.AddPumpSalesProccess();
+            while (Thread.CurrentThread.IsAlive)
+            {
+                try
+                {
+                    _messageManager.ReceiveSubscribedMessages();
+                    _logger.LogInformation($"Message type: {_messageManager.MsgType}");
+                    //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
+                }
+
+                catch (Exception e)
+                {
+                    _logger.LogError($"Error: {e.Message}");
+                }
+            }
             return "";
         }
-
-
     }
 }
