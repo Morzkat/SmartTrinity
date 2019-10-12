@@ -1,0 +1,15 @@
+TODO:
+{
+    * Hide private properties.
+    * Add necessaries setters methods.
+    * Create temp table with pump data.
+
+}
+
+EVTS: 
+{
+    * Event for get sales process: 
+    {
+        * RES_GET_PUMP_SALES
+    }
+}
