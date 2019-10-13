@@ -8,6 +8,7 @@ using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.CommunicationManager;
 using SmartTrinityApi.Core.Interfaces.Process;
 using SmartTrinityConsole.Infrastructure.Process;
+using SmartTrinityApi.Infrastructure.Process;
 
 namespace SmartTrinityApi
 {
@@ -24,10 +25,14 @@ namespace SmartTrinityApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
-            services.AddSingleton<ICommunicationManager, MessageManager>();
+
+            //Services
             services.AddScoped<ISalesServices, SalesService>();
+            //Process
+            services.AddScoped<IPumpProcess, PumpProcess>();
             services.AddScoped<IServiceProcess, ServiceProcess>();
+            //ComunicationManager
+            services.AddSingleton<ICommunicationManager, MessageManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

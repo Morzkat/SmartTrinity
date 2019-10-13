@@ -2,17 +2,20 @@
 using Microsoft.Extensions.Logging;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityApi.Core.Interfaces.Process;
+using System;
 
 namespace SmartTrinityConsole.Infrastructure.Process
 {
     public class ServiceProcess : IServiceProcess
     {
+        IPumpProcess _pumpProcess;
         ILogger<ServiceProcess> _logger;
         ICommunicationManager _messageManager;
 
-        public ServiceProcess(ILogger<ServiceProcess> logger, ICommunicationManager messageManager)
+        public ServiceProcess(ILogger<ServiceProcess> logger, ICommunicationManager messageManager, IPumpProcess pumpProcess)
         {
             _logger = logger;
+            _pumpProcess = pumpProcess;
             _messageManager = messageManager;
         }
 
@@ -47,8 +50,37 @@ namespace SmartTrinityConsole.Infrastructure.Process
         public bool ProcessMessage(string msgType, string msgData) 
         {
             _logger.LogDebug($"Processing message type {msgType} ....");
+            if (msgType.Equals("RES_FCRT_PUMPS_CONFIG"))
+            {
+                ProcessMessage_RES_FCRT_PUMPS_CONFIG(msgData);
+            } 
+            else if(msgType.StartsWith("EVT_PUMP_DELIVERY_PROGRESS_ID_"))
+            {
+                ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgData);
+            }
             return true;
         }
+
+        private void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
+        {
+            string evt = "EVT_PUMP_DELIVERY_PROGRESS_ID_";
+            // int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
+            _logger.LogDebug($"Data: {msgData}");
+        }
+
+        private void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
+        {
+            string[] data = msgData.Split("|");
+
+            int pumpQuantity = Convert.ToInt32(data[3].Substring(6, 1));
+
+            for (int i = 1; i <= pumpQuantity; i++)
+            {
+                _pumpProcess.CreatePump(i);
+                _pumpProcess.AddPump(i);
+            }
+        }
+
     }
 }
 

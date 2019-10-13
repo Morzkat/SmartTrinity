@@ -41,7 +41,6 @@ namespace SmartTrinityApi.Controllers
         public ActionResult<string> SendMessage()
         {
             //TODO: Move logic to other class
-            bool config = false;
             _serviceProcess.ProccessStationData();
             while (Thread.CurrentThread.IsAlive)
             {
@@ -49,11 +48,10 @@ namespace SmartTrinityApi.Controllers
                 {
 
                     _messageManager.ReceiveSubscribedMessages();
-                    _serviceProcess.ProcessMessage(_messageManager.MsgType);
+                    _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
 
                     if (_messageManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
                     {
-                        //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
                         break;
                     }
                 }
@@ -70,7 +68,7 @@ namespace SmartTrinityApi.Controllers
                 try
                 {
                     _messageManager.ReceiveSubscribedMessages();
-                    _logger.LogInformation($"Message type: {_messageManager.MsgType}");
+                    _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
                     //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
                 }
 

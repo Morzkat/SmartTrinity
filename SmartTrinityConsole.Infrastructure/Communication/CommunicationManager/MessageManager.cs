@@ -111,17 +111,23 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             {
                 Client._recvBufferSize = 8;
                 string msgReceived = new string(Client.Recv());
-                int IMsgReceived = Convert.ToInt32(msgReceived.Substring(0,5));
+                int bufferSize = Convert.ToInt32(msgReceived.Substring(0,5));
                 char tempCrypt = msgReceived[6];
-                Client._recvBufferSize = IMsgReceived;
+                Client._recvBufferSize = bufferSize;
                 char [] aMsg = Client.Recv();
 
-                aMsg = CryptMessage(tempCrypt, aMsg, IMsgReceived, 0);
+                aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
                 string msg = new string(aMsg);
                 string Smsg = msg.Substring(0, msg.Length - 1);
 
                 string[] dataRecieved = Smsg.Split('|');
                 MsgType = dataRecieved[1];
+                MsgData = "";
+
+                for (int i = 2; i < dataRecieved.Length; i++)
+                {
+                    MsgData += $"|{dataRecieved[i]}";
+                }
             }
             catch (Exception e)
             {
