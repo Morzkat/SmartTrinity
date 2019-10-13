@@ -1,15 +1,22 @@
 TODO:
 {
-    * Hide private properties.
-    * Add necessaries setters methods.
     * Create temp table with pump data.
+    * Make socket asyncs -> priority -> high
+    * Use reflaction for call process methods
+    * Create server socket for send data
+    * 
+    *
+    *
+    *
+}
+
+TOFIX: 
+
+{
 
 }
 
 EVTS: 
 {
-    * Event for get sales process: 
-    {
-        * RES_GET_PUMP_SALES
-    }
+   
 }
