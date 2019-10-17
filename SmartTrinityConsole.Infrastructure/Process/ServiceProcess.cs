@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityApi.Core.Interfaces.Process;
 using System;
+using System.Reflection;
 
 namespace SmartTrinityConsole.Infrastructure.Process
 {
@@ -41,34 +42,29 @@ namespace SmartTrinityConsole.Infrastructure.Process
             _messageManager.SendMsg("POST", "REQ_FCRT_PUMPS_CONFIG", $"PC={Tools.GetComputerId()}|");
         }
 
-        public bool CheckConfig()
-        {
-
-            return false;
-        }
-
-        public bool ProcessMessage(string msgType, string msgData) 
+        public bool ProcessMessage(string msgType, string msgData)
         {
             _logger.LogDebug($"Processing message type {msgType} ....");
-            if (msgType.Equals("RES_FCRT_PUMPS_CONFIG"))
+
+            try
             {
-                ProcessMessage_RES_FCRT_PUMPS_CONFIG(msgData);
-            } 
-            else if(msgType.StartsWith("EVT_PUMP_DELIVERY_PROGRESS_ID_"))
-            {
-                ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgData);
+                Type _class = GetType();
+                MethodInfo _method = _class.GetMethod($"ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID");
+                _method.Invoke(this, new object[] { msgData });
             }
+            catch (Exception e) { _logger.LogInformation($"Process not found {msgType}"); }
+
             return true;
         }
 
-        private void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
+        public void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
         {
             string evt = "EVT_PUMP_DELIVERY_PROGRESS_ID_";
             // int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
             _logger.LogDebug($"Data: {msgData}");
         }
 
-        private void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
+        public void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
         {
             string[] data = msgData.Split("|");
 

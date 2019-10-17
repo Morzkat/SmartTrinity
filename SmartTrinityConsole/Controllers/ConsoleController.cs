@@ -69,12 +69,12 @@ namespace SmartTrinityApi.Controllers
                 {
                     _messageManager.ReceiveSubscribedMessages();
                     _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
-                    //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
                 }
 
                 catch (Exception e)
                 {
-                    _logger.LogError($"Error: {e.Message}");
+                    if (e.Message != "Error: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.")
+                        _logger.LogError($"Error: {e.Message}");
                 }
             }
             return "";
