@@ -1,6 +1,0 @@
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.csprojAssemblyReference.cache
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.csproj.CoreCompileInputs.cache
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.RazorAssemblyInfo.cache
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.RazorAssemblyInfo.cs
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.AssemblyInfoInputs.cache
-D:\Felix\SmartTrinityConsole\SmartTrinityConsole\obj\Debug\netcoreapp2.1\SmartTrinityApi.AssemblyInfo.cs
