@@ -4,19 +4,26 @@ TODO:
     * Make socket asyncs -> priority -> high
     * Use reflaction for call process methods
     * Create server socket for send data
-    * 
+    * Check the property Available from socket object (for know if there is data to read).
     *
     *
     *
-}
+};
 
 TOFIX: 
-
 {
 
-}
+};
 
 EVTS: 
 {
    
-}
+};
+
+Sources:
+{
+    * https://stackoverflow.com/questions/15523976/when-does-socket-receive-return-the-data
+    *
+    *
+    *
+};
