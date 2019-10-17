@@ -40,7 +40,7 @@ namespace SmartTrinityApi.Controllers
         [HttpGet("SendMessage")]
         public ActionResult<string> SendMessage()
         {
-            //TODO: Move logic to other class
+            //TODO: Move logic to other class (create default controller for add all necesaries events)...
             _serviceProcess.ProccessStationData();
             while (Thread.CurrentThread.IsAlive)
             {

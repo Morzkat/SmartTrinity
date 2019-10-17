@@ -1,0 +1,28 @@
+﻿using Microsoft.Extensions.Logging;
+using SmartTrinityApi.Core.Interfaces.Process;
+using SmartTrinityApi.Core.Interfaces.Services;
+using SmartTrinityConsole.Interfaces.Communication;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SmartTrinityConsole.Services.Pump
+{
+    public class PumpService : IPumpService
+    {
+        ILogger<PumpService> _logger;
+        IServiceProcess _serviceProcess;
+        ICommunicationManager _messageManager;
+
+        public PumpService(ILogger<PumpService> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess)
+        {
+            _logger = logger;
+            _messageManager = messageManager;
+        }
+
+        public int PumpSalesProcess() 
+        {
+            return 0;
+        }
+    }
+}

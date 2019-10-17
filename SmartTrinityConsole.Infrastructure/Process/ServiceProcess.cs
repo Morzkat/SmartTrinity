@@ -41,13 +41,7 @@ namespace SmartTrinityConsole.Infrastructure.Process
             _messageManager.SendMsg("POST", "REQ_FCRT_PUMPS_CONFIG", $"PC={Tools.GetComputerId()}|");
         }
 
-        public bool CheckConfig()
-        {
-
-            return false;
-        }
-
-        public bool ProcessMessage(string msgType, string msgData) 
+        public object ProcessMessage(string msgType, string msgData) 
         {
             _logger.LogDebug($"Processing message type {msgType} ....");
             if (msgType.Equals("RES_FCRT_PUMPS_CONFIG"))
@@ -56,16 +50,17 @@ namespace SmartTrinityConsole.Infrastructure.Process
             } 
             else if(msgType.StartsWith("EVT_PUMP_DELIVERY_PROGRESS_ID_"))
             {
-                ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgData);
+                return ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgData);
             }
             return true;
         }
 
-        private void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
+        private int ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
         {
             string evt = "EVT_PUMP_DELIVERY_PROGRESS_ID_";
-            // int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
+            int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
             _logger.LogDebug($"Data: {msgData}");
+            return 0;
         }
 
         private void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)

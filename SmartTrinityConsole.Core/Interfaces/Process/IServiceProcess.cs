@@ -8,6 +8,6 @@ namespace SmartTrinityApi.Core.Interfaces.Process
     {
         void AddPumpSalesProccess();
         void ProccessStationData();
-        bool ProcessMessage(string msgType, string msgData);
+        object ProcessMessage(string msgType, string msgData);
     }
 }
