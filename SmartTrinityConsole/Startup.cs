@@ -9,6 +9,9 @@ using SmartTrinityConsole.Infrastructure.CommunicationManager;
 using SmartTrinityApi.Core.Interfaces.Process;
 using SmartTrinityConsole.Infrastructure.Process;
 using SmartTrinityApi.Infrastructure.Process;
+using SmartTrinityConsole.Services.Pump;
+using SmartTrinityConsole.Services;
+using SmartTrinityApi.Controllers;
 
 namespace SmartTrinityApi
 {
@@ -25,12 +28,24 @@ namespace SmartTrinityApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR();
+            services.AddMemoryCache();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                 builder => builder.WithOrigins("http://localhost:4200")
+                 .AllowAnyMethod()
+                 .AllowAnyHeader()
+                 .AllowCredentials());
+            });
 
             //Services
             services.AddScoped<ISalesServices, SalesService>();
+            services.AddSingleton<IPumpService, PumpService>();
+            services.AddSingleton<IMainService, MainService>();
             //Process
-            services.AddScoped<IPumpProcess, PumpProcess>();
-            services.AddScoped<IServiceProcess, ServiceProcess>();
+            services.AddTransient<IPumpProcess, PumpProcess>();
+            services.AddTransient<IServiceProcess, ServiceProcess>();
             //ComunicationManager
             services.AddSingleton<ICommunicationManager, MessageManager>();
         }
@@ -47,11 +62,13 @@ namespace SmartTrinityApi
                 app.UseHsts();
             }
 
+            app.UseCors("CorsPolicy");
             app.UseRouting();
-            app.UseEndpoints( endpoints => 
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints =>
+           {
+               endpoints.MapControllers();
+               endpoints.MapHub<PumpSalesHub>("PumpSalesHub");
+           });
         }
     }
 }
