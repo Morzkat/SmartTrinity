@@ -5,7 +5,9 @@ TODO:
     * Use reflaction for call process methods
     * Create server socket for send data
     * Check the property Available from socket object (for know if there is data to read).
-    *
+    * Create logic for change pump status from 
+        - IDLE -> FUELING
+        - FUELING -> IDLE
     *
     *
 };
