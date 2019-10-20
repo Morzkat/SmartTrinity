@@ -15,19 +15,20 @@ namespace SmartTrinityApi.Controllers
         IMemoryCache _memoryCache;
         ILogger<ConsoleController> _logger;
         IHubContext<SmartPumpHub> _hub;
+        IMainService _mainService;
 
-        public ConsoleController(ILogger<ConsoleController> logger, IMemoryCache memoryCache, IHubContext<SmartPumpHub> hub)
+        public ConsoleController(ILogger<ConsoleController> logger, IMemoryCache memoryCache, IMainService mainService, IHubContext<SmartPumpHub> hub)
         {
             _hub = hub;
             _logger = logger;
-            // _mainService = mainService;
+            _mainService = mainService;
             _memoryCache = memoryCache;
         }
 
         [HttpGet("ConnectToServer")]
         public ActionResult<string> ConnectToServer()
         {
-            // _mainService.ReadFromSocketContinuously();
+            _mainService.ReadFromSocketContinuously();
             return "OK";
         }
 

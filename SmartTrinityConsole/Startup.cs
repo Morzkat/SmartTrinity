@@ -12,6 +12,7 @@ using SmartTrinityConsole.Infrastructure.Process;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.CommunicationManager;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace SmartTrinityApi
 {
@@ -51,18 +52,17 @@ namespace SmartTrinityApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            /*if (env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
-            }*/
+            }
 
-            app.UseDeveloperExceptionPage();
             app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseEndpoints(endpoints =>
