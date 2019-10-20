@@ -50,21 +50,20 @@ namespace SmartTrinityConsole.Infrastructure.Process
             {
                 Type _class = GetType();
                 MethodInfo _method = _class.GetMethod($"ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID");
-                _method.Invoke(this, new object[] { msgData });
+                _method.Invoke(this, new object[] { msgType, msgData });
             }
             catch (Exception e) { _logger.LogInformation($"Process not found {msgType}"); }
 
             return true;
         }
 
-        public void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
+        public void ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgType, string msgData)
         {
-            string evt = "EVT_PUMP_DELIVERY_PROGRESS_ID_";
-            // int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
+            int pumpId = Convert.ToInt32(msgType.Substring(msgType.Length - 3, 3));
             _logger.LogDebug($"Data: {msgData}");
         }
 
-        public void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
+        public void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgType, string msgData)
         {
             string[] data = msgData.Split("|");
 
