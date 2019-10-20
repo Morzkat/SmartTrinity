@@ -28,5 +28,6 @@ namespace SmartTrinityConsole.Interfaces.Communication
         void SendMsgWithResponse(string messageId, string msgType, string eventType, string data, IMessageReceptor messageReceptor);
         void Subscribe(string subscribeType);
         void StartConnection();
+        bool SocketHasData();
     }
 }

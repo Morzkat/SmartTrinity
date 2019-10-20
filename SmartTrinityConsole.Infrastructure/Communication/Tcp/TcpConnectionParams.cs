@@ -10,11 +10,6 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
         public int Port { get; set; }
         public long ConnectionTimeOut { get; set; }
 
-        public TcpConnectionParams()
-        {
-
-        }
-
         public TcpConnectionParams(string host, int port)
         {
             Host = host;

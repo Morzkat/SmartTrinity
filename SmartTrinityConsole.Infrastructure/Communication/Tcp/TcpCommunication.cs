@@ -29,28 +29,20 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 
         public void Connect()
         {
-            try
-            {
-                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse(_params.Host), _params.Port);
-                _socket = new Socket(serverAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                _socket.Connect(serverAddress);
-                //_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, 0);
-            }
-            catch (Exception e) { throw e; }
+            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse(_params.Host), _params.Port);
+            _socket = new Socket(serverAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _socket.Connect(serverAddress);
+            //_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, 0);
         }
 
         public void Disconnect()
         {
-            try
+            if (_socket != null)
             {
-                if (_socket != null)
-                {
-                    _socket.Shutdown(SocketShutdown.Both);
-                    _socket.Close();
-                    _socket = null;
-                }
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();
+                _socket = null;
             }
-            catch (Exception e) { throw e; }
         }
 
         public int GetLocalIdentifier()
@@ -141,23 +133,16 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             for (int i = 0; i < msgLength; i++)
             { msgAux[i] = (byte)msg[i]; }
 
-            try
-            {
-                if (_socket == null) throw new Exception("Socket is null....");
-                if (!IsConnected()) throw new Exception("Socket is disconnected....");
+            if (_socket == null) throw new Exception("Socket is null....");
+            if (!IsConnected()) throw new Exception("Socket is disconnected....");
 
-                int p = _socket.Send(msgAux, SocketFlags.None);
-            }
-            catch (Exception e) { throw e; }
+            int p = _socket.Send(msgAux, SocketFlags.None);
 
         }
 
         public void SetTimeout(int timeout)
         {
-            try
-            {
-                _socket.SendTimeout = timeout;
-            }
+            try { _socket.SendTimeout = timeout; }
             catch (Exception e) { throw e; }
 
             _timeout = timeout;
@@ -165,16 +150,18 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 
         public int GetLocalPort()
         {
-            try
-            {
-                return ((IPEndPoint)_socket.LocalEndPoint).Port;
-            }
-            catch (Exception e) { throw e; }
+            return ((IPEndPoint)_socket.LocalEndPoint).Port;
         }
 
         public void SetParams(IConnectionParams connectionParams)
         {
             _params = connectionParams;
+        }
+
+        // TODO: Implement logic for read from socket continuously. 
+        public bool SocketHasData()
+        {
+            return _socket.Available > 0 ? true : false;
         }
     }
 }

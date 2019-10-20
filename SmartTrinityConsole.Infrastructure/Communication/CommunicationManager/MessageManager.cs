@@ -93,45 +93,31 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         {
             _logger.LogDebug("Disconnecting from the server... ");
 
-            try
-            {
-                Client.Disconnect();
-                _logger.LogDebug("Disconnected from the server... ");
-            }
-
-            catch (Exception e)
-            {
-                throw e;
-            }
+            Client.Disconnect();
+            _logger.LogDebug("Disconnected from the server... ");
         }
 
         public void ReceiveSubscribedMessages()
         {
-            try
+            MsgType = "";
+            Client._recvBufferSize = 8;
+            string msgReceived = new string(Client.Recv());
+            int bufferSize = Convert.ToInt32(msgReceived.Substring(0, 5));
+            char tempCrypt = msgReceived[6];
+            Client._recvBufferSize = bufferSize;
+            char[] aMsg = Client.Recv();
+
+            aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
+            string msg = new string(aMsg);
+            string Smsg = msg.Substring(0, msg.Length - 1);
+
+            string[] dataRecieved = Smsg.Split('|');
+            MsgType = dataRecieved[1];
+            MsgData = "";
+
+            for (int i = 2; i < dataRecieved.Length; i++)
             {
-                Client._recvBufferSize = 8;
-                string msgReceived = new string(Client.Recv());
-                int bufferSize = Convert.ToInt32(msgReceived.Substring(0,5));
-                char tempCrypt = msgReceived[6];
-                Client._recvBufferSize = bufferSize;
-                char [] aMsg = Client.Recv();
-
-                aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
-                string msg = new string(aMsg);
-                string Smsg = msg.Substring(0, msg.Length - 1);
-
-                string[] dataRecieved = Smsg.Split('|');
-                MsgType = dataRecieved[1];
-                MsgData = "";
-
-                for (int i = 2; i < dataRecieved.Length; i++)
-                {
-                    MsgData += $"|{dataRecieved[i]}";
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
+                MsgData += $"|{dataRecieved[i]}";
             }
         }
 
@@ -173,20 +159,18 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         public void SendSecureMsg(string eventType, string data)
         {
             // TODO: Create logic for send secure msg
-            try
-            {
-                SendMsg("POST", eventType, data);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            SendMsg("POST", eventType, data);
         }
 
         public void SendMsgWithResponse(string messageId, string msgType, string eventType, string data, IMessageReceptor messageReceptor)
         {
             // TODO: Create logic for send msg with response
             throw new NotImplementedException();
+        }
+
+        public bool SocketHasData()
+        {
+            return Client.SocketHasData();
         }
     }
 }
