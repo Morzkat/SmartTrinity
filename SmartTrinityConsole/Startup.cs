@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using SmartTrinityApi.Hubs;
+using Microsoft.AspNetCore.Builder;
+using SmartTrinityConsole.Services;
+using SmartTrinityConsole.Services.Pump;
 using SmartTrinityConsole.Services.Sales;
 using Microsoft.Extensions.Configuration;
+using SmartTrinityApi.Infrastructure.Process;
+using SmartTrinityApi.Core.Interfaces.Process;
 using Microsoft.Extensions.DependencyInjection;
 using SmartTrinityApi.Core.Interfaces.Services;
+using SmartTrinityConsole.Infrastructure.Process;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.CommunicationManager;
-using SmartTrinityApi.Core.Interfaces.Process;
-using SmartTrinityConsole.Infrastructure.Process;
-using SmartTrinityApi.Infrastructure.Process;
-using SmartTrinityConsole.Services.Pump;
-using SmartTrinityConsole.Services;
-using SmartTrinityApi.Controllers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SmartTrinityApi
 {
@@ -51,23 +51,24 @@ namespace SmartTrinityApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            /*if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
-            }
+            }*/
 
+            app.UseDeveloperExceptionPage();
             app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseEndpoints(endpoints =>
            {
                endpoints.MapControllers();
-               endpoints.MapHub<PumpSalesHub>("PumpSalesHub");
+               endpoints.MapHub<SmartPumpHub>("/SmartPump");
            });
         }
     }
