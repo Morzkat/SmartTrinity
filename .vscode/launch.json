@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/SmartTrinityConsole/bin/Debug/netcoreapp2.1/SmartTrinityApi.dll",
+            "program": "${workspaceFolder}/SmartTrinityConsole/bin/Debug/netcoreapp3.0/SmartTrinityApi.dll",
             "args": [],
             "cwd": "${workspaceFolder}/SmartTrinityConsole",
             "stopAtEntry": false,
