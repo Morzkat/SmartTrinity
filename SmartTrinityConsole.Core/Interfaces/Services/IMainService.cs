@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SmartTrinityApi.Core.Interfaces.Services
 {
-    public interface IPumpService
+    public interface IMainService
     {
-        void PumpsBaseConfig();
+        void ReadFromSocketContinuously();
     }
 }

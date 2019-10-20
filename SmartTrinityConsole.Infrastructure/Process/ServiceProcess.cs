@@ -46,24 +46,27 @@ namespace SmartTrinityConsole.Infrastructure.Process
             _logger.LogDebug($"Processing message type {msgType} ....");
             if (msgType.Equals("RES_FCRT_PUMPS_CONFIG"))
             {
-                ProcessMessage_RES_FCRT_PUMPS_CONFIG(msgData);
+                ProcessMessage_RES_FCRT_PUMPS_CONFIG(msgType, msgData);
             } 
             else if(msgType.StartsWith("EVT_PUMP_DELIVERY_PROGRESS_ID_"))
             {
-                return ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgData);
+                return ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgType, msgData);
+            }
+            else if (msgType.Equals("Test"))
+            {
+                return ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(msgType, msgData);
             }
             return true;
         }
 
-        private int ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgData)
+        private int ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(string msgType, string msgData)
         {
-            string evt = "EVT_PUMP_DELIVERY_PROGRESS_ID_";
-            int pumpId = Convert.ToInt32(evt.Substring(evt.Length, evt.Length + 3));
+            int pumpId = Convert.ToInt32(msgType.Substring(msgType.Length - 3, 3));
             _logger.LogDebug($"Data: {msgData}");
             return 0;
         }
 
-        private void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
+        private void ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgType, string msgData)
         {
             string[] data = msgData.Split("|");
 
