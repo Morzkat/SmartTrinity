@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using SmartTrinityApi.Common;
 using SmartTrinityApi.Core.Interfaces;
 using SmartTrinityApi.Core.Interfaces.Communication;
 
@@ -32,7 +33,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse(_params.Host), _params.Port);
             _socket = new Socket(serverAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             _socket.Connect(serverAddress);
-            //_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.KeepAlive, 0);
+            Tools.CurrentSocketPort = ((IPEndPoint)_socket.LocalEndPoint).Port;
         }
 
         public void Disconnect()

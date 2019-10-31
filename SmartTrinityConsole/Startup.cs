@@ -1,7 +1,8 @@
-﻿using SmartTrinityApi.Hubs;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using SmartTrinityConsole.Services;
 using SmartTrinityConsole.Services.Pump;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using SmartTrinityConsole.Services.Sales;
 using Microsoft.Extensions.Configuration;
 using SmartTrinityApi.Infrastructure.Process;
@@ -11,8 +12,7 @@ using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Infrastructure.Process;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.CommunicationManager;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using SmartTrinityApi.Infrastructure.Hubs;
 
 namespace SmartTrinityApi
 {
@@ -28,19 +28,19 @@ namespace SmartTrinityApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
             services.AddSignalR();
             services.AddMemoryCache();
             services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                 builder => builder.WithOrigins("http://localhost:4200")
-                 .AllowAnyMethod()
-                 .AllowAnyHeader()
-                 .AllowCredentials());
-            });
+           {
+               options.AddPolicy("CorsPolicy",
+                builder => builder.WithOrigins(Configuration.GetSection("ClientHost").Value)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+           });
 
             //Services
+            services.AddMvc();
             services.AddScoped<ISalesServices, SalesService>();
             services.AddSingleton<IPumpService, PumpService>();
             services.AddSingleton<IMainService, MainService>();
@@ -54,21 +54,15 @@ namespace SmartTrinityApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
+            app.UseDeveloperExceptionPage();
+
 
             app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseEndpoints(endpoints =>
            {
                endpoints.MapControllers();
-               endpoints.MapHub<SmartPumpHub>("/SmartPump");
+               endpoints.MapHub<SmartPumpHub>("/Hub/SmartPump");
            });
         }
     }

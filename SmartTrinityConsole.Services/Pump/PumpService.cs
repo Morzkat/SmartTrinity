@@ -22,11 +22,6 @@ namespace SmartTrinityConsole.Services.Pump
             _messageManager = messageManager;
         }
 
-        public int PumpSalesProcess()
-        {
-            return 0;
-        }
-
         public void PumpsBaseConfig()
         {
             _serviceProcess.ProccessStationData();
@@ -49,10 +44,7 @@ namespace SmartTrinityConsole.Services.Pump
                     _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
                 }
 
-                catch (Exception e)
-                {
-                    break;
-                };
+                catch { break; };
             }
         }
     }

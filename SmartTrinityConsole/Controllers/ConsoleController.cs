@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
 using SmartTrinityApi.Core.Interfaces.Services;
-using SmartTrinityApi.Hubs;
+using System.Collections.Generic;
+using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -12,17 +12,13 @@ namespace SmartTrinityApi.Controllers
     public class ConsoleController : ControllerBase
     {
         // IMainService _mainService;
-        IMemoryCache _memoryCache;
-        ILogger<ConsoleController> _logger;
-        IHubContext<SmartPumpHub> _hub;
         IMainService _mainService;
+        ILogger<ConsoleController> _logger;
 
-        public ConsoleController(ILogger<ConsoleController> logger, IMemoryCache memoryCache, IMainService mainService, IHubContext<SmartPumpHub> hub)
+        public ConsoleController(ILogger<ConsoleController> logger, IMainService mainService)
         {
-            _hub = hub;
             _logger = logger;
             _mainService = mainService;
-            _memoryCache = memoryCache;
         }
 
         [HttpGet("ConnectToServer")]
@@ -32,14 +28,11 @@ namespace SmartTrinityApi.Controllers
             return "OK";
         }
 
-        [HttpGet]
-        public ActionResult<string> Get() 
-        {   
-           _hub.Clients.All.SendAsync("PumpDeliveryProgress", "....");
-
-            return "Request Completed";        
+        [HttpGet("Test")]
+        public ActionResult<IList<IList<Sale>>> Test()
+        {
+            return new List<IList<Sale>>();
         }
-
     }
 }
 
