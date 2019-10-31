@@ -4,6 +4,7 @@ TODO:
     * Make socket asyncs -> priority -> high
     * Create logic for get the color of the product
     * Send the product name to the client
+    * Load pump data from the persistence
 };
 
 TOFIX: 
