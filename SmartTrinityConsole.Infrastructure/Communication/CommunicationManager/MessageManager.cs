@@ -11,7 +11,6 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
     {
         private char _currentCrypt;
         private ILogger<ICommunicationManager> _logger;
-
         public int ILocalPort { get; private set; }
         public ICommunication Client { get; private set; }
         public bool IsConnected { get; private set; }
@@ -68,16 +67,16 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public char[] CryptMessage(char method, char[] inp, int inplen, int extraSize)
         {
-            string msgWithPadLeft = Tools.Lpad((inplen + extraSize).ToString(), "0", 5);
+            string msgWithPadLeft = Tools.LPad((inplen + extraSize).ToString(), "0", 5);
             string key;
             switch (method)
             {
                 case '1':
-                    key = $"{msgWithPadLeft}|1|{Tools.Lpad(ILocalPort.ToString(), "0", 6)}";
+                    key = $"{msgWithPadLeft}|1|{Tools.LPad(ILocalPort.ToString(), "0", 6)}";
                     return Tools.EncryptMessage(inp, inplen, key.ToCharArray(), key.Length);
 
                 case '2':
-                    key = $"{msgWithPadLeft}|2|{Tools.Lpad(IKey.ToString(), "0", 6)}";
+                    key = $"{msgWithPadLeft}|2|{Tools.LPad(IKey.ToString(), "0", 6)}";
                     return Tools.EncryptMessage(inp, inplen, key.ToCharArray(), key.Length);
             }
 
@@ -130,7 +129,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             if (!msgType.Equals("ECHO"))
                 _logger.LogDebug($"Message [{msgType}|{eventType}]");
 
-            string msgWithPadLeft = Tools.Lpad((currentMsg.Length + 1).ToString(), "0", 5);
+            string msgWithPadLeft = Tools.LPad((currentMsg.Length + 1).ToString(), "0", 5);
             char[] msg = CryptMessage(_currentCrypt, currentMsg.ToCharArray(), currentMsg.Length, 1);
 
             if (!msgType.Equals("ECHO"))
