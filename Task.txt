@@ -8,8 +8,8 @@ TODO:
     * Create logic for change pump status from 
         - IDLE -> FUELING
         - FUELING -> IDLE
-    *
-    *
+    * Create logic for get the color of the product
+    * Send the product name to the client
 };
 
 TOFIX: 
