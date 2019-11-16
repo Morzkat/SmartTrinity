@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace SmartTrinityConsole.Services.Pump
+namespace SmartTrinityConsole.Services
 {
     public class PumpService : IPumpService
     {
@@ -47,6 +47,8 @@ namespace SmartTrinityConsole.Services.Pump
                 catch { break; };
             }
         }
+
+        
     }
 }
 

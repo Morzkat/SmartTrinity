@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartTrinityConsole.Services.Sales
+namespace SmartTrinityConsole.Services
 {
     public class SalesService: ISalesServices
     {
