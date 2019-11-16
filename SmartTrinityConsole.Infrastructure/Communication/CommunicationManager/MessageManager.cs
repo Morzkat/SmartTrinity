@@ -36,14 +36,6 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             TimeoutEcho = 30000L;
             LogTryConnect = false;
             _logger = logger;
-
-            // Logic for create user
-            /*************************************************************************************************/
-            /* String zPwd = Tools.rpad("1", " ", 25);
-            String zKey = Tools.rpad("1", " ", 20);
-            char[] szCryptedPwd = Tools.crypt(zPwd.toCharArray(), 25, zKey.toCharArray(), 20);
-            String zData = "US=" + "1" + "|PW=" + Tools.BinToHexString(szCryptedPwd, 25) + "|";*/
-            /************************************************************************************************/
         }
 
         public void Connect()
@@ -61,7 +53,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             ILocalPort = Client.GetLocalIdentifier();
             IsConnected = true;
             LogTryConnect = true;
-            // TODO: Remove this isn't necessary
+
             StartConnection();
         }
 
@@ -73,11 +65,11 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             {
                 case '1':
                     key = $"{msgWithPadLeft}|1|{Tools.LPad(ILocalPort.ToString(), "0", 6)}";
-                    return Tools.EncryptMessage(inp, inplen, key.ToCharArray(), key.Length);
+                    return Tools.Encrypt(inp, inplen, key.ToCharArray(), key.Length);
 
                 case '2':
                     key = $"{msgWithPadLeft}|2|{Tools.LPad(IKey.ToString(), "0", 6)}";
-                    return Tools.EncryptMessage(inp, inplen, key.ToCharArray(), key.Length);
+                    return Tools.Encrypt(inp, inplen, key.ToCharArray(), key.Length);
             }
 
             return inp;
@@ -91,7 +83,6 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         public void Disconnect()
         {
             _logger.LogDebug("Disconnecting from the server... ");
-
             Client.Disconnect();
             _logger.LogDebug("Disconnected from the server... ");
         }
@@ -101,7 +92,8 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             MsgType = "";
             Client._recvBufferSize = 8;
             string msgReceived = new string(Client.Recv());
-            int bufferSize = Convert.ToInt32(msgReceived.Substring(0, 5));
+            int bufferSize;
+            int.TryParse(msgReceived.Substring(0, 5), out bufferSize);
             char tempCrypt = msgReceived[6];
             Client._recvBufferSize = bufferSize;
             char[] aMsg = Client.Recv();

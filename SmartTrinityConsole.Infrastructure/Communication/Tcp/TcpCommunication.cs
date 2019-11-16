@@ -137,7 +137,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             if (_socket == null) throw new Exception("Socket is null....");
             if (!IsConnected()) throw new Exception("Socket is disconnected....");
 
-            int p = _socket.Send(msgAux, SocketFlags.None);
+            _socket.Send(msgAux, SocketFlags.None);
 
         }
 
