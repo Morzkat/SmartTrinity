@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Core.Interfaces.Services;
 using System.Collections.Generic;
@@ -12,22 +11,21 @@ namespace SmartTrinityApi.Controllers
     public class ConsoleController : ControllerBase
     {
         // IMainService _mainService;
-        IMainService _mainService;
         ILogger<ConsoleController> _logger;
 
-        public ConsoleController(ILogger<ConsoleController> logger, IMainService mainService)
+        public ConsoleController(ILogger<ConsoleController> logger)
         {
             _logger = logger;
-            _mainService = mainService;
         }
 
+        /*
         [HttpGet("ConnectToServer")]
         public ActionResult<string> ConnectToServer()
         {
-            _mainService.ReadFromSocketContinuously();
+            _mainService.ReadFromSocket();
             return "OK";
         }
-
+        */
         [HttpGet("Test")]
         public ActionResult<IList<IList<Sale>>> Test()
         {
