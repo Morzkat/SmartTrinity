@@ -12,7 +12,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         private char _currentCrypt;
         private ILogger<ICommunicationManager> _logger;
         public int ILocalPort { get; private set; }
-        public ICommunication Client { get; private set; }
+        private ICommunication _client = null;
         public bool IsConnected { get; private set; }
         public string MsgType { get; private set; }
         public string MsgData { get; private set; }
@@ -26,7 +26,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         public MessageManager(ILogger<ICommunicationManager> logger)
         {
             ILocalPort = -1;
-            Client = null;
+            _client = null;
             IsConnected = false;
             MsgType = null;
             MsgData = null;
@@ -40,8 +40,8 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public void Connect()
         {
-            Client = ConnectionParams.BuildClient();
-            Client._connectionTimeout = 20000;
+            _client = ConnectionParams.BuildClient();
+            _client._connectionTimeout = 20000;
 
             if (LogTryConnect)
             {
@@ -49,8 +49,8 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
                 LogTryConnect = false;
             }
 
-            Client.Connect();
-            ILocalPort = Client.GetLocalIdentifier();
+            _client.Connect();
+            ILocalPort = _client.GetLocalIdentifier();
             IsConnected = true;
             LogTryConnect = true;
 
@@ -77,38 +77,40 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public bool ClientIsConnected()
         {
-            return Client.IsConnected();
+            IsConnected = _client.IsConnected();
+            return IsConnected;
         }
 
         public void Disconnect()
         {
             _logger.LogDebug("Disconnecting from the server... ");
-            Client.Disconnect();
+            IsConnected = false;
+            _client.Disconnect();
             _logger.LogDebug("Disconnected from the server... ");
         }
 
         public void ReceiveSubscribedMessages()
         {
             MsgType = "";
-            Client._recvBufferSize = 8;
-            string msgReceived = new string(Client.Recv());
+            _client._recvBufferSize = 8;
+            string msgReceived = new string(_client.Recv());
             int bufferSize;
             int.TryParse(msgReceived.Substring(0, 5), out bufferSize);
             char tempCrypt = msgReceived[6];
-            Client._recvBufferSize = bufferSize;
-            char[] aMsg = Client.Recv();
+            _client._recvBufferSize = bufferSize;
+            char[] aMsg = _client.Recv();
 
             aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
             string msg = new string(aMsg);
             string Smsg = msg.Substring(0, msg.Length - 1);
 
-            string[] dataRecieved = Smsg.Split('|');
-            MsgType = dataRecieved[1];
+            string[] dataReceived = Smsg.Split('|');
+            MsgType = dataReceived[1];
             MsgData = "";
 
-            for (int i = 2; i < dataRecieved.Length; i++)
+            for (int i = 2; i < dataReceived.Length; i++)
             {
-                MsgData += $"|{dataRecieved[i]}";
+                MsgData += $"|{dataReceived[i]}";
             }
         }
 
@@ -127,9 +129,9 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             if (!msgType.Equals("ECHO"))
                 _logger.LogDebug($"Sending message type {msgType} | {eventType} ...");
 
-            Client.Send($"{msgWithPadLeft}|{_currentCrypt}|");
-            Client.Send(msg);
-            Client.Send("^".ToCharArray());
+            _client.Send($"{msgWithPadLeft}|{_currentCrypt}|");
+            _client.Send(msg);
+            _client.Send("^".ToCharArray());
         }
 
         public void StartConnection()
@@ -161,7 +163,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public bool SocketHasData()
         {
-            return Client.SocketHasData();
+            return _client.SocketHasData();
         }
     }
 }

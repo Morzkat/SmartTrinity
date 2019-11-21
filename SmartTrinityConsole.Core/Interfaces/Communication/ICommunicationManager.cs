@@ -7,7 +7,6 @@ namespace SmartTrinityConsole.Interfaces.Communication
     public interface ICommunicationManager
     {
         int ILocalPort { get; }
-        ICommunication Client { get; }
         bool IsConnected { get; }
         string MsgType { get; }
         string MsgData { get; }

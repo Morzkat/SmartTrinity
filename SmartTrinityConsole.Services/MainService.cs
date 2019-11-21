@@ -62,8 +62,8 @@ namespace SmartTrinityConsole.Services
                         _messageManager.ReceiveSubscribedMessages();
                         _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
                     }
-                    else if (!_messageManager.Client.IsConnected())
-                        _messageManager.Client.Connect();
+                    else if (!_messageManager.ClientIsConnected())
+                        _messageManager.Connect();
 
                     else if (DateTime.Now.Minute - SmartPumpPersistence.LastUpdate.Minute > 3)
                     {
