@@ -48,12 +48,7 @@ namespace SmartTrinityConsole.Services
 
         public void ReadFromSocket()
         {
-            /*
-            _logger.LogDebug("|------------------------------------------------------|STATUS|----------------------------------------------------------------------|");
-            _logger.LogDebug($"Current time {DateTime.Now}| last update: |{SmartPumpPersistence.LastUpdate}|");
-            _logger.LogDebug($"Socket is connected: {_messageManager.IsConnected}");
-            _logger.LogDebug("|------------------------------------------------------|END STATUS|------------------------------------------------------------------|");
-            */
+            SmartPumpPersistence.LastUpdate = DateTime.Now;
 
             if (_messageManager.SocketHasData())
             {
@@ -61,16 +56,21 @@ namespace SmartTrinityConsole.Services
                 _messageManager.ReceiveSubscribedMessages();
                 _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
             }
-            else if (!_messageManager.Client.IsConnected())
-                _messageManager.Client.Connect();
+
+            else if (!_messageManager.ClientIsConnected())
+            {
+                _messageManager.Connect();
+                _pumpService.PumpsBaseConfig();
+            }
 
             else if (DateTime.Now.Minute - SmartPumpPersistence.LastUpdate.Minute > 5)
             {
                 SmartPumpPersistence.LastUpdate = DateTime.Now;
-                _messageManager.Client.Disconnect();
-                _messageManager.Client.Connect();
-                //_messageManager.SendMsg("POST", "REQ_REFRESH_GENERAL_INFORMATION", "");
-                _logger.LogDebug($"FROM |127.0.0.1:{Tools.CurrentSocketPort}| SENDING MESSAGE: REQ_REFRESH_GENERAL_INFORMATION DATE{SmartPumpPersistence.LastUpdate}...");
+                _messageManager.Disconnect();
+                _messageManager.Connect();
+                _pumpService.PumpsBaseConfig();
+
+                _logger.LogDebug($"FROM |127.0.0.1:{Tools.CurrentSocketPort}| SENDING MESSAGE: REQ_REFRESH_GENERAL_INFORMATION DATE {SmartPumpPersistence.LastUpdate}...");
             }
         }
 
@@ -83,6 +83,20 @@ namespace SmartTrinityConsole.Services
                     await Task.Run(() => ReadFromSocket());
                 }
             }, stoppingToken);
+        }
+
+        public override Task StopAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogDebug("The process is being stopped, initiating the process again... ");
+            StartAsync(new System.Threading.CancellationToken());
+            return Task.CompletedTask;
+        }
+
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogDebug("The process is starting... ");
+            ExecuteAsync(new System.Threading.CancellationToken());
+            return Task.CompletedTask;
         }
     }
 }
