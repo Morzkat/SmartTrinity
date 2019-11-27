@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SmartTrinityApi.Common
@@ -6,14 +7,15 @@ namespace SmartTrinityApi.Common
     //TODO: Investigate if is better a static class o interface with injection... 
     public static class Tools
     {
-        static string generation = "11345113451";
-        static int generation2 = GetGeneration(3) + 1;
-        static int generation3 = GetGeneration(1);
+        private static string generation = "11345113451";
+        private static int generation2 = GetGeneration(3) + 1;
+        private static int generation3 = GetGeneration(1);
+        public static int CurrentSocketPort { get; set; }
 
-        public static char[] EncryptMessage(char[] inp, int inplen, char[] key, int keylen)
+        public static char[] Encrypt(char[] inp, int inplen, char[] key, int keylen)
         {
-            char[] Sbox = new char[257];
-            char[] Sbox2 = new char[257];
+            char[] SBox = new char[257];
+            char[] SBox2 = new char[257];
             char k = '\0';
             int j;
             int t;
@@ -22,13 +24,13 @@ namespace SmartTrinityApi.Common
             char temp = '\0';
             for (i = 0; i < 256; i++)
             {
-                Sbox[i] = '\0';
-                Sbox2[i] = '\0';
+                SBox[i] = '\0';
+                SBox2[i] = '\0';
             }
 
             for (i = 0; i < 256; i++)
             {
-                Sbox[i] = (char)i;
+                SBox[i] = (char)i;
             }
 
             j = 0;
@@ -38,28 +40,28 @@ namespace SmartTrinityApi.Common
                 {
                     j = 0;
                 }
-                Sbox2[i] = key[j++];
+                SBox2[i] = key[j++];
             }
 
             j = 0;
             for (i = 0; i < 256; i++)
             {
-                j = (j + Sbox[i] + Sbox2[i]) % 256;
-                temp = Sbox[i];
-                Sbox[i] = Sbox[j];
-                Sbox[j] = temp;
+                j = (j + SBox[i] + SBox2[i]) % 256;
+                temp = SBox[i];
+                SBox[i] = SBox[j];
+                SBox[j] = temp;
             }
 
             i = j = 0;
             for (x = 0; x < inplen; x++)
             {
                 i = (i + 1) % 256;
-                j = (j + Sbox[i]) % 256;
-                temp = Sbox[i];
-                Sbox[i] = Sbox[j];
-                Sbox[j] = temp;
-                t = (Sbox[i] + Sbox[j]) % 256;
-                k = Sbox[t];
+                j = (j + SBox[i]) % 256;
+                temp = SBox[i];
+                SBox[i] = SBox[j];
+                SBox[j] = temp;
+                t = (SBox[i] + SBox[j]) % 256;
+                k = SBox[t];
                 inp[x] = (char)(inp[x] ^ k);
             }
 
@@ -67,7 +69,7 @@ namespace SmartTrinityApi.Common
         }
 
 
-        public static char[] DecryptMessage()
+        public static char[] Decrypt()
         {
             return null;
         }
@@ -83,7 +85,7 @@ namespace SmartTrinityApi.Common
             return generation31 * 3;
         }
 
-        public static string Lpad(string valueToPad, string filler, int size)
+        public static string LPad(string valueToPad, string filler, int size)
         {
             string lValueToPad;
             for (lValueToPad = valueToPad; lValueToPad.Length < size;)
@@ -93,7 +95,7 @@ namespace SmartTrinityApi.Common
             return lValueToPad;
         }
 
-        public static string Rpad(string valueToPad, string filler, int size)
+        public static string RPad(string valueToPad, string filler, int size)
         {
             string lValueToPad;
             for (lValueToPad = valueToPad; lValueToPad.Length < size;)
@@ -106,6 +108,16 @@ namespace SmartTrinityApi.Common
         public static string GetComputerId()
         {
             return System.Net.Dns.GetHostName().ToUpper();
+        }
+
+        public static string ConvertBinToHex(char[] binStr, int len)
+        {
+            char[] binToChar = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+            string retStr = "";
+            for (int i = 0; i < len; i++)
+                retStr = (new StringBuilder(retStr)).Append(binToChar[(int)((uint)(binStr[i] & 0xf0) >> 4)]).Append(binToChar[binStr[i] & 0xf]).ToString();
+
+            return retStr;
         }
     }
 }

@@ -7,7 +7,6 @@ namespace SmartTrinityConsole.Interfaces.Communication
     public interface ICommunicationManager
     {
         int ILocalPort { get; }
-        ICommunication Client { get; }
         bool IsConnected { get; }
         string MsgType { get; }
         string MsgData { get; }
@@ -28,5 +27,6 @@ namespace SmartTrinityConsole.Interfaces.Communication
         void SendMsgWithResponse(string messageId, string msgType, string eventType, string data, IMessageReceptor messageReceptor);
         void Subscribe(string subscribeType);
         void StartConnection();
+        bool SocketHasData();
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SmartTrinityApi.Core.Interfaces.Communication;
-using SmartTrinityConsole.Interfaces.Communication;
-using SmartTrinityConsole.Infrastructure.Tcp.Communication;
-using System.Threading;
-using SmartTrinityConsole.Services.Sales;
-using SmartTrinityConsole.Infrastructure.Process;
-using SmartTrinityApi.Core.Interfaces.Process;
+using SmartTrinityApi.Core.Interfaces.Services;
+using System.Collections.Generic;
+using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -15,69 +10,27 @@ namespace SmartTrinityApi.Controllers
     [ApiController]
     public class ConsoleController : ControllerBase
     {
+        // IMainService _mainService;
         ILogger<ConsoleController> _logger;
-        IServiceProcess _serviceProcess;
 
-        // Test params
-        IConnectionParams connectionParams = new TcpConnectionParams("127.0.0.1", 3011);
-        ICommunicationManager _messageManager;
-
-        public ConsoleController(ILogger<ConsoleController> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess)
+        public ConsoleController(ILogger<ConsoleController> logger)
         {
             _logger = logger;
-            _messageManager = messageManager;
-            _serviceProcess = serviceProcess;
-            _messageManager.ConnectionParams = connectionParams;
         }
 
+        /*
         [HttpGet("ConnectToServer")]
         public ActionResult<string> ConnectToServer()
         {
-            _messageManager.Connect();
+            _mainService.ReadFromSocket();
             return "OK";
         }
-
-        [HttpGet("SendMessage")]
-        public ActionResult<string> SendMessage()
+        */
+        [HttpGet("Test")]
+        public ActionResult<IList<IList<Sale>>> Test()
         {
-            //TODO: Move logic to other class
-            _serviceProcess.ProccessStationData();
-            while (Thread.CurrentThread.IsAlive)
-            {
-                try
-                {
-
-                    _messageManager.ReceiveSubscribedMessages();
-                    _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
-
-                    if (_messageManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
-                    {
-                        break;
-                    }
-                }
-
-                catch (Exception e)
-                {
-                    _logger.LogError($"Error: {e.Message}");
-                }
-            }
-
-            _serviceProcess.AddPumpSalesProccess();
-            while (Thread.CurrentThread.IsAlive)
-            {
-                try
-                {
-                    _messageManager.ReceiveSubscribedMessages();
-                    _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
-                    //_messageManager.SendMsg("ECHO", "ECHO", "SPIRIT");
-                }
-
-                catch (Exception e)
-                {
-                    _logger.LogError($"Error: {e.Message}");
-                }
-            }
-            return "";
+            return new List<IList<Sale>>();
         }
     }
 }
+

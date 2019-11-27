@@ -42,5 +42,7 @@ namespace SmartTrinityApi.Core.Interfaces.Communication
         void SetParams(IConnectionParams connectionParams);
 
         Dictionary<string, string> GetParams();
+
+        bool SocketHasData();
     }
 }

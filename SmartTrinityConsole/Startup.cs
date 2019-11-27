@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using SmartTrinityConsole.Services.Sales;
+using SmartTrinityConsole.Services;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
+using SmartTrinityApi.Core.Interfaces.Process;
 using Microsoft.Extensions.DependencyInjection;
 using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.CommunicationManager;
-using SmartTrinityApi.Core.Interfaces.Process;
-using SmartTrinityConsole.Infrastructure.Process;
-using SmartTrinityApi.Infrastructure.Process;
+using SmartTrinityApi.Infrastructure.Hubs;
+using SmartTrinityApi.Services.Process;
+using SmartTrinityConsole.Services.Process;
 
 namespace SmartTrinityApi
 {
@@ -24,34 +25,44 @@ namespace SmartTrinityApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddSignalR();
+            services.AddMemoryCache();
+            services.AddCors(options =>
+           {
+               options.AddPolicy("CorsPolicy",
+                builder => builder.WithOrigins(Configuration.GetSection("ClientHost").Value)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+           });
 
             //Services
+            services.AddMvc();
             services.AddScoped<ISalesServices, SalesService>();
+            services.AddSingleton<IPumpService, PumpService>();
+            // services.AddSingleton<IMainService, MainService>();
             //Process
-            services.AddScoped<IPumpProcess, PumpProcess>();
-            services.AddScoped<IServiceProcess, ServiceProcess>();
+            services.AddTransient<IPumpProcess, PumpProcess>();
+            services.AddTransient<IServiceProcess, ServiceProcess>();
             //ComunicationManager
             services.AddSingleton<ICommunicationManager, MessageManager>();
+            // Task
+            services.AddHostedService<LongTimeTask>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
+            app.UseDeveloperExceptionPage();
 
+
+            app.UseCors("CorsPolicy");
             app.UseRouting();
-            app.UseEndpoints( endpoints => 
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints =>
+           {
+               endpoints.MapControllers();
+               endpoints.MapHub<SmartPumpHub>("/Hub/SmartPump");
+           });
         }
     }
 }

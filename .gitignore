@@ -45,3 +45,8 @@ msbuild.wrn
 # Ignore all local history of files
 .history
 
+SmartTrinityConsole/obj/*
+SmartTrinityConsole.Core/obj/*
+SmartTrinityConsole.Common/obj/*
+SmartTrinityConsole.Services/obj/*
+SmartTrinityConsole.Infrastructure/obj/*
