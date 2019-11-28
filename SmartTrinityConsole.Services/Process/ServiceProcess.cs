@@ -133,6 +133,10 @@ namespace SmartTrinityConsole.Services.Process
             {
                 _smartPumpHub.Clients.All.SendAsync("LoadPumps", SmartPumpPersistence.GetPumps());
             }
+            else if (data["hub"] == "LoadLatestPumpSales")
+            {
+                _smartPumpHub.Clients.All.SendAsync("LoadLatestPumpSales", SmartSalePersistence.GetSales());
+            }
         }
 
         public string ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(int pumpId, string msgData)
@@ -310,7 +314,7 @@ namespace SmartTrinityConsole.Services.Process
             sale.SaleId = Convert.ToInt32(data[$"SA{strIndex}"]);
             sale.Volume = Convert.ToDouble(data[$"VO{strIndex}"]);
             sale.Amount = Convert.ToDouble(data[$"AM{strIndex}"]);
-           sale.RGB = SmartGradePersistence.GetGrade(Convert.ToInt32(data[$"GR{strIndex}"])).RGB;
+            sale.RGB = SmartGradePersistence.GetGrade(Convert.ToInt32(data[$"GR{strIndex}"])).RGB;
 
             return sale;
         }

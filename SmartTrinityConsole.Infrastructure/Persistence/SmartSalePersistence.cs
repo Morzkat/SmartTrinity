@@ -21,5 +21,10 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
         {
             return _sales;
         }
+
+        public static void RemovePersistence()
+        {
+            _sales = new List<IList<Sale>>();
+        }
     }
 }
