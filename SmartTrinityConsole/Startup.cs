@@ -10,6 +10,8 @@ using SmartTrinityConsole.Infrastructure.CommunicationManager;
 using SmartTrinityApi.Infrastructure.Hubs;
 using SmartTrinityApi.Services.Process;
 using SmartTrinityConsole.Services.Process;
+using SmartTrinityApi.AppConfig;
+using Chroniton;
 
 namespace SmartTrinityApi
 {
@@ -38,7 +40,6 @@ namespace SmartTrinityApi
 
             //Services
             services.AddMvc();
-            services.AddScoped<ISalesServices, SalesService>();
             services.AddSingleton<IPumpService, PumpService>();
             // services.AddSingleton<IMainService, MainService>();
             //Process
@@ -46,8 +47,11 @@ namespace SmartTrinityApi
             services.AddTransient<IServiceProcess, ServiceProcess>();
             //ComunicationManager
             services.AddSingleton<ICommunicationManager, MessageManager>();
+            
+            services.AddSingleton<ISingularity, Singularity>(serviceProvider => Singularity.Instance);
+
             // Task
-            services.AddHostedService<LongTimeTask>();
+            services.AddHostedService<ApplicationStartup>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
