@@ -6,29 +6,49 @@ DONE:
     * Use reflection for call process methods
     * Create server socket for send data
     * Check the property Available from socket object (for know if there is data to read).
-    * Load pump data from the persistence
+    * Load pump data from the persistence.
     * Create temp table with pump data -> load in persistence.
     * Make socket async -> priority -> high.
     * Create logic for get the color of the product.
     * Send the product name to the client
+    * Config maximum file size and auto backup.
+    * Create persistence for each entity.
+    * Set fuel color the sales. 
+    * Numbers format should be decimals.
+        - Volume
+        - Sale price
+        - Sale 
+    * Create logic for the get the last sale and volume sold.
 }
 
 TODO:
-{
-    * Numbers format should be decimals.
-    * Config maximum file size and auto backup.
+{    
     * Convert values using a safer way.
-        -Create database interface connection.
+    * Create database interface connection.
         - Database engine -> postgressql. 
         - Database -> smartshipdb.
     * Check if the price level and the sale price are corrects.
-    * Create logic for the get the last sale and volume sold.
-};
+    * Use price level 1 by default when others price levels are 0. -> DOING
+    
+    * Add Try and Catch: -> DOING
+        - Connect
+        - Disconnect
+        - Check others methods should have try and catch
+    * Create config for get connection string and others settings.
+    * Get pump status from the windows service. Status:
+        - CLOSE
+        - OPEN
+        - OTHERS
+    * Check connection status and reconnect if is necessary.
+        - Make a request for check status.
+        - If exception happens do action dependendy of the exception:
+            --         
+}
 
 TOFIX: 
 {
 
-};
+}
 
 HACK:
 {
@@ -38,12 +58,11 @@ HACK:
 EVTS: 
 {
    
-};
+}
 
 Sources:
 {
-    * https://stackoverflow.com/questions/15523976/when-does-socket-receive-return-the-data
     *
     *
     *
-};
+}
