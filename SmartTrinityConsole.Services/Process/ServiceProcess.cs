@@ -224,7 +224,7 @@ namespace SmartTrinityConsole.Services.Process
 
             if (result.Equals("ERROR"))
             {
-                _logger.LogDebug(data["MSG"]);
+                _logger.LogError(data["MSG"]);
                 return "";
             }
 
