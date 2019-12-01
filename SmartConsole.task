@@ -27,15 +27,14 @@ TODO:
     * Create database interface connection.
         - Database engine -> postgressql. 
         - Database -> smartshipdb.
-    * Check if the price level and the sale price are corrects.
+    * Check if the price level and the sale price are corrects DOING -> TESTINGs.
     * Use price level 1 by default when others price levels are 0. -> DOING
-    
     * Add Try and Catch: -> DOING
-        - Connect
-        - Disconnect
-        - Check others methods should have try and catch
+        - Connect -> DONE
+        - Disconnect -> DONE
+        - Check others methods should have try and catch -> DOING
     * Create config for get connection string and others settings.
-    * Get pump status from the windows service. Status: -> DOING.
+    * Get pump status from the windows service. Status: -> DOING -> TESTING.
         - CLOSE
         - OPEN
         - OTHERS
@@ -43,6 +42,8 @@ TODO:
         - Make a request for check status. -> DOING.
         - If exception happens do action dependendy of the exception: -> DOING.
             --         
+    * Change pump status from the service -> DOING.
+    * Process message after a pump status change request.
 }
 
 TOFIX: 
