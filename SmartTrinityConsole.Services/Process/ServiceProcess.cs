@@ -147,12 +147,18 @@ namespace SmartTrinityConsole.Services.Process
         public string ProcessMessage_EVT_PUMP_STATUS_CHANGE_ID(int pumpId, string msgData)
         {
             //TODO: Create logic for change pump status...
-            return $"hub=StatusChange|pump={pumpId}|{msgData.CleanMessageData()}";
+
+            var msgData2 = msgData.CleanMessageData();
+            Dictionary<string, string> data = msgData2.FromMsgDataToDictionary();
+
+            Pump pump = SmartPumpPersistence.GetPump(pumpId);
+            pump.Status = data["ST"];
+            SmartPumpPersistence.UpdatePump(pump);
+            return $"hub=StatusChange|pump={pumpId}|{msgData2}";
         }
 
         public string ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
         {
-            //TODO: Create logic for get last pump status with: SalePrice, Volume, Sale...
             Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
 
             int pumpQuantity = Convert.ToInt32(data["PUMPS"]);
