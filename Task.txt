@@ -35,13 +35,13 @@ TODO:
         - Disconnect
         - Check others methods should have try and catch
     * Create config for get connection string and others settings.
-    * Get pump status from the windows service. Status:
+    * Get pump status from the windows service. Status: -> DOING.
         - CLOSE
         - OPEN
         - OTHERS
     * Check connection status and reconnect if is necessary.
-        - Make a request for check status.
-        - If exception happens do action dependendy of the exception:
+        - Make a request for check status. -> DOING.
+        - If exception happens do action dependendy of the exception: -> DOING.
             --         
 }
 
