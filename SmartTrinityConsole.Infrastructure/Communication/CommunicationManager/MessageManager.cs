@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Common;
 using SmartTrinityApi.Core.Interfaces.Communication;
+using SmartTrinityConsole.Infrastructure.Persistence;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Interfaces.Security;
 using System;
@@ -25,6 +26,11 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public MessageManager(ILogger<ICommunicationManager> logger)
         {
+            SetMessageParametersDefaultValues();
+            _logger = logger;
+        }
+        public void SetMessageParametersDefaultValues()
+        {
             ILocalPort = -1;
             _client = null;
             IsConnected = false;
@@ -35,7 +41,6 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             _currentCrypt = '2';
             TimeoutEcho = 30000L;
             LogTryConnect = false;
-            _logger = logger;
         }
 
         public void Connect()
@@ -54,6 +59,10 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             IsConnected = true;
             LogTryConnect = true;
 
+            SmartSalePersistence.RemovePersistence();
+            SmartPumpPersistence.RemovePersistence();
+            SmartGradePersistence.RemovePersistence();
+            
             StartConnection();
         }
 
@@ -77,61 +86,86 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public bool ClientIsConnected()
         {
-            IsConnected = _client.IsConnected();
+            try { IsConnected = _client.IsConnected(); }
+            catch (System.Exception) { IsConnected = false; }
+
             return IsConnected;
         }
 
         public void Disconnect()
         {
             _logger.LogDebug("Disconnecting from the server... ");
-            IsConnected = false;
-            _client.Disconnect();
+            try
+            {
+                _client.Disconnect();
+                SetMessageParametersDefaultValues();
+            }
+            catch (Exception e)
+            {
+                SetMessageParametersDefaultValues();
+                throw new Exception($"Error while trying to disconnected from server | {e.Message}");
+            }
             _logger.LogDebug("Disconnected from the server... ");
         }
 
         public void ReceiveSubscribedMessages()
         {
-            MsgType = "";
-            _client._recvBufferSize = 8;
-            string msgReceived = new string(_client.Recv());
-            int bufferSize;
-            int.TryParse(msgReceived.Substring(0, 5), out bufferSize);
-            char tempCrypt = msgReceived[6];
-            _client._recvBufferSize = bufferSize;
-            char[] aMsg = _client.Recv();
-
-            aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
-            string msg = new string(aMsg);
-            string Smsg = msg.Substring(0, msg.Length - 1);
-
-            string[] dataReceived = Smsg.Split('|');
-            MsgType = dataReceived[1];
-            MsgData = "";
-
-            for (int i = 2; i < dataReceived.Length; i++)
+            try
             {
-                MsgData += $"|{dataReceived[i]}";
+
+                MsgType = "";
+                _client._recvBufferSize = 8;
+                string msgReceived = new string(_client.Recv());
+                int bufferSize;
+                int.TryParse(msgReceived.Substring(0, 5), out bufferSize);
+                char tempCrypt = msgReceived[6];
+                _client._recvBufferSize = bufferSize;
+                char[] aMsg = _client.Recv();
+
+                aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
+                string msg = new string(aMsg);
+                string Smsg = msg.Substring(0, msg.Length - 1);
+
+                string[] dataReceived = Smsg.Split('|');
+                MsgType = dataReceived[1];
+                MsgData = "";
+
+                for (int i = 2; i < dataReceived.Length; i++)
+                {
+                    MsgData += $"|{dataReceived[i]}";
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error while trying to subscribe a message | {e.Message}");
             }
         }
 
         public void SendMsg(string msgType, string eventType, string data)
         {
-            if (!IsConnected) throw new Exception("Need to be connected before subscribing messages");
+            try
+            {
+                if (!IsConnected) throw new Exception("Need to be connected before subscribing messages");
 
-            string currentMsg = $"{msgType}|{eventType}|||{data}";
+                string currentMsg = $"{msgType}|{eventType}|||{data}";
 
-            if (!msgType.Equals("ECHO"))
-                _logger.LogDebug($"Message [{msgType}|{eventType}]");
+                if (!msgType.Equals("ECHO"))
+                    _logger.LogDebug($"Message [{msgType}|{eventType}]");
 
-            string msgWithPadLeft = Tools.LPad((currentMsg.Length + 1).ToString(), "0", 5);
-            char[] msg = CryptMessage(_currentCrypt, currentMsg.ToCharArray(), currentMsg.Length, 1);
+                string msgWithPadLeft = Tools.LPad((currentMsg.Length + 1).ToString(), "0", 5);
+                char[] msg = CryptMessage(_currentCrypt, currentMsg.ToCharArray(), currentMsg.Length, 1);
 
-            if (!msgType.Equals("ECHO"))
-                _logger.LogDebug($"Sending message type {msgType} | {eventType} ...");
+                if (!msgType.Equals("ECHO"))
+                    _logger.LogDebug($"Sending message type {msgType} | {eventType} ...");
 
-            _client.Send($"{msgWithPadLeft}|{_currentCrypt}|");
-            _client.Send(msg);
-            _client.Send("^".ToCharArray());
+                _client.Send($"{msgWithPadLeft}|{_currentCrypt}|");
+                _client.Send(msg);
+                _client.Send("^".ToCharArray());
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error while trying to send a message | {e.Message}");
+            }
         }
 
         public void StartConnection()
@@ -163,7 +197,8 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
 
         public bool SocketHasData()
         {
-            return _client.SocketHasData();
+            try { return _client.SocketHasData(); }
+            catch { return false; }
         }
     }
 }

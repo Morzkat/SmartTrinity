@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using SmartTrinityApi.Core.Interfaces.Hubs;
 using SmartTrinityConsole.Core.Entities.Pump;
+using SmartTrinityConsole.Core.Entities.Sale;
 using SmartTrinityConsole.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace SmartTrinityApi.Infrastructure.Hubs
     public interface ISmartPump
     {
         Task LoadPumps(List<Pump> pumps);
+        Task LoadLatestPumpSales(IList<IList<Sale>> sales);
         /*Task StatusChange();
         Task LatestPumpSales();
         Task UpdatePumpSales();
@@ -22,7 +24,12 @@ namespace SmartTrinityApi.Infrastructure.Hubs
     {
         public Task LoadPumps()
         {
-            return Clients.All.LoadPumps(SmartPumpPersistence.GetPumps());
+            return Clients.Caller.LoadPumps(SmartPumpPersistence.GetPumps());
+        }
+
+        public Task LoadLatestPumpSales()
+        {
+            return Clients.Caller.LoadLatestPumpSales(SmartSalePersistence.GetSales());
         }
 
         public override async Task OnConnectedAsync()

@@ -9,7 +9,7 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
     {
         private static List<Pump> _pumps = new List<Pump>();
         public static DateTime LastUpdate { get; set; }
-     
+
         public static List<Pump> GetPumps()
         {
             return _pumps;
@@ -44,6 +44,11 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
                 int index = _pumps.FindIndex(p => p.PumpNo == pump.PumpNo);
                 _pumps[index] = pump;
             }
+        }
+
+        public static void RemovePersistence()
+        {
+            _pumps = new List<Pump>();
         }
     }
 }

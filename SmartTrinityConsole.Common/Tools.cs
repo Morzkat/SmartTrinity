@@ -68,12 +68,6 @@ namespace SmartTrinityApi.Common
             return inp;
         }
 
-
-        public static char[] Decrypt()
-        {
-            return null;
-        }
-
         public static int GetSeeds()
         {
             return generation3 * generation2 * generation2 * generation2 * generation2 * generation2 + generation.Length * generation2 * generation2;

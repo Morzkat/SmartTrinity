@@ -48,5 +48,10 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
 
             return salePrice;
         }
+
+        public static void RemovePersistence()
+        {
+            _grades = new List<Grade>();
+        }
     }
 }

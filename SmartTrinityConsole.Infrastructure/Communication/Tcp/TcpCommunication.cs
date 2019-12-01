@@ -162,7 +162,8 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
         // TODO: Implement logic for read from socket continuously. 
         public bool SocketHasData()
         {
-            return _socket.Available > 0 ? true : false;
+            try { return _socket.Available > 0 ? true : false; }
+            catch { return false; }
         }
     }
 }

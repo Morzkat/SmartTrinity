@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Core.Entities.Pump;
+using SmartTrinityApi.Core.Interfaces.Process;
 using SmartTrinityApi.Core.Interfaces.Services;
 using System;
 using System.Collections.Generic;
@@ -11,22 +12,22 @@ namespace SmartTrinityApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PumpController : ControllerBase
+    public class PumpsController : ControllerBase
     {
-        // IMainService _mainService;
-        IMainService _mainService;
-        ILogger<PumpController> _logger;
+        // IMainService _pumpProcess;
+        IPumpProcess _pumpProcess;
+        ILogger<PumpsController> _logger;
 
-        public PumpController(ILogger<PumpController> logger, IMainService mainService)
+        public PumpsController(ILogger<PumpsController> logger, IPumpProcess pumpProcess)
         {
             _logger = logger;
-            _mainService = mainService;
+            _pumpProcess = pumpProcess;
         }
 
-        [HttpPost("ClosePump")]
-        public ActionResult<string> ClosePump([FromBody] PumpAction pumpAction)
+        [HttpPost("Action")]
+        public ActionResult<string> ExecutePumpAction([FromBody] PumpAction pumpAction)
         {
-            _mainService.ExecutePumpAction(pumpAction);
+            _pumpProcess.ExecutePumpAction(pumpAction);
             return "OK";
         }
 
