@@ -25,12 +25,10 @@ namespace SmartTrinityApi.Services.Process
             _messageManager.SendMsg("POST", $"REQ_PUMP_GET_ERROR_MSG_ID_{Tools.LPad(pumpId.ToString(), "0", 3)}", "");
             _messageManager.SendMsg("POST", $"REQ_PUMP_STATUS_ID_{Tools.LPad(pumpId.ToString(), "0", 3)}", "");
             _messageManager.SendMsg("POST", "REQ_GET_PUMP_SALES", $"PM={pumpId}|QT=12|");
-            // _messageManager.Subscribe($"EVT_PUMP_PRICE_LEVEL_ID_{pumpId}");
         }
 
         public void CreatePump(int pumpId)
         {
-            // TODO: Create logic if pump will show in the front 
             _messageManager.SendMsg("POST", $"REQ_PUMP_STATUS_ID_{Tools.LPad(pumpId.ToString(), "0", 3)}", "");
         }
 

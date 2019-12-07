@@ -56,11 +56,6 @@ namespace SmartTrinityConsole.Services.Process
 
         public object ProcessMessage(string msgType, string msgData)
         {
-            _logger.LogDebug("-----------------------------------------------------------------------------------------------------------------------------------------------------");
-            _logger.LogDebug($"Processing message type: {msgType} ....");
-            _logger.LogDebug($"Processing data: {msgData} ....");
-            _logger.LogDebug("-----------------------------------------------------------------------------------------------------------------------------------------------------");
-
             int pumpId = 0;
             int.TryParse(msgType.Substring(msgType.Length - 3, 3), out pumpId);
 
@@ -91,10 +86,7 @@ namespace SmartTrinityConsole.Services.Process
 
         public void ProcessMessageResponse(string data)
         {
-            if (data == "")
-            {
-                return;
-            }
+            if (data == "") { return; }
             NotifyClient(data);
         }
 
