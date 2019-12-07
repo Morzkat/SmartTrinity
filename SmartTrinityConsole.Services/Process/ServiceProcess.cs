@@ -56,11 +56,6 @@ namespace SmartTrinityConsole.Services.Process
 
         public object ProcessMessage(string msgType, string msgData)
         {
-            _logger.LogDebug("-----------------------------------------------------------------------------------------------------------------------------------------------------");
-            _logger.LogDebug($"Processing message type: {msgType} ....");
-            _logger.LogDebug($"Processing data: {msgData} ....");
-            _logger.LogDebug("-----------------------------------------------------------------------------------------------------------------------------------------------------");
-
             int pumpId = 0;
             int.TryParse(msgType.Substring(msgType.Length - 3, 3), out pumpId);
 
@@ -91,10 +86,7 @@ namespace SmartTrinityConsole.Services.Process
 
         public void ProcessMessageResponse(string data)
         {
-            if (data == "")
-            {
-                return;
-            }
+            if (data == "") { return; }
             NotifyClient(data);
         }
 
@@ -147,12 +139,18 @@ namespace SmartTrinityConsole.Services.Process
         public string ProcessMessage_EVT_PUMP_STATUS_CHANGE_ID(int pumpId, string msgData)
         {
             //TODO: Create logic for change pump status...
-            return $"hub=StatusChange|pump={pumpId}|{msgData.CleanMessageData()}";
+
+            var msgData2 = msgData.CleanMessageData();
+            Dictionary<string, string> data = msgData2.FromMsgDataToDictionary();
+
+            Pump pump = SmartPumpPersistence.GetPump(pumpId);
+            pump.Status = data["ST"];
+            SmartPumpPersistence.UpdatePump(pump);
+            return $"hub=StatusChange|pump={pumpId}|{msgData2}";
         }
 
         public string ProcessMessage_RES_FCRT_PUMPS_CONFIG(string msgData)
         {
-            //TODO: Create logic for get last pump status with: SalePrice, Volume, Sale...
             Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
 
             int pumpQuantity = Convert.ToInt32(data["PUMPS"]);
