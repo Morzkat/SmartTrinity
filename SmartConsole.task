@@ -24,7 +24,8 @@ DONE:
     * Get pump status from the windows service. Status:
         - CLOSE
         - OPEN
-        - OTHERS
+        - IDLE
+        - ERROR
     * Use price level 1 by default when others price levels are 0
     * Check if the price level and the sale price are corrects.
 }
@@ -43,7 +44,12 @@ TODO:
     * Check connection status and reconnect if is necessary.
         - Make a request for check status. -> DOING.
         - If exception happens do action dependendy of the exception: -> DOING.
-            --        
+            --   
+    * Set pump service mode 
+        - FULL_SERVICE
+        - SELF_SERVICE
+    * Send command for tell the pump how much money can dispense.
+    * 
 }
 
 TOFIX: 
