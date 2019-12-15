@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SmartTrinityApi.Core.Entities.Models;
 
-namespace SmartTrinityApi.Core.Interfaces.IRepository
+namespace SmartTrinityApi.Core.Interfaces.Repository
 {
     public interface IRepository
     {
