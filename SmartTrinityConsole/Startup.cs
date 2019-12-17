@@ -12,6 +12,9 @@ using SmartTrinityApi.Services.Process;
 using SmartTrinityConsole.Services.Process;
 using SmartTrinityApi.AppConfig;
 using Chroniton;
+using SmartTrinityApi.Core.Interfaces.UnitOfWork;
+using SmartTrinityConsole.Infrastructure.Database.UnitOfWork;
+using SmartTrinityConsole.Infrastructure.Database.Config;
 
 namespace SmartTrinityApi
 {
@@ -52,6 +55,12 @@ namespace SmartTrinityApi
 
             // Task
             services.AddHostedService<ApplicationStartup>();
+
+            // UnitOfWork and Repositories
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            // Dapper configuration
+            DapperConfigurations.ConfigureDapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

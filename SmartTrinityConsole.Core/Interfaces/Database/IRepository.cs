@@ -1,14 +1,30 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using SmartTrinityApi.Core.Entities.Models;
 
 namespace SmartTrinityApi.Core.Interfaces.Repository
 {
-    public interface IRepository
+    public interface IRepository<TEntity> where TEntity : class
     {
-        T GetById<T>(int id) where T : BaseEntity;
-        List<T> List<T>() where T : BaseEntity;
-        T Add<T>(T entity) where T : BaseEntity;
-        void Update<T>(T entity) where T : BaseEntity;
-        void Delete<T>(T entity) where T : BaseEntity;
+        TEntity Get(int id);
+
+        IEnumerable<TEntity> GetAll();
+
+        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+
+        TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
+
+        void Add(TEntity entity);
+
+        void AddRange(IEnumerable<TEntity> entities);
+
+        void Remove(TEntity entity);
+
+        void RemoveRange(IEnumerable<TEntity> entities);
+
+        void Update(TEntity entity);
+
+        void UpdateRange(IEnumerable<TEntity> entities);
     }
 }

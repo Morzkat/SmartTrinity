@@ -1,11 +1,13 @@
 using System;
-using System.Collections.Generic;
-using SmartTrinityApi.Core.Entities.Models;
+using SmartTrinityApi.Core.Interfaces.Repository.Repositories;
 
 namespace SmartTrinityApi.Core.Interfaces.UnitOfWork
 {
-    public interface IUnitOfWork: IDisposable
+    public interface IUnitOfWork : IDisposable
     {
+        IConfigValuesRepository ConfigValuesRepository { get; }
+        IGenericConfigValuesRepository GenericConfigValuesRepository { get; }
+        
         int Commit();
     }
 }
