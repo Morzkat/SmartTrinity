@@ -12,7 +12,6 @@ namespace SmartTrinityConsole.Infrastructure.Database.UnitOfWork
 
         public UnitOfWork() 
         {
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             //HACK: Use DI for inject repositories.
             ConfigValuesRepository = new ConfigValuesRepository();
         }
