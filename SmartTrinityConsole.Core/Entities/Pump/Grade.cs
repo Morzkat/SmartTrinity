@@ -7,6 +7,14 @@ namespace SmartTrinityConsole.Core.Entities.Pump
     {
         private string _rgb;
 
+        public int Id { get; set; }
+        public int Red { get; set; }
+        public int Blue { get; set; }
+        public int Green { get; set; }
+        public string RGB { get { return _rgb; } set { SetRGBColor(value); } }
+        public string Description { get; set; }
+        public List<GradePrice> Prices { get; set; }
+
         public Grade()
         {
             Id = 0;
@@ -16,17 +24,6 @@ namespace SmartTrinityConsole.Core.Entities.Pump
             Description = "";
             Prices = new List<GradePrice>();
         }
-        public int Id { get; set; }
-        public int Red { get; set; }
-        public int Blue { get; set; }
-        public int Green { get; set; }
-        public string RGB
-        {
-            get { return _rgb; }
-            set { SetRGBColor(value); }
-        }
-        public string Description { get; set; }
-        public List<GradePrice> Prices { get; set; }
 
         private void SetRGBColor(string rgb)
         {

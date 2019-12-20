@@ -1,82 +1,83 @@
 using System;
-using Npgsql;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using SmartTrinityApi.Core.Entities.Models;
 using SmartTrinityApi.Core.Interfaces.Repository;
-using System.Data;
+using Dapper.Contrib;
 using Dapper;
+using Dapper.Contrib.Extensions;
+using System.Data;
 
 namespace SmartTrinityConsole.Infrastructure.Database.Repositories
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
-        protected virtual string tableName { get; set; }
+        protected dynamic _dbSet;
+        protected dynamic _transaction;
         protected virtual string tableId { get; set; }
+        protected virtual string tableName { get; set; }
 
-        protected IDbConnection Connection { get { return new NpgsqlConnection("server=localhost;User ID=postgres;password=ssfpostgres;database=smartshipdb;CommandTimeout=30;Timeout=1000;"); } }
-        public void Add(TEntity entity)
+        public Repository(dynamic dbSet, dynamic transaction)
+        {
+            _dbSet = dbSet;
+            _transaction = transaction;
+        }
+
+        public virtual void Add(TEntity entity)
+        {
+            SqlMapperExtensions.Insert((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
+        }
+
+        public virtual void AddRange(IEnumerable<TEntity> entities)
+        {
+            SqlMapperExtensions.Insert((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
+        }
+
+        public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public void AddRange(IEnumerable<TEntity> entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEntity Get(int id)
+        public virtual TEntity Get(int id)
         {
             TEntity entity = null;
-            using (IDbConnection dbConnection = Connection)
-            {
-                dbConnection.Open();
-                // dbConnection.Insert(null);
-                entity = dbConnection.QueryFirstOrDefault<TEntity>($"SELECT * FROM {tableName} WHERE {tableId} = @Id", new { Id = id });
-            }
+            entity = SqlMapperExtensions.Get<TEntity>((IDbConnection)_dbSet, id, (IDbTransaction)_transaction);
             return entity;
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public virtual IEnumerable<TEntity> GetAll()
         {
-            List<TEntity> entities = new List<TEntity>();
+            IEnumerable<TEntity> entities = new List<TEntity>();
 
-            using (IDbConnection dbConnection = Connection)
-            {
-                dbConnection.Open();
-                entities = dbConnection.Query<TEntity>($"SELECT * FROM {tableName}").AsList();
-            }
 
+            entities = SqlMapperExtensions.GetAll<TEntity>((IDbConnection)_dbSet, (IDbTransaction)_transaction);
             return entities;
         }
 
-        public void Remove(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
+            SqlMapperExtensions.Delete((IDbConnection)_dbSet, new { tableId = entity.Id }, (IDbTransaction)_transaction);
+        }
+
+        public virtual void RemoveRange(IEnumerable<TEntity> entities)
+        {
+            SqlMapperExtensions.Delete((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
+        }
+
+        public virtual TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        {
+            // SqlMapperExtensions.Delete(entities);
             throw new NotImplementedException();
         }
 
-        public void RemoveRange(IEnumerable<TEntity> entities)
+        public virtual void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            SqlMapperExtensions.Update((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
         }
 
-        public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        public virtual void UpdateRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Update(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateRange(IEnumerable<TEntity> entities)
-        {
-            throw new NotImplementedException();
+            SqlMapperExtensions.Update((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
         }
     }
 }
