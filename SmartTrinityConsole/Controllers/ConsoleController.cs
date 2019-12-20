@@ -13,11 +13,9 @@ namespace SmartTrinityApi.Controllers
     {
         // IMainService _mainService;
         ILogger<ConsoleController> _logger;
-        IUnitOfWork _unitOfWork;
-        public ConsoleController(ILogger<ConsoleController> logger, IUnitOfWork unitOfWork)
+        public ConsoleController(ILogger<ConsoleController> logger)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
         }
 
         /*
@@ -28,12 +26,7 @@ namespace SmartTrinityApi.Controllers
             return "OK";
         }
         */
-        [HttpGet("Test")]
-        public ActionResult<IList<IList<Sale>>> Test()
-        {
-            var p = _unitOfWork.ConfigValuesRepository.Get(2);
-            return new List<IList<Sale>>();
-        }
+        
     }
 }
 

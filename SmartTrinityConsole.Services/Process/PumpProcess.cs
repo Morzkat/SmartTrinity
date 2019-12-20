@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Common;
-using SmartTrinityApi.Core.Entities.Pump;
 using SmartTrinityApi.Core.Interfaces.Process;
+using SmartTrinityConsole.Core.Entities.Pump;
 using SmartTrinityConsole.Infrastructure.Persistence;
 using SmartTrinityConsole.Interfaces.Communication;
 
@@ -37,6 +37,7 @@ namespace SmartTrinityApi.Services.Process
 
         }
 
+        // TODO: Use service for call this logic.
         public void ExecutePumpAction(PumpAction pumpAction)
         {
             if (!SmartUserPersistence.UserIsLogged)

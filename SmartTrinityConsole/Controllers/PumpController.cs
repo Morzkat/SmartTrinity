@@ -13,14 +13,12 @@ namespace SmartTrinityApi.Controllers
     [ApiController]
     public class PumpsController : ControllerBase
     {
-        IUnitOfWork _unitOfWork;
         IPumpService _pumpService;
         ILogger<PumpsController> _logger;
 
-        public PumpsController(ILogger<PumpsController> logger, IPumpService pumpService, IUnitOfWork unitOfWork)
+        public PumpsController(ILogger<PumpsController> logger, IPumpService pumpService)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
             _pumpService = pumpService;
         }
 
@@ -49,12 +47,6 @@ namespace SmartTrinityApi.Controllers
         {
             _pumpService.SendPresent(presetConfig);
             return "";
-        }
-
-        [HttpGet("Test")]
-        public ActionResult<List<ConfigValues>> Test()
-        {
-            return _unitOfWork.ConfigValuesRepository.GetAll().ToList();
         }
     }
 }
