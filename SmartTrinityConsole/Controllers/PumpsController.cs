@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using SmartTrinityApi.Core.Interfaces.Services;
-using SmartTrinityApi.Core.Interfaces.UnitOfWork;
-using SmartTrinityConsole.Core.Entities.Database.Configs;
-using SmartTrinityConsole.Core.Entities.Pump;
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.Logging;
+using SmartTrinityConsole.Core.Entities.Pump;
+using SmartTrinityApi.Core.Interfaces.Services;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -35,14 +32,14 @@ namespace SmartTrinityApi.Controllers
             return _pumpService.GetPumpsAndServicesModes();
         }
 
-        [HttpPost("UpdatePumpServiceMode")]
+        [HttpPut("ServiceMode")]
         public ActionResult<string> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
             _pumpService.UpdatePumpServiceMode(pumpServiceMode);
             return "";
         }
 
-        [HttpPost("SendPresetToPump")]
+        [HttpPost("PresetToPump")]
         public ActionResult<string> SendPresetToPump(PresetConfig presetConfig)
         {
             _pumpService.SendPresent(presetConfig);

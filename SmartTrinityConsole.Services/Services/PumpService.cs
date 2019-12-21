@@ -14,16 +14,18 @@ namespace SmartTrinityConsole.Services
     public class PumpService : IPumpService
     {
         IUnitOfWork _unitOfWork;
+        IUserService _userService;
         IPumpProcess _pumpProcess;
         ILogger<PumpService> _logger;
         IServiceProcess _serviceProcess;
         ICommunicationManager _messageManager;
 
-        public PumpService(ILogger<PumpService> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess, IUnitOfWork unitOfWork, IPumpProcess pumpProcess)
+        public PumpService(ILogger<PumpService> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess, IUnitOfWork unitOfWork, IPumpProcess pumpProcess, IUserService userService)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _pumpProcess = pumpProcess;
+            _userService = userService;
             _serviceProcess = serviceProcess;
             _messageManager = messageManager;
         }
@@ -74,11 +76,6 @@ namespace SmartTrinityConsole.Services
         {
             return _unitOfWork.ConfigValuesRepository.GetPumpsAndServicesModes().ToList();
         }
-        /**
-            type = MONEY
-            type = VOLUME
-        **/
-
 
         public void SendPresent(PresetConfig presetConfig)
         {
@@ -102,8 +99,12 @@ namespace SmartTrinityConsole.Services
                         grades += $",{grade.Id}";
                 }
 
-                data += $"|GR={grades}|";
+                data += $"|GR={grades}";
             }
+
+            data += "|";
+
+            _userService.LogInUser();
             _messageManager.SendMsg("POST", eventType, data);
         }
     }

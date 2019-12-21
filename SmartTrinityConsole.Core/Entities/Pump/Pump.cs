@@ -20,6 +20,10 @@ namespace SmartTrinityConsole.Core.Entities.Pump
         public string ServiceMode { get; set; }
     }
 
+    /**
+        type 1 = MONEY
+        type 2 = VOLUME
+    **/
     public class PresetConfig
     {
         public int Type { get; set; }
