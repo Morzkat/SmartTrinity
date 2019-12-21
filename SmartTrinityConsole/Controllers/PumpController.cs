@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SmartTrinityApi.Core.Entities.Pump;
-using SmartTrinityApi.Core.Interfaces.Process;
 using SmartTrinityApi.Core.Interfaces.Services;
-using System;
+using SmartTrinityApi.Core.Interfaces.UnitOfWork;
+using SmartTrinityConsole.Core.Entities.Database.Configs;
+using SmartTrinityConsole.Core.Entities.Pump;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -14,27 +13,40 @@ namespace SmartTrinityApi.Controllers
     [ApiController]
     public class PumpsController : ControllerBase
     {
-        // IMainService _pumpProcess;
-        IPumpProcess _pumpProcess;
+        IPumpService _pumpService;
         ILogger<PumpsController> _logger;
 
-        public PumpsController(ILogger<PumpsController> logger, IPumpProcess pumpProcess)
+        public PumpsController(ILogger<PumpsController> logger, IPumpService pumpService)
         {
             _logger = logger;
-            _pumpProcess = pumpProcess;
+            _pumpService = pumpService;
         }
 
         [HttpPost("Action")]
         public ActionResult<string> ExecutePumpAction([FromBody] PumpAction pumpAction)
         {
-            _pumpProcess.ExecutePumpAction(pumpAction);
+            _pumpService.ExecutePumpAction(pumpAction);
             return "OK";
         }
 
-        [HttpGet("Test")]
-        public ActionResult<string> Test()
+        [HttpGet("ServicesModes")]
+        public ActionResult<List<PumpServiceMode>> GetPumpsAndServicesModes()
         {
-            return "Ok";
+            return _pumpService.GetPumpsAndServicesModes();
+        }
+
+        [HttpPost("UpdatePumpServiceMode")]
+        public ActionResult<string> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
+        {
+            _pumpService.UpdatePumpServiceMode(pumpServiceMode);
+            return "";
+        }
+
+        [HttpPost("SendPresetToPump")]
+        public ActionResult<string> SendPresetToPump(PresetConfig presetConfig)
+        {
+            _pumpService.SendPresent(presetConfig);
+            return "";
         }
     }
 }

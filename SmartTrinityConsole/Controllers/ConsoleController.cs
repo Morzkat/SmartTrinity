@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Core.Interfaces.Services;
 using System.Collections.Generic;
 using SmartTrinityConsole.Core.Entities.Sale;
+using SmartTrinityApi.Core.Interfaces.UnitOfWork;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -12,7 +13,6 @@ namespace SmartTrinityApi.Controllers
     {
         // IMainService _mainService;
         ILogger<ConsoleController> _logger;
-
         public ConsoleController(ILogger<ConsoleController> logger)
         {
             _logger = logger;
@@ -26,11 +26,7 @@ namespace SmartTrinityApi.Controllers
             return "OK";
         }
         */
-        [HttpGet("Test")]
-        public ActionResult<IList<IList<Sale>>> Test()
-        {
-            return new List<IList<Sale>>();
-        }
+        
     }
 }
 
