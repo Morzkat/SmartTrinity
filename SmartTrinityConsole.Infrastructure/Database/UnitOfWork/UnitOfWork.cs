@@ -8,14 +8,16 @@ namespace SmartTrinityConsole.Infrastructure.Database.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IConfigValuesRepository ConfigValuesRepository { get; private set; }
-        public IGenericConfigValuesRepository GenericConfigValuesRepository { get; private set; }
-
 
         IDbConnection _connection = null;
         IDbTransaction _transaction = null;
         dynamic IUnitOfWork.Connection { get { return _connection; } }
         dynamic IUnitOfWork.Transaction { get { return _transaction; } }
+        int TransactionResult = 0;
+
+        // Repositories
+        public IConfigValuesRepository ConfigValuesRepository { get; private set; }
+        public IGenericConfigValuesRepository GenericConfigValuesRepository { get; private set; }
 
         public UnitOfWork()
         {
@@ -27,9 +29,13 @@ namespace SmartTrinityConsole.Infrastructure.Database.UnitOfWork
 
         public int Commit()
         {
+            //HACK: Improve this logic.
+            int temp = TransactionResult;
+            TransactionResult = 0;
+            
             _transaction.Commit();
             _connection.Close();
-            return 0;
+            return temp;
         }
 
         public void Begin()
@@ -48,7 +54,7 @@ namespace SmartTrinityConsole.Infrastructure.Database.UnitOfWork
         {
             if (_transaction != null)
                 _transaction.Dispose();
-                
+
             _transaction = null;
         }
     }

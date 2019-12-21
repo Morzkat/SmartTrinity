@@ -23,14 +23,14 @@ namespace SmartTrinityConsole.Infrastructure.Database.Repositories
             _transaction = transaction;
         }
 
-        public virtual void Add(TEntity entity)
+        public virtual int Add(TEntity entity)
         {
-            SqlMapperExtensions.Insert((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
+            return (int)SqlMapperExtensions.Insert((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
         }
 
-        public virtual void AddRange(IEnumerable<TEntity> entities)
+        public virtual int AddRange(IEnumerable<TEntity> entities)
         {
-            SqlMapperExtensions.Insert((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
+            return (int)SqlMapperExtensions.Insert((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
         }
 
         public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
@@ -54,14 +54,14 @@ namespace SmartTrinityConsole.Infrastructure.Database.Repositories
             return entities;
         }
 
-        public virtual void Remove(TEntity entity)
+        public virtual bool Remove(TEntity entity)
         {
-            SqlMapperExtensions.Delete((IDbConnection)_dbSet, new { tableId = entity.Id }, (IDbTransaction)_transaction);
+            return SqlMapperExtensions.Delete((IDbConnection)_dbSet, new { tableId = entity.Id }, (IDbTransaction)_transaction);
         }
 
-        public virtual void RemoveRange(IEnumerable<TEntity> entities)
+        public virtual bool RemoveRange(IEnumerable<TEntity> entities)
         {
-            SqlMapperExtensions.Delete((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
+            return SqlMapperExtensions.Delete((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
         }
 
         public virtual TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
@@ -70,14 +70,14 @@ namespace SmartTrinityConsole.Infrastructure.Database.Repositories
             throw new NotImplementedException();
         }
 
-        public virtual void Update(TEntity entity)
+        public virtual bool Update(TEntity entity)
         {
-            SqlMapperExtensions.Update((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
+            return SqlMapperExtensions.Update((IDbConnection)_dbSet, entity, (IDbTransaction)_transaction);
         }
 
-        public virtual void UpdateRange(IEnumerable<TEntity> entities)
+        public virtual bool UpdateRange(IEnumerable<TEntity> entities)
         {
-            SqlMapperExtensions.Update((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
+            return SqlMapperExtensions.Update((IDbConnection)_dbSet, entities, (IDbTransaction)_transaction);
         }
     }
 }

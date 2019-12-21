@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using SmartTrinityConsole.Core.Entities.Pump;
 using SmartTrinityApi.Core.Interfaces.Services;
+using SmartTrinityConsole.Core.ServerResponse;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -20,30 +21,27 @@ namespace SmartTrinityApi.Controllers
         }
 
         [HttpPost("Action")]
-        public ActionResult<string> ExecutePumpAction([FromBody] PumpAction pumpAction)
+        public ActionResult<Response> ExecutePumpAction([FromBody] PumpAction pumpAction)
         {
-            _pumpService.ExecutePumpAction(pumpAction);
-            return "OK";
+            return _pumpService.ExecutePumpAction(pumpAction);
         }
 
         [HttpGet("ServicesModes")]
-        public ActionResult<List<PumpServiceMode>> GetPumpsAndServicesModes()
+        public ActionResult<ResponseWithList<PumpServiceMode>> GetPumpsAndServicesModes()
         {
             return _pumpService.GetPumpsAndServicesModes();
         }
 
-        [HttpPut("ServiceMode")]
-        public ActionResult<string> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
+        [HttpPut("ServicesModes")]
+        public ActionResult<Response> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
-            _pumpService.UpdatePumpServiceMode(pumpServiceMode);
-            return "";
+            return _pumpService.UpdatePumpServiceMode(pumpServiceMode);
         }
 
-        [HttpPost("PresetToPump")]
-        public ActionResult<string> SendPresetToPump(PresetConfig presetConfig)
+        [HttpPost("Send/Preset")]
+        public ActionResult<Response> SendPresetToPump(PresetConfig presetConfig)
         {
-            _pumpService.SendPresent(presetConfig);
-            return "";
+            return _pumpService.SendPresent(presetConfig);
         }
     }
 }

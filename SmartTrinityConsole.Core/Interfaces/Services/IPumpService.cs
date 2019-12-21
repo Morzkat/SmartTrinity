@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartTrinityConsole.Core.Entities.Pump;
+using SmartTrinityConsole.Core.ServerResponse;
 
 namespace SmartTrinityApi.Core.Interfaces.Services
 {
     public interface IPumpService
     {
         void PumpsBaseConfig();
-        void SendPresent(PresetConfig presetConfig);
-        void ExecutePumpAction(PumpAction pumpAction);
-        List<PumpServiceMode> GetPumpsAndServicesModes();
-        void UpdatePumpServiceMode(PumpServiceMode pumpServiceMode);
+        Response SendPresent(PresetConfig presetConfig);
+        Response ExecutePumpAction(PumpAction pumpAction);
+        ResponseWithList<PumpServiceMode> GetPumpsAndServicesModes();
+        Response UpdatePumpServiceMode(PumpServiceMode pumpServiceMode);
     }
 }
