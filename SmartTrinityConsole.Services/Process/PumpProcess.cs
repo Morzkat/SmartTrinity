@@ -9,12 +9,14 @@ namespace SmartTrinityApi.Services.Process
 {
     public class PumpProcess : IPumpProcess
     {
+        IUserService _userService;
         ILogger<PumpProcess> _logger;
         ICommunicationManager _messageManager;
 
-        public PumpProcess(ILogger<PumpProcess> logger, ICommunicationManager messageManager)
+        public PumpProcess(ILogger<PumpProcess> logger, ICommunicationManager messageManager, IUserService userService)
         {
             _logger = logger;
+            _userService = userService;
             _messageManager = messageManager;
         }
 
@@ -40,15 +42,8 @@ namespace SmartTrinityApi.Services.Process
         // TODO: Use service for call this logic.
         public void ExecutePumpAction(PumpAction pumpAction)
         {
-            if (!SmartUserPersistence.UserIsLogged)
-            {
-                string dataForLogin = SmartUserPersistence.PrepareDataForLogin();
-                _messageManager.SendMsg("POST", "REQ_SECU_LOGIN", dataForLogin);
-                SmartUserPersistence.UserIsLogged = true;
-            }
-
-            this._messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
-
+            _userService.LogInUser();
+            this._messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
         }
     }
 }

@@ -15,16 +15,16 @@ namespace SmartTrinityApi.Core.Interfaces.Repository
 
         TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
 
-        void Add(TEntity entity);
+        int Add(TEntity entity);
 
-        void AddRange(IEnumerable<TEntity> entities);
+        int AddRange(IEnumerable<TEntity> entities);
 
-        void Remove(TEntity entity);
+        bool Remove(TEntity entity);
 
-        void RemoveRange(IEnumerable<TEntity> entities);
+        bool RemoveRange(IEnumerable<TEntity> entities);
 
-        void Update(TEntity entity);
+        bool Update(TEntity entity);
 
-        void UpdateRange(IEnumerable<TEntity> entities);
+        bool UpdateRange(IEnumerable<TEntity> entities);
     }
 }

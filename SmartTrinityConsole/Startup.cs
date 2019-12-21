@@ -52,12 +52,15 @@ namespace SmartTrinityApi
             services.AddSingleton<ICommunicationManager, MessageManager>();
             
             services.AddSingleton<ISingularity, Singularity>(serviceProvider => Singularity.Instance);
+            
+            services.AddTransient<IUserService, UserService>();
 
             // Task
             services.AddHostedService<ApplicationStartup>();
 
             // UnitOfWork and Repositories
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
 
             // Dapper configuration
             DapperConfigurations.ConfigureDapper();

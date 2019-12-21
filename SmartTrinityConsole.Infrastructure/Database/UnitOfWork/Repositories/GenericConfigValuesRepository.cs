@@ -25,18 +25,20 @@ namespace SmartTrinityConsole.Infrastructure.Database.Repositories
             return entity;
         }
 
-        public override void Update(GenericConfigValues entity)
+        public override bool Update(GenericConfigValues entity)
         {
             //TODO: Use database transactions for manage table transactions.
             //HACK: Use reflection for get no null properties and add them to the parameters.
-            SqlMapper.Execute((IDbConnection)_dbSet, $"UPDATE ssf_generic_config_values SET parameter = @parameter, param_value = @paramValue WHERE {tableId} = @id", entity, (IDbTransaction)_transaction);
+            int result = SqlMapper.Execute((IDbConnection)_dbSet, $"UPDATE ssf_generic_config_values SET parameter = @parameter, param_value = @paramValue WHERE {tableId} = @id", entity, (IDbTransaction)_transaction);
+
+            return result > 0 ? true : false;
         }
 
-        public void UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
+        public bool UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
             GenericConfigValues configValues = Get(pumpServiceMode.Id);
             configValues.ParamValue = pumpServiceMode.ServiceMode;
-            Update(configValues);
+            return Update(configValues);
         }
     }
 }
