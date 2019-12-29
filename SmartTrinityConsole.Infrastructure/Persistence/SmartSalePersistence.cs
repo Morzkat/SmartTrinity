@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityConsole.Infrastructure.Persistence
@@ -20,6 +21,11 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
         public static IList<IList<Sale>> GetSales()
         {
             return _sales;
+        }
+
+           public static IList<Sale> GetSalesByPump(int pumpNo)
+        {
+            return _sales[pumpNo];
         }
 
         public static void RemovePersistence()
