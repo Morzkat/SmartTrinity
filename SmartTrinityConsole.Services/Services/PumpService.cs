@@ -11,6 +11,8 @@ using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Core.ServerResponse;
 using SmartTrinityApi.Core.ServerResponse.Helpers;
 using System;
+using SmartTrinityConsole.Core.Entities.Sale;
+using SmartTrinityConsole.Infrastructure.Persistence;
 
 namespace SmartTrinityConsole.Services
 {
@@ -79,13 +81,13 @@ namespace SmartTrinityConsole.Services
                 {
                     _unitOfWork.Rollback();
                     _logger.LogError($"Error in the transaction, check database transaction for more details.");
-                    return ResponseHelper.NewResponse("Error intentado cambiar el modo de servicio del lado", "Error in the transaction, check database transaction.", true);
+                    return ResponseHelper.NewResponse("Error cambiando el modo de servicio del lado", "Error in the transaction, check database transaction.", true);
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error updating pump service mode: {e.Message}");
-                return ResponseHelper.NewResponse($"Error intentado cambiar el modo de servicio del lado.", $"ERROR: {e.Message}");
+                return ResponseHelper.NewResponse($"Error cambiando el modo de servicio del lado.", $"ERROR: {e.Message}");
             }
         }
 
@@ -99,7 +101,7 @@ namespace SmartTrinityConsole.Services
             catch (Exception e)
             {
                 _logger.LogError($"Error executing pump action: {e.Message}");
-                return ResponseHelper.NewResponse("Error intentado ejecutar accion sobre el lado.", $"ERROR executing pump action: {e.Message}");
+                return ResponseHelper.NewResponse($"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.Pump}.", $"ERROR executing pump action: {e.Message}");
             }
         }
 
@@ -113,7 +115,21 @@ namespace SmartTrinityConsole.Services
             catch (Exception e)
             {
                 _logger.LogError($"Error getting pump services modes: {e.Message}");
-                return ResponseHelper.NewResponseList<PumpServiceMode>(null, "Error intentando obtener la lista de 'ServicesModes'.", $"ERROR getting pump services modes: {e.Message}");
+                return ResponseHelper.NewResponseList<PumpServiceMode>(null, "Error obteniendo la lista de 'ServicesModes'.", $"ERROR getting pump services modes: {e.Message}");
+            }
+        }
+
+        public ResponseWithList<Sale> GetSales(int pumpNo)
+        {
+            try
+            {
+                IEnumerable<Sale> list = SmartSalePersistence.GetSalesByPump(pumpNo);
+                return ResponseHelper.NewResponseList<Sale>(list, $"Ventas del lado {pumpNo} obtenidas", success: true);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error getting pumpNo {pumpNo} sales: {e.Message}");
+                return ResponseHelper.NewResponseList<Sale>(null, $"Error obteniendo las ventas del lado {pumpNo}.", $"ERROR: getting pump {pumpNo} sales: {e.Message}");
             }
         }
 
@@ -154,8 +170,8 @@ namespace SmartTrinityConsole.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"ERROR trying send 'Preset' to pump: {e.Message}");
-                return ResponseHelper.NewResponse("Error intentando enviar el 'Preset' al lado.", $"ERROR trying send 'Preset' to pump: {e.Message}");
+                _logger.LogError($"ERROR sending 'Preset' to pump {presetConfig.PumpNo}: {e.Message}");
+                return ResponseHelper.NewResponse($"Error enviando el 'Preset' al lado {presetConfig.PumpNo}.", $"ERROR sending 'Preset' to pump: {e.Message}");
             }
         }
     }

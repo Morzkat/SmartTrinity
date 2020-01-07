@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SmartTrinityConsole.Core.Entities.Pump;
 using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Core.ServerResponse;
+using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -30,6 +31,13 @@ namespace SmartTrinityApi.Controllers
         public ActionResult<ResponseWithList<PumpServiceMode>> GetPumpsAndServicesModes()
         {
             return _pumpService.GetPumpsAndServicesModes();
+        }
+
+        //TODO: Create logic for get last sales from the controller.
+        [HttpGet("{pumpNo}/Sales")]
+        public ActionResult<ResponseWithList<Sale>> GetSales(int pumpNo)
+        {
+            return _pumpService.GetSales(pumpNo);
         }
 
         [HttpPut("ServicesModes")]
