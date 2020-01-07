@@ -110,7 +110,7 @@ namespace SmartTrinityConsole.Services
             try
             {
                 IEnumerable<PumpServiceMode> list = _unitOfWork.ConfigValuesRepository.GetPumpsAndServicesModes().ToList();
-                return ResponseHelper.NewResponseList<PumpServiceMode>(list, "Accion ejecutada sobre el lado.", success: true);
+                return ResponseHelper.NewResponseList<PumpServiceMode>(list, "Modos de servicios obtenidos.", success: true);
             }
             catch (Exception e)
             {
