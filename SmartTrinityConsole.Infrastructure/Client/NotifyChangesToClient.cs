@@ -7,9 +7,9 @@ using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR
 {
-      public class NotifyChangesToClient : INotifyClient<Pump>
+      public class NotifyPumpChangesToClient : INotifyClient<Pump>
       {
-            public string EndPoint { get; private set; } = "StatusChange";
+            public string EndPoint { get; private set; } = "PumpStatusChange";
 
             private Dictionary<string, string> _data;
 
@@ -24,11 +24,11 @@ namespace SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR
                   };
             }
 
-            public NotifyChangesToClient()
+            public NotifyPumpChangesToClient()
             {
             }
 
-            public NotifyChangesToClient(Dictionary<string, string> data)
+            public NotifyPumpChangesToClient(Dictionary<string, string> data)
             {
                   _data = data;
             }
@@ -39,17 +39,24 @@ namespace SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR
             public string EndPoint { get; private set; } = "PumpDeliveryProgress";
 
             private Dictionary<string, string> _data;
+            double volume = 0, salePrice = 0, saleProgress = 0;
+            int pumpNo = 0;
 
             //TODO: Refactor namespace
             public Pump GetClientData()
             {
+                  double.TryParse(_data["VO"], out volume);
+                  int.TryParse(_data["pump"], out pumpNo);
+                  double.TryParse(_data["PU"], out salePrice);
+                  double.TryParse(_data["AM"], out saleProgress);
+
                   return new Pump
                   {
                         Status = "FUELLING",
-                        Volume = Convert.ToDouble(_data["VO"]),
-                        PumpNo = Convert.ToInt32(_data["pump"]),
-                        SalePrice = Convert.ToDouble(_data["PU"]),
-                        SaleProgress = Convert.ToDouble(_data["AM"]),
+                        Volume = volume,
+                        PumpNo = pumpNo,
+                        SalePrice = salePrice,
+                        SaleProgress = saleProgress,
                         Grade = SmartPumpPersistence.GetPump(Convert.ToInt32(_data["pump"])).Grade
                   };
             }
