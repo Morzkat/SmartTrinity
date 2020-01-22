@@ -9,10 +9,10 @@ using SmartTrinityApi.Infrastructure.Hubs;
 using SmartTrinityConsole.Core.Entities.Pump;
 using SmartTrinityConsole.Core.Entities.Sale;
 using SmartTrinityApi.Core.Interfaces.Process;
+using SmartTrinityConsole.Core.Entities.Client;
 using SmartTrinityConsole.Interfaces.Communication;
 using SmartTrinityConsole.Infrastructure.Persistence;
 using SmartTrinityConsole.Common.ExtensionMethods.String;
-using SmartTrinityConsole.Core.Entities.Client;
 using SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR;
 
 namespace SmartTrinityConsole.Services.Process
