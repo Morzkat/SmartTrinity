@@ -32,7 +32,8 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
                 Status = "IDLE",
                 Volume = 0.0,
                 SalePrice = 0.0,
-                SaleProgress = 0.0
+                SaleProgress = 0.0,
+                Hoses = new List<Hose>()
             });
         }
 

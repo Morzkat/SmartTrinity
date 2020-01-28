@@ -11,9 +11,10 @@ public class Pump
     public string Status { get; set; }
     public double Volume { get; set; }
     public int PriceLevel { get; set; }
-    public bool IsAuthored { get { return _isAuthored; } }
     public double SalePrice { get; set; }
+    public IList<Hose> Hoses { get; set; }
     public double SaleProgress { get; set; }
+    public bool IsAuthored { get { return _isAuthored; } }
 
     public void SetAthoredStatus(string status)
     {
@@ -23,6 +24,14 @@ public class Pump
         else if (status == "DEAUTH")
             _isAuthored = false;
     }
+}
+
+public class Hose 
+{
+    public int HoseId { get; set; }
+    public double TotalizerMoney { get; set; }
+    public double TotalizerVolume { get; set; }
+    public IList<Grade> Grades { get; set; }
 }
 
 public class PumpServiceMode

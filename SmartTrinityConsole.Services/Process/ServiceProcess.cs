@@ -224,24 +224,42 @@ namespace SmartTrinityConsole.Services.Process
                             int priceLevel;
                             int.TryParse(data[key], out priceLevel);
                             pump.PriceLevel = priceLevel;
+                            continue;
                     }
                     else if (key.StartsWith("H"))
                     {
-                            if (key.EndsWith("GR"))
-                            {
-                                int hoseId, gradeId;
-                                int.TryParse(key.Substring(1, 1), out hoseId);
-                                int.TryParse($"{data[$"H{hoseId}GR"]}", out gradeId);
+                        if (key.Equals("HOSES"))
+                        {
+                            int.TryParse(data[key], out int hoseId);
+                            SmartHosePersistence.AddHose(hoseId);
+                            continue;
+                        }
+                        if (key.EndsWith("GR"))
+                        {
+                            int.TryParse(key.Substring(1, 1), out int hoseId);
+                            double.TryParse(data["H" + hoseId + "MT"], out double totalizerMoney);
+                            double.TryParse(data["H" + hoseId + "VT"], out double totalizerVolume);
+                            
+                            Hose hose = SmartHosePersistence.GetHose(hoseId);
 
-                                Grade grade = SmartGradePersistence.GetGrade(gradeId);
-                                if (grade != null)
-                                {
-                                        pump.Grade = grade;
-                                        pump.SalePrice = SmartGradePersistence.GetSalePrice(pump.PriceLevel, grade);
-                                        SmartPumpPersistence.UpdatePump(pump);
-                                        continue;
-                                }
+                            int.TryParse($"{data[$"H{hoseId}GR"]}", out int gradeId);
+                            Grade grade = SmartGradePersistence.GetGrade(gradeId);
+                            
+                            if (grade != null)
+                            {
+                                hose.Grades.Add(grade);
+                                hose.TotalizerMoney = totalizerMoney;
+                                hose.TotalizerVolume = totalizerVolume;
+                                SmartHosePersistence.UpdateHose(hose);
+
+                                pump.Grade = grade;
+                                pump.Hoses.Add(hose); 
+                                pump.SalePrice = SmartGradePersistence.GetSalePrice(pump.PriceLevel, grade);
+                                SmartPumpPersistence.UpdatePump(pump);
+                                
+                                continue;
                             }
+                        }
                     }
                 }
                 return new NoNotificationToClient();
