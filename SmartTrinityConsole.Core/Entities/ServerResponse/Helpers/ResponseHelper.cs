@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using SmartTrinityConsole.Core.ServerResponse;
+using SmartTrinityConsole.Core.Entities.ServerResponse;
 
-namespace SmartTrinityApi.Core.ServerResponse.Helpers
+namespace SmartTrinityApi.Core.Entities.ServerResponse.Helpers
 {
     public static class ResponseHelper
     {
@@ -34,6 +34,15 @@ namespace SmartTrinityApi.Core.ServerResponse.Helpers
                 List = elements,
                 Success = success,
                 Message = message
+            };
+        }
+
+        public static Result<T> NewResult<T> (StatusCode statusCode, T response)
+        {
+            return new Result<T> 
+            {
+                StatusCode = (int) statusCode,
+                Response = response
             };
         }
     }

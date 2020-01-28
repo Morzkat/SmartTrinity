@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using SmartTrinityConsole.Core.Entities.Pump;
 using SmartTrinityApi.Core.Interfaces.Services;
-using SmartTrinityConsole.Core.ServerResponse;
+using SmartTrinityConsole.Core.Entities.ServerResponse;
 using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityApi.Controllers
@@ -22,34 +21,38 @@ namespace SmartTrinityApi.Controllers
         }
 
         [HttpPost("Action")]
-        public ActionResult<Response> ExecutePumpAction([FromBody] PumpAction pumpAction)
+        public ActionResult<Result<Response>> ExecutePumpAction([FromBody] PumpAction pumpAction)
         {
-            return _pumpService.ExecutePumpAction(pumpAction);
+            Result<Response> result = _pumpService.ExecutePumpAction(pumpAction);
+            return StatusCode(result.StatusCode, result.Response);
         }
 
         [HttpGet("ServicesModes")]
-        public ActionResult<ResponseWithList<PumpServiceMode>> GetPumpsAndServicesModes()
+        public ActionResult<Result<ResponseWithList<PumpServiceMode>>> GetPumpsAndServicesModes()
         {
-            return _pumpService.GetPumpsAndServicesModes();
+            Result<ResponseWithList<PumpServiceMode>> result = _pumpService.GetPumpsAndServicesModes();
+            return StatusCode(result.StatusCode, result.Response);
         }
 
-        //TODO: Create logic for get last sales from the controller.
         [HttpGet("{pumpNo}/Sales")]
-        public ActionResult<ResponseWithList<Sale>> GetSales(int pumpNo)
+        public ActionResult<Result<ResponseWithList<Sale>>> GetSales(int pumpNo)
         {
-            return _pumpService.GetSales(pumpNo);
+            Result<ResponseWithList<Sale>> result = _pumpService.GetSales(pumpNo);
+            return StatusCode(result.StatusCode, result.Response); 
         }
 
         [HttpPut("ServicesModes")]
-        public ActionResult<Response> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
+        public ActionResult<Result<Response>> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
-            return _pumpService.UpdatePumpServiceMode(pumpServiceMode);
+            Result<Response> result = _pumpService.UpdatePumpServiceMode(pumpServiceMode);
+            return StatusCode(result.StatusCode, result.Response); 
         }
 
         [HttpPost("Send/Preset")]
-        public ActionResult<Response> SendPresetToPump(PresetConfig presetConfig)
+        public ActionResult<Result<Response>> SendPresetToPump(PresetConfig presetConfig)
         {
-            return _pumpService.SendPresent(presetConfig);
+            Result<Response> result = _pumpService.SendPresent(presetConfig); 
+            return StatusCode(result.StatusCode, result.Response); 
         }
     }
 }
