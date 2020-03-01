@@ -103,6 +103,10 @@ namespace SmartTrinityConsole.Services.Process
             }
         }
 
+        public INotifyClient<string> RES_FCRT_GET_GRAL_CONFIG(string msgData)
+        {
+            return new NoNotificationToClient();
+        }
         public INotifyClient<Pump> ProcessMessage_EVT_PUMP_DELIVERY_PROGRESS_ID(int pumpId, string msgData)
         {
             return new NotifyPumpDeliveryProgressToClient($"pump={pumpId}|{msgData.CleanMessageData()}".FromMsgDataToDictionary());
@@ -247,7 +251,11 @@ namespace SmartTrinityConsole.Services.Process
                             
                             if (grade != null)
                             {
-                                hose.Grades.Add(grade);
+                                bool exist = hose.Grades.Any(g => g.Description == grade.Description);
+                                
+                                if (!exist)                                
+                                    hose.Grades.Add(grade);
+    
                                 hose.TotalizerMoney = totalizerMoney;
                                 hose.TotalizerVolume = totalizerVolume;
                                 SmartHosePersistence.UpdateHose(hose);

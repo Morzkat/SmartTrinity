@@ -10,12 +10,12 @@ namespace SmartTrinityApi.Core.Interfaces.Communication
     {
         Socket _socket { get; }
         IConnectionParams _params { get; set; }
-        int _recvBufferSize { get; set; }
+        int _receiveBufferSize { get; set; }
         int _timeout { get; set; }
         int _connectionTimeout { get; set; }
         int _bytesRead { get; set; }
-        string _lastReply { get; set; }
-        char[] _lastMsg { get; set; }
+        string LastReply { get; set; }
+        char[] LastMsg { get; set; }
 
         void Connect();
 
@@ -29,7 +29,7 @@ namespace SmartTrinityApi.Core.Interfaces.Communication
 
         void Send(char[] msg);
 
-        char[] Recv();
+        char[] Receive();
 
         Stream GetInputStream();
 

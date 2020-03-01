@@ -15,7 +15,7 @@ namespace SmartTrinityConsole.Interfaces.Communication
         long TimeoutEcho { get; }
         bool LogTryConnect { get; }
         IConnectionParams ConnectionParams { get; set; }
-        // IUser GetUser();
+
 
         void Connect();
         void Disconnect();
@@ -28,5 +28,6 @@ namespace SmartTrinityConsole.Interfaces.Communication
         void Subscribe(string subscribeType);
         void StartConnection();
         bool SocketHasData();
+        string GetLastReply();
     }
 }

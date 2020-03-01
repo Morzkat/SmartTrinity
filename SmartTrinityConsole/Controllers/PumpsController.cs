@@ -34,17 +34,17 @@ namespace SmartTrinityApi.Controllers
             return StatusCode(result.StatusCode, result.Response);
         }
 
-        [HttpGet("{pumpNo}/Sales")]
-        public ActionResult<Result<ResponseWithList<Sale>>> GetSales(int pumpNo)
-        {
-            Result<ResponseWithList<Sale>> result = _pumpService.GetSales(pumpNo);
-            return StatusCode(result.StatusCode, result.Response); 
-        }
-
         [HttpPut("ServicesModes")]
         public ActionResult<Result<Response>> UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
             Result<Response> result = _pumpService.UpdatePumpServiceMode(pumpServiceMode);
+            return StatusCode(result.StatusCode, result.Response); 
+        }
+
+        [HttpGet("{pumpNo}/Sales")]
+        public ActionResult<Result<ResponseWithList<Sale>>> GetSales(int pumpNo)
+        {
+            Result<ResponseWithList<Sale>> result = _pumpService.GetSales(pumpNo);
             return StatusCode(result.StatusCode, result.Response); 
         }
 

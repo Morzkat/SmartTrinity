@@ -30,10 +30,10 @@ namespace SmartTrinityApi
                 .UseStartup<Startup>()
                 .UseIISIntegration()
                 .ConfigureLogging(logger =>
-                    {
-                        logger.ClearProviders();
-                        logger.SetMinimumLevel(LogLevel.Trace);
-                    })
+                {
+                    logger.ClearProviders();
+                    logger.SetMinimumLevel(LogLevel.Trace);
+                })
                 .UseNLog();
     }
 }

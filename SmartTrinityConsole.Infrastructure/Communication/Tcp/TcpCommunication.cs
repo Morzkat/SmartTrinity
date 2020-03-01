@@ -14,18 +14,18 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
     {
         public Socket _socket { get; private set; }
         public IConnectionParams _params { get; set; }
-        public int _recvBufferSize { get; set; }
+        public int _receiveBufferSize { get; set; }
         public int _timeout { get; set; }
         public int _connectionTimeout { get; set; }
         public int _bytesRead { get; set; }
-        public string _lastReply { get; set; }
-        public char[] _lastMsg { get; set; }
+        public string LastReply { get; set; }
+        public char[] LastMsg { get; set; }
 
         public TcpCommunication()
         {
             _params = null;
             _connectionTimeout = 5000;
-            _recvBufferSize = 65536;
+            _receiveBufferSize = 65536;
         }
 
         public void Connect()
@@ -71,11 +71,11 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             return _socket != null && _socket.Connected;
         }
 
-        public char[] Recv()
+        public char[] Receive()
         {
             int totalBytesRead = 0;
             _socket.ReceiveTimeout = 5000;
-            byte[] byteArray = new byte[_recvBufferSize];
+            byte[] byteArray = new byte[_receiveBufferSize];
             char[] charArray = new char[totalBytesRead];
 
             try
@@ -87,7 +87,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
                         if (totalBytesRead < 0)
                             totalBytesRead = 0;
 
-                        int dataLength = _socket.Receive(byteArray, totalBytesRead, _recvBufferSize - totalBytesRead, SocketFlags.None);
+                        int dataLength = _socket.Receive(byteArray, totalBytesRead, _receiveBufferSize - totalBytesRead, SocketFlags.None);
 
                         if (dataLength < 0) throw new Exception("Socket is closed...");
 
@@ -95,7 +95,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
                     }
                     catch (Exception e) { throw e; }
 
-                    if (totalBytesRead >= _recvBufferSize) break;
+                    if (totalBytesRead >= _receiveBufferSize) break;
                 }
             }
             catch (Exception e2)
@@ -105,7 +105,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
                 for (int i = 0; i < totalBytesRead; i++)
                 { charArray[i] = (char)(byteArray[i] & 0xFF); }
 
-                _lastReply = new string(charArray);
+                LastReply = new string(charArray);
 
                 throw e2;
             }
@@ -115,7 +115,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             for (int i = 0; i < totalBytesRead; i++)
             { charArray[i] = (char)(byteArray[i] & 0xFF); }
 
-            _lastReply = new string(charArray);
+            LastReply = new string(charArray);
 
             return charArray;
         }
@@ -127,7 +127,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 
         public void Send(char[] msg)
         {
-            _lastMsg = msg;
+            LastMsg = msg;
             int msgLength = msg.Length;
             byte[] msgAux = new byte[msgLength];
 

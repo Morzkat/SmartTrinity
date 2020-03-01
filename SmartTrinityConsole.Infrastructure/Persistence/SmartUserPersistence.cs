@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SmartTrinityApi.Common;
 
 namespace SmartTrinityConsole.Infrastructure.Persistence
@@ -7,6 +8,12 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
         private static readonly string _user = "1";
         private static readonly string _pw = "1";
         public static bool UserIsLogged { get; set; }
+
+        // TODO: Create dictionary with service denied responses...
+        private enum _serviceDeniedResponses 
+        {
+            DENIED,
+        };
 
         public static string PrepareDataForLogin()
         {
@@ -18,7 +25,6 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
 
             return data;
         }
-
     }
 }
 

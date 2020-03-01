@@ -19,6 +19,9 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
             catch { return null; }
         }
 
+        public static IEnumerable<Grade> GetGrades() => _grades;
+        
+
         public static void AddGrade(Grade grade)
         {
             _grades.Add(grade);

@@ -33,26 +33,27 @@ namespace SmartTrinityApi
             services.AddSignalR();
             services.AddMemoryCache();
             services.AddCors(options =>
-           {
+            {
                options.AddPolicy("CorsPolicy",
-                builder => builder.WithOrigins(Configuration.GetSection("ClientHost").Value)
+                 builder => builder.WithOrigins(Configuration.GetSection("ClientHost").Value)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
-           });
+            });
 
             //Services
             services.AddMvc();
             services.AddSingleton<IPumpService, PumpService>();
-            // services.AddSingleton<IMainService, MainService>();
+
             //Process
             services.AddTransient<IPumpProcess, PumpProcess>();
             services.AddTransient<IServiceProcess, ServiceProcess>();
+
             //ComunicationManager
             services.AddSingleton<ICommunicationManager, MessageManager>();
-            
+
             services.AddSingleton<ISingularity, Singularity>(serviceProvider => Singularity.Instance);
-            
+
             services.AddTransient<IUserService, UserService>();
 
             // Task
@@ -60,7 +61,6 @@ namespace SmartTrinityApi
 
             // UnitOfWork and Repositories
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
 
             // Dapper configuration
             DapperConfigurations.ConfigureDapper();
@@ -70,7 +70,6 @@ namespace SmartTrinityApi
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
-
 
             app.UseCors("CorsPolicy");
             app.UseRouting();

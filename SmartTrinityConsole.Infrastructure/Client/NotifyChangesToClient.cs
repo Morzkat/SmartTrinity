@@ -39,16 +39,14 @@ namespace SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR
             public string EndPoint { get; private set; } = "PumpDeliveryProgress";
 
             private Dictionary<string, string> _data;
-            double volume = 0, salePrice = 0, saleProgress = 0;
-            int pumpNo = 0;
 
             //TODO: Refactor namespace
             public Pump GetClientData()
             {
-                  double.TryParse(_data["VO"], out volume);
-                  int.TryParse(_data["pump"], out pumpNo);
-                  double.TryParse(_data["PU"], out salePrice);
-                  double.TryParse(_data["AM"], out saleProgress);
+                  double.TryParse(_data["VO"], out double volume);
+                  int.TryParse(_data["pump"], out int pumpNo);
+                  double.TryParse(_data["PU"], out double salePrice);
+                  double.TryParse(_data["AM"], out double saleProgress);
 
                   return new Pump
                   {

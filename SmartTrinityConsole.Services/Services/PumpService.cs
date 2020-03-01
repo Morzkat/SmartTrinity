@@ -176,7 +176,10 @@ namespace SmartTrinityConsole.Services
 
                 _messageManager.SendMsg("POST", eventType, data);
 
-                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("El 'Preset' fue enviado al lado.", success: true));
+                if (_userService.UserIsConnected(_messageManager.GetLastReply()))
+                    return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("El 'Preset' fue enviado al lado.", success: true));
+                    
+                return SendPresent(presetConfig);
             }
             catch (Exception e)
             {

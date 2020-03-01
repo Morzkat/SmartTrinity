@@ -23,7 +23,6 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         public bool LogTryConnect { get; private set; }
         public IConnectionParams ConnectionParams { get; set; }
 
-
         public MessageManager(ILogger<ICommunicationManager> logger)
         {
             SetMessageParametersDefaultValues();
@@ -112,17 +111,17 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         {
             try
             {
-
                 MsgType = "";
-                _client._recvBufferSize = 8;
-                string msgReceived = new string(_client.Recv());
+                _client._receiveBufferSize = 8;
+                string msgReceived = new string(_client.Receive());
                 int bufferSize;
                 int.TryParse(msgReceived.Substring(0, 5), out bufferSize);
                 char tempCrypt = msgReceived[6];
-                _client._recvBufferSize = bufferSize;
-                char[] aMsg = _client.Recv();
+                _client._receiveBufferSize = bufferSize;
+                char[] aMsg = _client.Receive();
 
                 aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
+                _client.LastReply = new string (CryptMessage(tempCrypt, _client.LastReply.ToCharArray(), bufferSize, 0));
                 string msg = new string(aMsg);
                 string Smsg = msg.Substring(0, msg.Length - 1);
 
@@ -199,6 +198,11 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
         {
             try { return _client.SocketHasData(); }
             catch { return false; }
+        }
+
+        public string GetLastReply () 
+        {
+            return _client.LastReply;    
         }
     }
 }
