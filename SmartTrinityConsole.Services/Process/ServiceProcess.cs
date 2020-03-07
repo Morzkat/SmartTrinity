@@ -144,173 +144,173 @@ namespace SmartTrinityConsole.Services.Process
 
         public INotifyClient<string> ProcessMessage_RES_FCRT_GRADES_CONFIG(string msgData)
         {
-                Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
+            Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
 
-                foreach (string key in data.Keys)
+            foreach (string key in data.Keys)
+            {
+                if (!(key.Equals("GRADES")) && key.StartsWith("G"))
                 {
-                    if (!(key.Equals("GRADES")) && key.StartsWith("G"))
+                    string strGrade = key.Substring(1, 3);
+                    string gradeNumber = $"G{strGrade}GNR";
+                    string gradeLevel = $"G{strGrade}L";
+                    int gradeId;
+                    int.TryParse(data[gradeNumber], out gradeId);
+
+                    if (gradeId != 0)
                     {
-                            string strGrade = key.Substring(1, 3);
-                            string gradeNumber = $"G{strGrade}GNR";
-                            string gradeLevel = $"G{strGrade}L";
-                            int gradeId;
-                            int.TryParse(data[gradeNumber], out gradeId);
+                        Grade grade = SmartGradePersistence.GetGrade(gradeId);
+                        if (grade == null)
+                        {
+                            grade = new Grade();
+                            grade.Id = gradeId;
+                            SmartGradePersistence.AddGrade(grade);
+                        }
 
-                            if (gradeId != 0)
+                        //HACK:Look for a better way to do this proccess.
+                        if (key.EndsWith("DES"))
+                            grade.Description = data[key];
+
+                        else if (key.EndsWith("COL"))
+                            grade.RGB = data[key];
+
+                        else if (!key.EndsWith("LVS") && key.StartsWith(gradeLevel))
+                        {
+                            grade.Prices.Add(new GradePrice
                             {
-                                Grade grade = SmartGradePersistence.GetGrade(gradeId);
-                                if (grade == null)
-                                {
-                                        grade = new Grade();
-                                        grade.Id = gradeId;
-                                        SmartGradePersistence.AddGrade(grade);
-                                }
+                                PriceLevel = Convert.ToInt32(key.Substring(gradeLevel.Length)),
+                                Price = Convert.ToDouble(data[key])
+                            });
+                        }
 
-                                //HACK:Look for a better way to do this proccess.
-                                if (key.EndsWith("DES"))
-                                        grade.Description = data[key];
-
-                                else if (key.EndsWith("COL"))
-                                        grade.RGB = data[key];
-
-                                else if (!key.EndsWith("LVS") && key.StartsWith(gradeLevel))
-                                {
-                                        grade.Prices.Add(new GradePrice
-                                        {
-                                            PriceLevel = Convert.ToInt32(key.Substring(gradeLevel.Length)),
-                                            Price = Convert.ToDouble(data[key])
-                                        });
-                                }
-
-                                SmartGradePersistence.UpdateGrade(grade);
-                            }
+                        SmartGradePersistence.UpdateGrade(grade);
                     }
                 }
-                return new NoNotificationToClient();
+            }
+            return new NoNotificationToClient();
         }
 
         public INotifyClient<IEnumerable<IEnumerable<Sale>>> ProcessMessage_RES_GET_PUMP_SALES(string msgData)
         {
-                Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
-                string result = data["RC"];
+            Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
+            string result = data["RC"];
 
-                if (result.Equals("ERROR"))
-                {
-                    _logger.LogError(data["MSG"]);
-                    return new NotifyLatestPumpSalesToClient();
-                }
-
-                int numberOfSale = Convert.ToInt32(data["QT"]);
-                int pumpId = Convert.ToInt32(data["PM"]);
-
-                List<Sale> sales = new List<Sale>();
-                for (int i = 1; i <= numberOfSale; i++)
-                    sales.Add(CreateSaleFromMsg(data, i.ToString(), pumpId));
-
-                sales = sales.OrderByDescending(s => s.SaleId).ToList();
-                SmartSalePersistence.AddSales(pumpId, sales);
-
+            if (result.Equals("ERROR"))
+            {
+                _logger.LogError(data["MSG"]);
                 return new NotifyLatestPumpSalesToClient();
+            }
+
+            int numberOfSale = Convert.ToInt32(data["QT"]);
+            int pumpId = Convert.ToInt32(data["PM"]);
+
+            List<Sale> sales = new List<Sale>();
+            for (int i = 1; i <= numberOfSale; i++)
+                sales.Add(CreateSaleFromMsg(data, i.ToString(), pumpId));
+
+            sales = sales.OrderByDescending(s => s.SaleId).ToList();
+            SmartSalePersistence.AddSales(pumpId, sales);
+
+            return new NotifyLatestPumpSalesToClient();
         }
 
         public INotifyClient<string> ProcessMessage_RES_PUMP_GET_INFO_ID(int pumpId, string msgData)
         {
-                Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
-                Pump pump = SmartPumpPersistence.GetPump(pumpId);
+            Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
+            Pump pump = SmartPumpPersistence.GetPump(pumpId);
 
-                if (pump == null)
-                    SmartPumpPersistence.AddPump(pumpId);
+            if (pump == null)
+                SmartPumpPersistence.AddPump(pumpId);
 
-                foreach (string key in data.Keys)
+            foreach (string key in data.Keys)
+            {
+                if (key.Equals("LV"))
                 {
-                    if (key.Equals("LV"))
+                    int priceLevel;
+                    int.TryParse(data[key], out priceLevel);
+                    pump.PriceLevel = priceLevel;
+                    continue;
+                }
+                else if (key.StartsWith("H"))
+                {
+                    if (key.Equals("HOSES"))
                     {
-                            int priceLevel;
-                            int.TryParse(data[key], out priceLevel);
-                            pump.PriceLevel = priceLevel;
-                            continue;
+                        int.TryParse(data[key], out int hoseId);
+                        SmartHosePersistence.AddHose(hoseId);
+                        continue;
                     }
-                    else if (key.StartsWith("H"))
+                    if (key.EndsWith("GR"))
                     {
-                        if (key.Equals("HOSES"))
+                        int.TryParse(key.Substring(1, 1), out int hoseId);
+                        double.TryParse(data["H" + hoseId + "MT"], out double totalizerMoney);
+                        double.TryParse(data["H" + hoseId + "VT"], out double totalizerVolume);
+
+                        Hose hose = SmartHosePersistence.GetHose(hoseId);
+
+                        int.TryParse($"{data[$"H{hoseId}GR"]}", out int gradeId);
+                        Grade grade = SmartGradePersistence.GetGrade(gradeId);
+
+                        if (grade != null)
                         {
-                            int.TryParse(data[key], out int hoseId);
-                            SmartHosePersistence.AddHose(hoseId);
+                            bool exist = hose.Grades.Any(g => g.Description == grade.Description);
+
+                            if (!exist)
+                                hose.Grades.Add(grade);
+
+                            hose.TotalizerMoney = totalizerMoney;
+                            hose.TotalizerVolume = totalizerVolume;
+                            SmartHosePersistence.UpdateHose(hose);
+
+                            pump.Grade = grade;
+                            pump.Hoses.Add(hose);
+                            pump.SalePrice = SmartGradePersistence.GetSalePrice(pump.PriceLevel, grade);
+                            SmartPumpPersistence.UpdatePump(pump);
+
                             continue;
-                        }
-                        if (key.EndsWith("GR"))
-                        {
-                            int.TryParse(key.Substring(1, 1), out int hoseId);
-                            double.TryParse(data["H" + hoseId + "MT"], out double totalizerMoney);
-                            double.TryParse(data["H" + hoseId + "VT"], out double totalizerVolume);
-                            
-                            Hose hose = SmartHosePersistence.GetHose(hoseId);
-
-                            int.TryParse($"{data[$"H{hoseId}GR"]}", out int gradeId);
-                            Grade grade = SmartGradePersistence.GetGrade(gradeId);
-                            
-                            if (grade != null)
-                            {
-                                bool exist = hose.Grades.Any(g => g.Description == grade.Description);
-                                
-                                if (!exist)                                
-                                    hose.Grades.Add(grade);
-    
-                                hose.TotalizerMoney = totalizerMoney;
-                                hose.TotalizerVolume = totalizerVolume;
-                                SmartHosePersistence.UpdateHose(hose);
-
-                                pump.Grade = grade;
-                                pump.Hoses.Add(hose); 
-                                pump.SalePrice = SmartGradePersistence.GetSalePrice(pump.PriceLevel, grade);
-                                SmartPumpPersistence.UpdatePump(pump);
-                                
-                                continue;
-                            }
                         }
                     }
                 }
-                return new NoNotificationToClient();
+            }
+            return new NoNotificationToClient();
         }
 
         public INotifyClient<IEnumerable<IEnumerable<Sale>>> ProcessMessage_EVT_PUMP_NEW_TRANSACTION(string msgData)
         {
-                Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
-                Sale sale = CreateSaleFromMsg(data, "", 0);
+            Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
+            Sale sale = CreateSaleFromMsg(data, "", 0);
 
-                IList<Sale> sales = SmartSalePersistence.GetSales()[sale.Pump];
-                sales.Add(sale);
-                sales = sales.OrderByDescending(s => s.SaleId).ToList();
-                sales.RemoveAt(sales.Count - 1);
-                SmartSalePersistence.AddSales(sale.Pump, sales);
+            IList<Sale> sales = SmartSalePersistence.GetSales()[sale.Pump];
+            sales.Add(sale);
+            sales = sales.OrderByDescending(s => s.SaleId).ToList();
+            sales.RemoveAt(sales.Count - 1);
+            SmartSalePersistence.AddSales(sale.Pump, sales);
 
-                return new NotifyLatestPumpSalesToClient($"pump={sale.Pump}".FromMsgDataToDictionary());
+            return new NotifyLatestPumpSalesToClient($"pump={sale.Pump}".FromMsgDataToDictionary());
         }
 
         public Sale CreateSaleFromMsg(Dictionary<string, string> data, string strIndex, int pumpId)
         {
-                Sale sale = new Sale();
+            Sale sale = new Sale();
 
-                int index = 0;
+            int index = 0;
 
-                Int32.TryParse(strIndex, out index);
+            Int32.TryParse(strIndex, out index);
 
-                if (index > 0)
-                    sale.Pump = pumpId;
-                else
-                    sale.Pump = Convert.ToInt32(data[$"PM{strIndex}"]);
+            if (index > 0)
+                sale.Pump = pumpId;
+            else
+                sale.Pump = Convert.ToInt32(data[$"PM{strIndex}"]);
 
-                sale.Date = data[$"DA{strIndex}"];
-                sale.Time = data[$"TI{strIndex}"];
-                sale.Hose = Convert.ToInt32(data[$"HO{strIndex}"]);
-                sale.PPU = Convert.ToDouble(data[$"PU{strIndex}"]);
-                sale.Type = Convert.ToInt32(data[$"TY{strIndex}"]);
-                sale.SaleId = Convert.ToInt32(data[$"SA{strIndex}"]);
-                sale.Volume = Convert.ToDouble(data[$"VO{strIndex}"]);
-                sale.Amount = Convert.ToDouble(data[$"AM{strIndex}"]);
-                sale.RGB = SmartGradePersistence.GetGrade(Convert.ToInt32(data[$"GR{strIndex}"])).RGB;
+            sale.Date = data[$"DA{strIndex}"];
+            sale.Time = data[$"TI{strIndex}"];
+            sale.Hose = Convert.ToInt32(data[$"HO{strIndex}"]);
+            sale.PPU = Convert.ToDouble(data[$"PU{strIndex}"]);
+            sale.Type = Convert.ToInt32(data[$"TY{strIndex}"]);
+            sale.SaleId = Convert.ToInt32(data[$"SA{strIndex}"]);
+            sale.Volume = Convert.ToDouble(data[$"VO{strIndex}"]);
+            sale.Amount = Convert.ToDouble(data[$"AM{strIndex}"]);
+            sale.RGB = SmartGradePersistence.GetGrade(Convert.ToInt32(data[$"GR{strIndex}"])).RGB;
 
-                return sale;
+            return sale;
         }
     }
 }

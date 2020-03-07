@@ -7,109 +7,111 @@ using SmartTrinityConsole.Core.Entities.Sale;
 
 namespace SmartTrinityConsole.Infrastructure.Client.Notifications.SignalR
 {
-      public class NotifyPumpChangesToClient : INotifyClient<Pump>
-      {
-            public string EndPoint { get; private set; } = "PumpStatusChange";
+    public class NotifyPumpChangesToClient : INotifyClient<Pump>
+    {
+        public string EndPoint { get; private set; } = "PumpStatusChange";
 
-            private Dictionary<string, string> _data;
+        private Dictionary<string, string> _data;
 
-            //TODO: Refactor namespace
-            public Pump GetClientData()
-            {
-                  return new Pump
-                  {
-                        PumpNo = Convert.ToInt32(_data["pump"]),
-                        Status = _data["ST"],
-                        SaleProgress = 0
-                  };
-            }
+        //TODO: Refactor namespace
+        public Pump GetClientData()
+        {
+            int.TryParse(_data["pump"], out int pumpNo);
 
-            public NotifyPumpChangesToClient()
-            {
-            }
+            Pump pump = SmartPumpPersistence.GetPump(pumpNo);
+            pump.Status = _data["ST"];
+            pump.SaleProgress = 0;
 
-            public NotifyPumpChangesToClient(Dictionary<string, string> data)
-            {
-                  _data = data;
-            }
-      }
+            return pump;
+        }
 
-      public class NotifyPumpDeliveryProgressToClient : INotifyClient<Pump>
-      {
-            public string EndPoint { get; private set; } = "PumpDeliveryProgress";
+        public NotifyPumpChangesToClient()
+        {
+        }
 
-            private Dictionary<string, string> _data;
+        public NotifyPumpChangesToClient(Dictionary<string, string> data)
+        {
+            _data = data;
+        }
+    }
 
-            //TODO: Refactor namespace
-            public Pump GetClientData()
-            {
-                  double.TryParse(_data["VO"], out double volume);
-                  int.TryParse(_data["pump"], out int pumpNo);
-                  double.TryParse(_data["PU"], out double salePrice);
-                  double.TryParse(_data["AM"], out double saleProgress);
+    public class NotifyPumpDeliveryProgressToClient : INotifyClient<Pump>
+    {
+        public string EndPoint { get; private set; } = "PumpDeliveryProgress";
 
-                  return new Pump
-                  {
-                        Status = "FUELLING",
-                        Volume = volume,
-                        PumpNo = pumpNo,
-                        SalePrice = salePrice,
-                        SaleProgress = saleProgress,
-                        Grade = SmartPumpPersistence.GetPump(Convert.ToInt32(_data["pump"])).Grade
-                  };
-            }
+        private Dictionary<string, string> _data;
 
-            public NotifyPumpDeliveryProgressToClient()
-            {
-            }
+        //TODO: Refactor namespace
+        public Pump GetClientData()
+        {
+            double.TryParse(_data["VO"], out double volume);
+            int.TryParse(_data["pump"], out int pumpNo);
+            double.TryParse(_data["PU"], out double salePrice);
+            double.TryParse(_data["AMS"], out double saleProgress);
 
-            public NotifyPumpDeliveryProgressToClient(Dictionary<string, string> data)
-            {
-                  _data = data;
-            }
-      }
+            Pump pump = SmartPumpPersistence.GetPump(pumpNo);
 
-      public class NotifyLatestPumpSalesToClient : INotifyClient<IEnumerable<IEnumerable<Sale>>>
-      {
-            public string EndPoint { get; private set; } = "LoadLatestPumpSales";
+            pump.Status = "FUELLING";
+            pump.Volume = volume;
+            pump.PumpNo = pumpNo;
+            pump.SalePrice = salePrice;
+            pump.SaleProgress = saleProgress;
+            pump.Grade = SmartPumpPersistence.GetPump(Convert.ToInt32(_data["pump"])).Grade;
 
-            private Dictionary<string, string> _data;
+            return pump;
+        }
 
-            public IEnumerable<IEnumerable<Sale>> GetClientData() => SmartSalePersistence.GetSales();
+        public NotifyPumpDeliveryProgressToClient()
+        {
+        }
 
-            public NotifyLatestPumpSalesToClient()
-            {
-            }
+        public NotifyPumpDeliveryProgressToClient(Dictionary<string, string> data)
+        {
+            _data = data;
+        }
+    }
 
-            public NotifyLatestPumpSalesToClient(Dictionary<string, string> data)
-            {
-                  _data = data;
-            }
-      }
+    public class NotifyLatestPumpSalesToClient : INotifyClient<IEnumerable<IEnumerable<Sale>>>
+    {
+        public string EndPoint { get; private set; } = "LoadLatestPumpSales";
 
-      public class NotifyPumpsToClient : INotifyClient<IEnumerable<Pump>>
-      {
-            public string EndPoint { get; private set; } = "LoadPumps";
+        private Dictionary<string, string> _data;
 
-            private Dictionary<string, string> _data;
+        public IEnumerable<IEnumerable<Sale>> GetClientData() => SmartSalePersistence.GetSales();
 
-            public IEnumerable<Pump> GetClientData() => SmartPumpPersistence.GetPumps();
+        public NotifyLatestPumpSalesToClient()
+        {
+        }
 
-            public NotifyPumpsToClient()
-            {
-            }
+        public NotifyLatestPumpSalesToClient(Dictionary<string, string> data)
+        {
+            _data = data;
+        }
+    }
 
-            public NotifyPumpsToClient(Dictionary<string, string> data)
-            {
-                  _data = data;
-            }
-      }
+    public class NotifyPumpsToClient : INotifyClient<IEnumerable<Pump>>
+    {
+        public string EndPoint { get; private set; } = "LoadPumps";
 
-      // TODO: Look for a better name for the method...      
-      public class NoNotificationToClient : INotifyClient<string>
-      {
-            public string EndPoint { get; private set; } = "";
+        private Dictionary<string, string> _data;
 
-            public string GetClientData() => "";
-      }
+        public IEnumerable<Pump> GetClientData() => SmartPumpPersistence.GetPumps();
+
+        public NotifyPumpsToClient()
+        {
+        }
+
+        public NotifyPumpsToClient(Dictionary<string, string> data)
+        {
+            _data = data;
+        }
+    }
+
+    // TODO: Look for a better name for the method...      
+    public class NoNotificationToClient : INotifyClient<string>
+    {
+        public string EndPoint { get; private set; } = "";
+
+        public string GetClientData() => "";
+    }
 }
