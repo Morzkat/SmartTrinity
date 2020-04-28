@@ -61,7 +61,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             SmartSalePersistence.RemovePersistence();
             SmartPumpPersistence.RemovePersistence();
             SmartGradePersistence.RemovePersistence();
-            
+
             StartConnection();
         }
 
@@ -102,7 +102,7 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             catch (Exception e)
             {
                 SetMessageParametersDefaultValues();
-                throw new Exception($"Error while trying to disconnected from server | {e.Message}");
+                _logger.LogDebug($"Error while trying to disconnected from server | {e.Message}");
             }
             _logger.LogDebug("Disconnected from the server... ");
         }
@@ -121,7 +121,9 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
                 char[] aMsg = _client.Receive();
 
                 aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
-                _client.LastReply = new string (CryptMessage(tempCrypt, _client.LastReply.ToCharArray(), bufferSize, 0));
+                _client.LastReply = new string(CryptMessage(tempCrypt, _client.LastReply.ToCharArray(), bufferSize, 0));
+                SetLastReplyToPersistence(_client.LastReply);
+
                 string msg = new string(aMsg);
                 string Smsg = msg.Substring(0, msg.Length - 1);
 
@@ -200,9 +202,19 @@ namespace SmartTrinityConsole.Infrastructure.CommunicationManager
             catch { return false; }
         }
 
-        public string GetLastReply () 
+        public void SetLastReplyToPersistence(string reply)
         {
-            return _client.LastReply;    
+
+            var data = reply.Split("|");
+            if (data[1] == "RES_SECU_LOGIN" || data[1] == "RES_SECU_ACCESS_DENIED")
+            {
+                SmartUserPersistence.LastReply = reply;
+            }
+        }
+
+        public string GetLastReply()
+        {
+            return _client.LastReply;
         }
     }
 }

@@ -2,13 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Chroniton;
 using Microsoft.Extensions.Logging;
-using SmartTrinityApi.Common;
-using SmartTrinityApi.Core.Interfaces.Communication;
 using SmartTrinityApi.Core.Interfaces.Process;
 using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Infrastructure.Jobs;
 using SmartTrinityConsole.Infrastructure.Persistence;
-using SmartTrinityConsole.Infrastructure.Tcp.Communication;
 using SmartTrinityConsole.Interfaces.Communication;
 
 namespace SmartTrinityApi.AppConfig.Jobs

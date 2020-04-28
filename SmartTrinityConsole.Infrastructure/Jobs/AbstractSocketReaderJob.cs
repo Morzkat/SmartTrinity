@@ -30,26 +30,26 @@ namespace SmartTrinityConsole.Infrastructure.Jobs
         {
             if (_messageManager.SocketHasData())
             {
-                SmartPumpPersistence.LastUpdate = DateTime.Now;
                 _messageManager.ReceiveSubscribedMessages();
                 _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
+                SmartPumpPersistence.LastUpdate = DateTime.Now;
             }
 
             else if (!_messageManager.ClientIsConnected())
             {
+                SmartUserPersistence.LastReply = "";
                 SmartPumpPersistence.LastUpdate = DateTime.Now;
                 _messageManager.Connect();
                 _pumpService.PumpsBaseConfig();
             }
 
-            else if (DateTime.Now.Minute - SmartPumpPersistence.LastUpdate.Minute > 5)
+            else if (Math.Abs(DateTime.Now.Minute - SmartPumpPersistence.LastUpdate.Minute) > 5)
             {
+                _messageManager.Disconnect();
                 SmartPumpPersistence.LastUpdate = DateTime.Now;
-                // _messageManager.Disconnect();
-                _messageManager.Connect();
-                _pumpService.PumpsBaseConfig();
-
-                // _logger.LogDebug($"");
+                SmartUserPersistence.LastReply = "";
+                // _messageManager.Connect();
+                // _pumpService.PumpsBaseConfig();
             }
         }
     }

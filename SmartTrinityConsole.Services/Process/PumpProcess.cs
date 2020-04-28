@@ -45,8 +45,8 @@ namespace SmartTrinityApi.Services.Process
             _userService.LogInUser();
             this._messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
 
-            if (!_userService.UserIsConnected(_messageManager.GetLastReply()))
-                ExecutePumpAction(pumpAction);
+            // if (!_userService.UserIsConnected())
+            //     ExecutePumpAction(pumpAction);
         }
     }
 }

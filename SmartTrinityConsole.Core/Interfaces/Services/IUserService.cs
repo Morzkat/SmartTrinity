@@ -8,6 +8,6 @@ namespace SmartTrinityApi.Core.Interfaces.Process
     public interface IUserService
     {
         void LogInUser();
-        bool UserIsConnected(string reply);
+        bool UserIsConnected();
     }
 }

@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 using SmartTrinityApi.Common;
+using SmartTrinityApi.Core.Entities;
 
 namespace SmartTrinityConsole.Infrastructure.Persistence
 {
     public static class SmartUserPersistence
     {
-        private static readonly string _user = "1";
-        private static readonly string _pw = "1";
+        public static string User = "1";
+        public static string Password = "1";
+        public static string LastReply = "User connected to console status | CONNECTED";
+
         public static bool UserIsLogged { get; set; }
 
         // TODO: Create dictionary with service denied responses...
@@ -17,8 +21,8 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
 
         public static string PrepareDataForLogin()
         {
-            string key = Tools.RPad(_user, " ", 25);
-            string pw = Tools.RPad(_pw, " ", 25);
+            string key = Tools.RPad(User, " ", 25);
+            string pw = Tools.RPad(Password, " ", 25);
 
             char[] encryptedPw = Tools.Encrypt(pw.ToCharArray(), 25, key.ToCharArray(), 20);
             string data = $"US=1|PW={Tools.ConvertBinToHex(encryptedPw, 25)}|";

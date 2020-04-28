@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Threading;
+using System;
 using System.Linq;
 using System.Reflection;
 using SmartTrinityApi.Common;
@@ -115,6 +116,11 @@ namespace SmartTrinityConsole.Services.Process
         public INotifyClient<Pump> ProcessMessage_EVT_PUMP_STATUS_CHANGE_ID(int pumpId, string msgData)
         {
             //TODO: Create logic for change pump status...
+            if (PumpHosesIsEmpty(pumpId))
+            {
+                _messageManager.SendMsg("POST", "REQ_FCRT_GRADES_CONFIG", "");
+            }
+
             Dictionary<string, string> data = msgData.CleanMessageData().FromMsgDataToDictionary();
             Pump pump = SmartPumpPersistence.GetPump(pumpId);
             pump.Status = data["ST"];
@@ -137,6 +143,11 @@ namespace SmartTrinityConsole.Services.Process
                 SmartSalePersistence.AddNewListPumpSales();
                 _pumpProcess.CreatePump(i);
                 _pumpProcess.AddPump(i);
+
+                if (PumpHosesIsEmpty(i))
+                {
+                    _messageManager.SendMsg("POST", "REQ_FCRT_GRADES_CONFIG", "");
+                }
             }
 
             return new NotifyPumpsToClient();
@@ -213,7 +224,7 @@ namespace SmartTrinityConsole.Services.Process
             return new NotifyLatestPumpSalesToClient();
         }
 
-        public INotifyClient<string> ProcessMessage_RES_PUMP_GET_INFO_ID(int pumpId, string msgData)
+        public INotifyClient<IEnumerable<Pump>> ProcessMessage_RES_PUMP_GET_INFO_ID(int pumpId, string msgData)
         {
             Dictionary<string, string> data = msgData.FromMsgDataToDictionary();
             Pump pump = SmartPumpPersistence.GetPump(pumpId);
@@ -270,7 +281,7 @@ namespace SmartTrinityConsole.Services.Process
                     }
                 }
             }
-            return new NoNotificationToClient();
+            return new NotifyPumpsToClient();
         }
 
         public INotifyClient<IEnumerable<IEnumerable<Sale>>> ProcessMessage_EVT_PUMP_NEW_TRANSACTION(string msgData)
@@ -311,6 +322,15 @@ namespace SmartTrinityConsole.Services.Process
             sale.RGB = SmartGradePersistence.GetGrade(Convert.ToInt32(data[$"GR{strIndex}"])).RGB;
 
             return sale;
+        }
+
+        private bool PumpHosesIsEmpty(int pumpId)
+        {
+            Pump pump = SmartPumpPersistence.GetPump(pumpId);
+            if (!pump.Hoses.Any())
+                return true;
+
+            return false;
         }
     }
 }

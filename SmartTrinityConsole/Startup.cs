@@ -15,6 +15,9 @@ using Chroniton;
 using SmartTrinityApi.Core.Interfaces.UnitOfWork;
 using SmartTrinityConsole.Infrastructure.Database.UnitOfWork;
 using SmartTrinityConsole.Infrastructure.Database.Config;
+using SmartTrinityApi.Core.Entities;
+using Microsoft.Extensions.Options;
+using SmartTrinityConsole.Infrastructure.Persistence;
 
 namespace SmartTrinityApi
 {
@@ -41,6 +44,8 @@ namespace SmartTrinityApi
                 .AllowCredentials());
             });
 
+            services.Configure<ConsoleSettings>(options => Configuration.GetSection("consoleSettings").Bind(options));
+            
             //Services
             services.AddMvc();
             services.AddSingleton<IPumpService, PumpService>();
@@ -67,8 +72,14 @@ namespace SmartTrinityApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, IOptions<ConsoleSettings> consoleSettings)
         {
+            //TODO: Create a method for set console settings
+            var _consoleSettings = consoleSettings.Value;
+
+            SmartUserPersistence.User = _consoleSettings.Credentials.UserName;
+            SmartUserPersistence.Password = _consoleSettings.Credentials.Password;
+
             app.UseDeveloperExceptionPage();
 
             app.UseCors("CorsPolicy");
