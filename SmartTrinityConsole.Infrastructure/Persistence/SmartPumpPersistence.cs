@@ -9,6 +9,7 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
     {
         private static List<Pump> _pumps = new List<Pump>();
         public static DateTime LastUpdate { get; set; }
+        public static Dictionary<string, string> PumpWithAction = new Dictionary<string, string>();
 
         public static List<Pump> GetPumps()
         {
@@ -51,5 +52,22 @@ namespace SmartTrinityConsole.Infrastructure.Persistence
         {
             _pumps = new List<Pump>();
         }
+
+        public static string GetPumpAction(string pump)
+        {
+            try { return PumpWithAction[pump]; }
+            catch { return ""; }
+        }
+
+        public static void AddActionToPump(string pump, string action)
+        {
+            PumpWithAction[pump] = action;
+        }
+
+        public static void RemovePumpAction(string pump)
+        {
+            PumpWithAction.Remove(pump);
+        }
+
     }
 }

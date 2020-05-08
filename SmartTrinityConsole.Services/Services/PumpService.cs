@@ -27,7 +27,7 @@ namespace SmartTrinityConsole.Services
         ICommunicationManager _messageManager;
         IHubContext<SmartPumpHub> _smartPumpHub;
 
-        public PumpService(ILogger<PumpService> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess, IUnitOfWork unitOfWork, IPumpProcess pumpProcess, 
+        public PumpService(ILogger<PumpService> logger, ICommunicationManager messageManager, IServiceProcess serviceProcess, IUnitOfWork unitOfWork, IPumpProcess pumpProcess,
         IUserService userService, IHubContext<SmartPumpHub> smartPumpHub)
         {
             _logger = logger;
@@ -102,7 +102,7 @@ namespace SmartTrinityConsole.Services
                 Pump pump = SmartPumpPersistence.GetPump(pumpAction.Pump);
                 pump.SetAthoredStatus(pumpAction.Action);
                 SmartPumpPersistence.UpdatePump(pump);
-                
+
                 _smartPumpHub.Clients.All.SendAsync("PumpStatusChange", pump);
 
                 _pumpProcess.ExecutePumpAction(pumpAction);
@@ -178,8 +178,9 @@ namespace SmartTrinityConsole.Services
 
                 if (_userService.UserIsConnected())
                     return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("El 'Preset' fue enviado al lado.", success: true));
-                    
-                return SendPresent(presetConfig);
+
+                //TODO: parameterize this error...
+                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse(error: "Ocurrio un error enviando el preset."));
             }
             catch (Exception e)
             {

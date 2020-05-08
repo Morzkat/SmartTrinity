@@ -42,11 +42,14 @@ namespace SmartTrinityApi.Services.Process
         // TODO: Use service for call this logic.
         public void ExecutePumpAction(PumpAction pumpAction)
         {
+            var p = SmartPumpPersistence.GetPumpAction(pumpAction.Pump.ToString());
             _userService.LogInUser();
-            this._messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+            if (SmartPumpPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "MONEY_PRESET" || SmartPumpPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "VOLUME_PRESET")
+                _messageManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+            else 
+                _messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+            
 
-            // if (!_userService.UserIsConnected())
-            //     ExecutePumpAction(pumpAction);
         }
     }
 }

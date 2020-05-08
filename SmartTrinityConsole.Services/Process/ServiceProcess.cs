@@ -124,6 +124,7 @@ namespace SmartTrinityConsole.Services.Process
             Dictionary<string, string> data = msgData.CleanMessageData().FromMsgDataToDictionary();
             Pump pump = SmartPumpPersistence.GetPump(pumpId);
             pump.Status = data["ST"];
+            SmartPumpPersistence.AddActionToPump(pumpId.ToString(), data["SU"].Split("+")[0]);
             SmartPumpPersistence.UpdatePump(pump);
 
             return new NotifyPumpChangesToClient($"pump={pumpId}|{msgData.CleanMessageData()}".FromMsgDataToDictionary());
