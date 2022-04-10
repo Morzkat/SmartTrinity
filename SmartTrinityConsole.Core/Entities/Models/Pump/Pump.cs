@@ -26,7 +26,7 @@ public class Pump
     }
 }
 
-public class Hose 
+public class Hose
 {
     public int HoseId { get; set; }
     public double TotalizerMoney { get; set; }
@@ -38,8 +38,15 @@ public class PumpServiceMode
 {
     public int Id { get; set; }
     public int Pump { get; set; }
-    public string ServiceMode { get; set; }
+    public ServiceModeType ServiceMode { get; set; }
 }
+
+public enum ServiceModeType
+{
+    SELF_SERVICE,
+    FULL_SERVICE,
+}
+
 
 /**
     type 1 = MONEY

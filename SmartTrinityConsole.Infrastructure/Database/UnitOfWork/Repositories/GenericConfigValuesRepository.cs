@@ -37,7 +37,7 @@ namespace SmartTrinityConsole.Infrastructure.Database.Repositories
         public bool UpdatePumpServiceMode(PumpServiceMode pumpServiceMode)
         {
             GenericConfigValues configValues = Get(pumpServiceMode.Id);
-            configValues.ParamValue = pumpServiceMode.ServiceMode;
+            configValues.ParamValue = pumpServiceMode.ServiceMode.ToString();
             return Update(configValues);
         }
     }

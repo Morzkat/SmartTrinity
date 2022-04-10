@@ -1,14 +1,8 @@
-using System.Collections.Generic;
-using System.Data;
 using Dapper;
-using SmartTrinityApi.Core.Interfaces.Repository.Repositories;
-using SmartTrinityApi.Core.Interfaces.UnitOfWork;
+using System.Data;
+using System.Collections.Generic;
 using SmartTrinityConsole.Core.Entities.Database.Configs;
-using SmartTrinityConsole.Core.Entities.Pump;
-using Dapper.Contrib;
-using Npgsql;
-using System.Linq;
-using System.Data.Common;
+using SmartTrinityApi.Core.Interfaces.Repository.Repositories;
 
 namespace SmartTrinityConsole.Infrastructure.Database.Repositories
 {

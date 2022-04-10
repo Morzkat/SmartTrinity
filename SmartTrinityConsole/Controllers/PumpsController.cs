@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SmartTrinityApi.Core.Interfaces.Services;
 using SmartTrinityConsole.Core.Entities.ServerResponse;
 using SmartTrinityConsole.Core.Entities.Sale;
+using SmartTrinityApi.Core.Entities.DTOs;
 
 namespace SmartTrinityApi.Controllers
 {
@@ -28,9 +29,9 @@ namespace SmartTrinityApi.Controllers
         }
 
         [HttpGet("ServicesModes")]
-        public ActionResult<Result<ResponseWithList<PumpServiceMode>>> GetPumpsAndServicesModes()
+        public ActionResult<Result<ResponseWithList<PumpServiceModeDto>>> GetPumpsAndServicesModes()
         {
-            Result<ResponseWithList<PumpServiceMode>> result = _pumpService.GetPumpsAndServicesModes();
+            Result<ResponseWithList<PumpServiceModeDto>> result = _pumpService.GetPumpsAndServicesModes();
             return StatusCode(result.StatusCode, result.Response);
         }
 

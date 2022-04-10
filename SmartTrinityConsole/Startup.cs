@@ -18,6 +18,7 @@ using SmartTrinityConsole.Infrastructure.Database.Config;
 using SmartTrinityApi.Core.Entities;
 using Microsoft.Extensions.Options;
 using SmartTrinityConsole.Infrastructure.Persistence;
+using System.Collections.Generic;
 
 namespace SmartTrinityApi
 {
@@ -35,17 +36,21 @@ namespace SmartTrinityApi
         {
             services.AddSignalR();
             services.AddMemoryCache();
+
+            List<string> clientsUrls = new List<string>();
+            Configuration.GetSection("ClientsUrls").Bind(clientsUrls);
+
             services.AddCors(options =>
             {
-               options.AddPolicy("CorsPolicy",
-                 builder => builder.WithOrigins(Configuration.GetSection("ClientHost").Value)
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                options.AddPolicy("CorsPolicy",
+                  builder => builder.WithOrigins(clientsUrls.ToArray())
+                 .AllowAnyMethod()
+                 .AllowAnyHeader()
+                 .AllowCredentials());
             });
 
             services.Configure<ConsoleSettings>(options => Configuration.GetSection("consoleSettings").Bind(options));
-            
+
             //Services
             services.AddMvc();
             services.AddSingleton<IPumpService, PumpService>();

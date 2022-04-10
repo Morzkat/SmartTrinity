@@ -14,6 +14,7 @@ using SmartTrinityConsole.Core.Entities.ServerResponse;
 using SmartTrinityApi.Core.Entities.ServerResponse.Helpers;
 using Microsoft.AspNetCore.SignalR;
 using SmartTrinityApi.Infrastructure.Hubs;
+using SmartTrinityApi.Core.Entities.DTOs;
 
 namespace SmartTrinityConsole.Services
 {
@@ -115,17 +116,17 @@ namespace SmartTrinityConsole.Services
             }
         }
 
-        public Result<ResponseWithList<PumpServiceMode>> GetPumpsAndServicesModes()
+        public Result<ResponseWithList<PumpServiceModeDto>> GetPumpsAndServicesModes()
         {
             try
             {
-                IEnumerable<PumpServiceMode> list = _unitOfWork.ConfigValuesRepository.GetPumpsAndServicesModes().ToList();
-                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponseList<PumpServiceMode>(list, "Modos de servicios obtenidos.", success: true));
+                IEnumerable<PumpServiceModeDto> list = AgileObjects.AgileMapper.Mapper.Map(_unitOfWork.ConfigValuesRepository.GetPumpsAndServicesModes().ToList()).ToANew<IEnumerable<PumpServiceModeDto>>();
+                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponseList(list, "Modos de servicios obtenidos.", success: true));
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error getting pump services modes: {e.Message}");
-                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponseList<PumpServiceMode>(null, "Error obteniendo la lista de 'ServicesModes'.", $"ERROR getting pump services modes: {e.Message}"));
+                return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponseList<PumpServiceModeDto>(null, "Error obteniendo la lista de 'ServicesModes'.", $"ERROR getting pump services modes: {e.Message}"));
             }
         }
 
