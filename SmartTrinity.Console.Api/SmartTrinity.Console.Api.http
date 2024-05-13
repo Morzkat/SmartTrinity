@@ -1,6 +1,0 @@
-@SmartTrinity.Console.Api_HostAddress = http://localhost:5205
-
-GET {{SmartTrinity.Console.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
