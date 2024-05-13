@@ -42,11 +42,12 @@ namespace SmartTrinityConsole.Services
 
         public void PumpsBaseConfig()
         {
+            _messageManager.Connect();
             _serviceProcess.ProccessStationData();
             while (Thread.CurrentThread.IsAlive)
             {
                 _messageManager.ReceiveSubscribedMessages();
-                _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
+                //_serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
 
                 if (_messageManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
                     break;
@@ -59,7 +60,7 @@ namespace SmartTrinityConsole.Services
                 try
                 {
                     _messageManager.ReceiveSubscribedMessages();
-                    _serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
+                    //_serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
                 }
 
                 catch { break; };

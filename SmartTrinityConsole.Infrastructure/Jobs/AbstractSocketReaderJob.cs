@@ -39,7 +39,7 @@ namespace SmartTrinityConsole.Infrastructure.Jobs
             {
                 SmartUserPersistence.LastReply = "";
                 SmartPumpPersistence.LastUpdate = DateTime.Now;
-                _messageManager.Connect();
+                //_messageManager.Connect();
                 _pumpService.PumpsBaseConfig();
             }
 

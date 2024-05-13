@@ -59,7 +59,7 @@ namespace SmartTrinityConsole.Services.Process
 
         public object ProcessMessage(string msgType, string msgData)
         {
-            int pumpId = 0;
+            int pumpId;
             int.TryParse(msgType.Substring(msgType.Length - 3, 3), out pumpId);
 
             try

@@ -10,7 +10,7 @@ namespace SmartTrinityConsole.Infrastructure.Jobs
     {
         protected IPumpService _pumpService;
         protected ICommunicationManager _messageManager;
-        protected IConnectionParams connectionParams = new TcpConnectionParams("127.0.0.1", 3011);
+        protected IConnectionParams connectionParams = new TcpConnectionParams("148.0.250.200", 3011);
 
         protected ILogger<AbstractConnectionManager> _logger;
 

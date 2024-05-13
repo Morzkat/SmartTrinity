@@ -1,15 +1,11 @@
-using System;
-using System.IO;
 using System.Net;
-using System.Threading;
 using System.Net.Sockets;
-using SmartTrinityApi.Common;
-using System.Collections.Generic;
-using SmartTrinityApi.Core.Interfaces.Communication;
+using SmartTrinity.App.Core.Communication.Adapaters.Tcp;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp;
 
-namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
+namespace SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp
 {
-    public class TcpCommunication : ICommunication
+    public class TcpCommunication : ITcpCommunication
     {
         public Socket _socket { get; private set; }
         public IConnectionParams _params { get; set; }
@@ -32,7 +28,7 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse(_params.Host), _params.Port);
             _socket = new Socket(serverAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             _socket.Connect(serverAddress);
-            Tools.CurrentSocketPort = ((IPEndPoint)_socket.LocalEndPoint).Port;
+            // Tools.CurrentSocketPort = ((IPEndPoint)_socket.LocalEndPoint).Port;
         }
 
         public void Disconnect()
@@ -57,12 +53,12 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
 
         public Stream GetOutputStream()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Dictionary<string, string> GetParams()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool IsConnected()
@@ -137,7 +133,6 @@ namespace SmartTrinityConsole.Infrastructure.Tcp.Communication
             if (!IsConnected()) throw new Exception("Socket is disconnected....");
 
             _socket.Send(msgAux, SocketFlags.None);
-
         }
 
         public void SetTimeout(int timeout)
