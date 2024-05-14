@@ -10,13 +10,13 @@ using SmartTrinity.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SmartTrinity.App.Sales.Infrastructure.Repositories;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
-using SmartTrinity.Services;
 using SmartTrinity.App.Api.Middlewares;
 using Asp.Versioning;
 using SmartTrinity.App.Api.Services;
 using SmartTrinity.App.Core.Communication;
 using SmartTrinity.App.Services;
 using SmartTrinity.App.Core.Services;
+using SmartTrinity.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -14,9 +14,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Modules\SmartTrinity.App.Pumps\SmartTrinity.App.Pumps.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.Hub\SmartTrinity.App.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.Sales\SmartTrinity.App.Sales.csproj" />
-		<ProjectReference Include="..\SmartTrinity.Services\SmartTrinity.Services.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
