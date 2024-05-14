@@ -17,8 +17,6 @@ namespace SmartTrinity.App.Services
             _logger = logger;
             _communicationManager = communicationManager;
             _communicationManager.ConnectionParams = _connectionParams;
-            
-            //TODO: Add try/catch
         }
 
         public void Setup()
@@ -33,9 +31,7 @@ namespace SmartTrinity.App.Services
                 if (_communicationManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
                     break;
             }
-
             SetupSubscriptionsToEvents();
-           
         }
 
         public void SetupRequestConfigurations()
