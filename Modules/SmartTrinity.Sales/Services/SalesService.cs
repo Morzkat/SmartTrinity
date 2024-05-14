@@ -1,7 +1,7 @@
-using  SmartTrinity.App.Sales.Core.Models;
-using  SmartTrinity.App.Sales.Infrastructure.Repositories;
+using SmartTrinity.App.Sales.Core.Models;
+using SmartTrinity.App.Sales.Infrastructure.Repositories;
 
-namespace  SmartTrinity.App.Sales.Services
+namespace SmartTrinity.App.Sales.Services
 {
     public interface ISalesService
     {
