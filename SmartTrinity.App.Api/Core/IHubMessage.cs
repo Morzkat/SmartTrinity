@@ -1,6 +1,6 @@
 ﻿using SmartTrinity.App.Api.Extensions;
 using SmartTrinity.App.Pumps.Core.Models;
-using SmartTrinity.App.Sales.Core.Models;
+using SmartTrinity.App.Pumps.Persistence;
 
 namespace SmartTrinity.App.Api.Core
 {
@@ -61,24 +61,22 @@ namespace SmartTrinity.App.Api.Core
 
         private int NotifyEventPumpDeliveryProgressById(Notification notification)
         {
-            // return new NotifyPumpDeliveryProgressToClient($"pump={pumpId}|{msgData.CleanMessageData()}".FromMsgDataToDictionary());
             var pumpProgress = notification.Data.ClearMessage().ToDictionary();
 
             double.TryParse(pumpProgress["VO"], out double volume);
-            int.TryParse(pumpProgress["pump"], out int pumpNo);
             double.TryParse(pumpProgress["PU"], out double salePrice);
             double.TryParse(pumpProgress["AMS"], out double saleProgress);
 
-            var pump = new Pump();
+            Pump pump = PumpsPersistence.GetPump(notification.PumpId);
 
-            //TODO: Create a enum with status
+            //TODO: Create a enum with pump status type
             pump.Status = "FUELLING";
             pump.Volume = volume;
-            pump.PumpNo = pumpNo;
+            pump.PumpNo = notification.PumpId;
             pump.SalePrice = salePrice;
             pump.SaleProgress = saleProgress;
+            pump.Grade = PumpsPersistence.GetPump(notification.PumpId).Grade;
 
-            "".ToDictionary();
             return 0;
         }
 
@@ -277,6 +275,15 @@ namespace SmartTrinity.App.Api.Core
         public void NotifyClients(string eventType, Notification notification)
         {
             throw new NotImplementedException();
+        }
+
+        private bool PumpHosesIsEmpty(int pumpId)
+        {
+            Pump pump = PumpsPersistence.GetPump(pumpId);
+            if (!pump.Hoses.Any())
+                return true;
+
+            return false;
         }
     }
 }

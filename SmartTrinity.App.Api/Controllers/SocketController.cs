@@ -29,6 +29,7 @@ namespace SmartTrinity.App.Api.Controllers
             try
             {
                 _smartTrinityService.Setup();
+                await _smartTrinityService.HandleClientAsync();
                 return Ok("");
             }
             catch (Exception ex)

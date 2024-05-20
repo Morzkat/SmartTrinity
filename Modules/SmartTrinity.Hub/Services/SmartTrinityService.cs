@@ -6,11 +6,11 @@ using SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp;
 
 namespace SmartTrinity.App.Services
 {
-    public class SmartTrinityService: ISmartTrinityService
+    public class SmartTrinityService : ISmartTrinityService
     {
         private readonly ILogger<ISmartTrinityService> _logger;
         private readonly ICommunicationManager _communicationManager;
-        protected IConnectionParams _connectionParams = new TcpConnectionParams("148.0.250.200", 3011);
+        protected IConnectionParams _connectionParams = new TcpConnectionParams("148.0.241.122", 3011);
 
         public SmartTrinityService(ILogger<ISmartTrinityService> logger, ICommunicationManager communicationManager)
         {
@@ -32,6 +32,23 @@ namespace SmartTrinity.App.Services
                     break;
             }
             SetupSubscriptionsToEvents();
+        }
+
+        public async Task HandleClientAsync()
+        {
+            while (true)
+            {
+                //var handler = await _communicationManager.GetSocketHandler();
+
+                await Task.Run(() =>
+                {
+                    if (_communicationManager.SocketHasData())
+                        _communicationManager.ReceiveSubscribedMessages();
+
+                    if (!_communicationManager.ClientIsConnected())
+                        Setup();
+                });
+            }
         }
 
         public void SetupRequestConfigurations()

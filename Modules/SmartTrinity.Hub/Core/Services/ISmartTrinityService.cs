@@ -5,5 +5,6 @@
         void Setup();
         void SetupRequestConfigurations();
         void SetupSubscriptionsToEvents();
+        Task HandleClientAsync();
     }
 }
