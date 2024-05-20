@@ -4,8 +4,8 @@ namespace SmartTrinity.App.Pumps.Core.Services
 {
     public interface IPumpsService
     {
-        Task SendPresent(Preset preset);
-        Task ExecuteAction(PumpAction pumpAction);
-        Task<bool> UpdateServiceMode(ServiceMode pumpServiceMode);
+        Task<string> SendPresent(Preset preset);
+        Task<string> ExecuteAction(PumpAction pumpAction);
+        Task<string> UpdateServiceMode(ServiceMode pumpServiceMode);
     }
 }

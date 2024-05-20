@@ -1,139 +1,125 @@
-﻿using SmartTrinity.App.Pumps.Core.Models;
+﻿using SmartTrinity.App.Core.Communication;
+using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
+using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SmartTrinity.App.Pumps.Persistence;
 
 namespace SmartTrinity.App.Pumps.Services
 {
     public class PumpsService : IPumpsService
     {
+        IPumpsUnitOfWork _pumpsUnitOfWork;
+        ISmartTrinityService _smartTrinityService;
+        ICommunicationManager _communicationManager;
 
-        public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork)
+        public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork, ICommunicationManager communicationManager, ISmartTrinityService smartTrinityService)
         {
-            
+            _pumpsUnitOfWork = pumpsUnitOfWork;
+            _smartTrinityService = smartTrinityService;
+            _communicationManager = communicationManager;
+
+            if (!_communicationManager.ClientIsConnected())
+                _smartTrinityService.Setup();
         }
 
-        //public Result<Response> UpdateServiceMode(PumpServiceMode pumpServiceMode)
-        //{
-        //    try
-        //    {
-        //        _unitOfWork.Begin();
-        //        bool successfull_transaction = _unitOfWork.GenericConfigValuesRepository.UpdatePumpServiceMode(pumpServiceMode);
-
-        //        if (successfull_transaction)
-        //        {
-        //            _unitOfWork.Commit();
-        //            _messageManager.SendMsg("POST", "REQ_APPLY_GRAL_NEW_CONFIG", "");
-        //            _messageManager.SendMsg("POST", "REQ_REFRESH_GENERAL_INFORMATION", "");
-
-        //            return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("El modo de servicio ha sido cambiado", success: true));
-        //        }
-        //        else
-        //        {
-        //            _unitOfWork.Rollback();
-        //            _logger.LogError($"Error in the transaction, check database transaction for more details.");
-        //            return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("Error cambiando el modo de servicio del lado", "Error in the transaction, check database transaction.", true));
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError($"Error updating pump service mode: {e.Message}");
-        //        return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse($"Error cambiando el modo de servicio del lado.", $"ERROR: {e.Message}"));
-        //    }
-        //}
-
-        //public Result<Response> ExecutePumpAction(PumpAction pumpAction)
-        //{
-        //    try
-        //    {
-        //        Pump pump = SmartPumpPersistence.GetPump(pumpAction.Pump);
-        //        pump.SetAthoredStatus(pumpAction.Action);
-        //        SmartPumpPersistence.UpdatePump(pump);
-
-        //        _smartPumpHub.Clients.All.SendAsync("PumpStatusChange", pump);
-
-        //        _pumpProcess.ExecutePumpAction(pumpAction);
-        //        return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("Accion ejecutada sobre el lado.", success: true));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError($"Error executing pump action: {e.Message}");
-        //        return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse($"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.Pump}.", $"ERROR executing pump action: {e.Message}"));
-        //    }
-        //}
-
-        //public Result<Response> SendPresent(PresetConfig presetConfig)
-        //{
-        //    try
-        //    {
-        //        _userService.LogInUser();
-
-        //        string eventType = $"REQ_PUMP_PRESET_ID_{Tools.LPad(presetConfig.PumpNo.ToString(), "0", 3)}";
-        //        string data = "TY=" + (presetConfig.Type == 1 ? "MONEY" : "VOLUME");
-
-        //        if (presetConfig.TankFull)
-        //            data += $"|VA=FULL";
-        //        else
-        //            data += $"|VA={presetConfig.Amount}";
-
-        //        if (presetConfig.Grades != null)
-        //        {
-        //            string grades = "";
-
-        //            foreach (var grade in presetConfig.Grades)
-        //            {
-        //                if (grades.Equals(""))
-        //                    grades = $"{grade.Id}";
-        //                else
-        //                    grades += $",{grade.Id}";
-        //            }
-
-        //            data += $"|GR={grades}";
-        //        }
-
-        //        data += "|";
-
-        //        _messageManager.SendMsg("POST", eventType, data);
-
-        //        if (_userService.UserIsConnected())
-        //            return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse("El 'Preset' fue enviado al lado.", success: true));
-
-        //        //TODO: parameterize this error...
-        //        return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse(error: "Ocurrio un error enviando el preset."));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError($"ERROR sending 'Preset' to pump {presetConfig.PumpNo}: {e.Message}");
-        //        return ResponseHelper.NewResult(StatusCode.Ok, ResponseHelper.NewResponse($"Error enviando el 'Preset' al lado {presetConfig.PumpNo}.", $"ERROR sending 'Preset' to pump: {e.Message}"));
-        //    }
-        //}
-        public Task ExecuteAction(PumpAction pumpAction)
+        public async Task<string> ExecuteAction(PumpAction pumpAction)
         {
-            var pump = new Pump();
-            if (pumpAction.Action.ToString() != null) { }
-           // Pump pump = SmartPumpPersistence.GetPump(pumpAction.Pump);
-            //pump.SetAthoredStatus(pumpAction.Action);
+            try
+            {
+                SetPumpStatus(pumpAction.Pump, pumpAction.Action);
 
-            //if (SmartPumpPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "MONEY_PRESET" || SmartPumpPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "VOLUME_PRESET")
-            //    _messageManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
-            //else
-            //    _messageManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
-         
-            throw new NotImplementedException();
+                var p = PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString());
+                if (PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "MONEY_PRESET" || PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "VOLUME_PRESET")
+                    _communicationManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+                else
+                    _communicationManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToString().ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+
+                return "Accion ejecutada sobre el lado.";
+                //_smartPumpHub.Clients.All.SendAsync("PumpStatusChange", pump);
+            }
+            catch (Exception e)
+            {
+                //_logger.LogError($"Error executing pump action: {e.Message}");
+                return $"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.Pump}.";
+            }
         }
 
-        public Task SendPresent(Preset preset)
+        private void SetPumpStatus(int pumpId, PumpActions action)
         {
-            throw new NotImplementedException();
+            Pump pump = PumpsPersistence.GetPump(pumpId);
+            pump.SetAthoredStatus(action);
+            PumpsPersistence.UpdatePump(pump);
         }
 
-        public Task<bool> UpdateServiceMode(ServiceMode pumpServiceMode)
+        public async Task<string> SendPresent(Preset preset)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string eventType = $"REQ_PUMP_PRESET_ID_{preset.PumpNo.ToString().LPad("0", 3)}";
+                string data = "TY=" + (preset.Type == 1 ? "MONEY" : "VOLUME");
+
+                if (preset.TankFull)
+                    data += $"|VA=FULL";
+                else
+                    data += $"|VA={preset.Amount}";
+
+                if (preset.Grades != null)
+                {
+                    string grades = "";
+
+                    foreach (var grade in preset.Grades)
+                    {
+                        if (grades.Equals(""))
+                            grades = $"{grade.Id}";
+                        else
+                            grades += $",{grade.Id}";
+                    }
+
+                    data += $"|GR={grades}";
+                }
+
+                data += "|";
+
+                _communicationManager.SendMsg("POST", eventType, data);
+
+                return "El 'Preset' fue enviado al lado.";
+            }
+            catch (Exception e)
+            {
+                //_logger.LogError($"ERROR sending 'Preset' to pump {preset.PumpNo}: {e.Message}");
+                return $"Error enviando el 'Preset' al lado {preset.PumpNo}.";
+            }
+        }
+
+        public async Task<string> UpdateServiceMode(ServiceMode pumpServiceMode)
+        {
+            try
+            {
+                _pumpsUnitOfWork.Begin();
+                bool serviceModesUpdated = await _pumpsUnitOfWork.GenericConfigValuesRepository.UpdatePumpServiceMode(pumpServiceMode);
+
+                if (serviceModesUpdated)
+                {
+                    _pumpsUnitOfWork.Commit();
+                    _communicationManager.SendMsg("POST", "REQ_APPLY_GRAL_NEW_CONFIG", "");
+                    _communicationManager.SendMsg("POST", "REQ_REFRESH_GENERAL_INFORMATION", "");
+
+                    return "El modo de servicio ha sido cambiado";
+                }
+                else
+                {
+                    //_logger.LogError($"Error in the transaction, check database transaction for more details.");
+                    _pumpsUnitOfWork.Rollback();
+                    return "Error cambiando el modo de servicio del lado";
+                }
+            }
+            catch (Exception e)
+            {
+                //_logger.LogError($"Error updating pump service mode: {e.Message}");
+                return $"Error cambiando el modo de servicio del lado.";
+            }
         }
     }
 }

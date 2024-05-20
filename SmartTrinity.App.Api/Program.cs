@@ -1,22 +1,24 @@
 using System.Text;
+using Asp.Versioning;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 using SmartTrinity.Core.Models;
+using SmartTrinity.App.Services;
 using SmartTrinity.Core.Database;
 using SmartTrinity.Core.Services;
-using SmartTrinity.App.Sales.Services;
-using Microsoft.IdentityModel.Tokens;
-using SmartTrinity.Infrastructure.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SmartTrinity.App.Sales.Infrastructure.Repositories;
-using SmartTrinity.Infrastructure.Database.UnitOfWork;
-using SmartTrinity.App.Api.Middlewares;
-using Asp.Versioning;
-using SmartTrinity.App.Api.Services;
-using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Services;
-using SmartTrinity.App.Core.Services;
 using SmartTrinity.Shared.Services;
+using SmartTrinity.App.Api.Services;
+using Microsoft.IdentityModel.Tokens;
+using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.Sales.Services;
+using SmartTrinity.App.Pumps.Services;
+using SmartTrinity.App.Api.Middlewares;
+using SmartTrinity.App.Core.Communication;
+using SmartTrinity.Infrastructure.Database;
+using SmartTrinity.App.Pumps.Core.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SmartTrinity.Infrastructure.Database.UnitOfWork;
+using SmartTrinity.App.Sales.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +38,7 @@ builder.Services.AddAuthentication(x =>
 .AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
-    var key = Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Secret"]);
+    var key = Encoding.UTF8.GetBytes(builder.Configuration[key: "AppSettings:Secret"]);
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -66,12 +68,13 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IJwtService, JwtService>();
-builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddScoped<ISalesUnitOfWork, SalesUnitOfWork>();
 
 //Services:
+builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<IPumpsService, PumpsService>();
 
 //ComunicationManager
 builder.Services.AddSingleton<ICommunicationManager, CommunicateManagerService>();

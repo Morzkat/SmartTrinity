@@ -11,4 +11,8 @@
     <PackageReference Include="SmartTrinity.Shared.Library" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SmartTrinity.Hub\SmartTrinity.App.csproj" />
+  </ItemGroup>
+
 </Project>
