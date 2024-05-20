@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartTrinity.App.Pumps.Persistence
 {
-    public static class GradePersistence
+    public static class GradesPersistence
     {
         private static List<Grade> _grades = new List<Grade>();
 

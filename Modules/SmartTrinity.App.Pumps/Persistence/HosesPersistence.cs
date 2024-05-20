@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartTrinity.App.Pumps.Persistence
 {
-    public static class HosePersistence
+    public static class HosesPersistence
     {
         private static List<Hose> _hoses = new List<Hose>();
         public static DateTime LastUpdate { get; set; }
