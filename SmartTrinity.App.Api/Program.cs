@@ -19,6 +19,8 @@ using SmartTrinity.App.Pumps.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
 using SmartTrinity.App.Sales.Infrastructure.Repositories;
+using SmartTrinity.App.Pumps.Infrastructure;
+using SmartTrinity.App.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,17 +66,20 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection("ConsoleSettings"));
 
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ISalesUnitOfWork, SalesUnitOfWork>();
+builder.Services.AddTransient<ISalesUnitOfWork, SalesUnitOfWork>();
+builder.Services.AddTransient<IPumpsUnitOfWork, PumpsUnitOfWork>();
 
 //Services:
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IPumpsService, PumpsService>();
+builder.Services.AddTransient<IMessageService, MessageService>();
 
 //ComunicationManager
 builder.Services.AddSingleton<ICommunicationManager, CommunicateManagerService>();

@@ -139,7 +139,7 @@ namespace SmartTrinity.App.Services
         {
             try
             {
-                if (!IsConnected) throw new Exception("Need to be connected before subscribing messages");
+                if (!ClientIsConnected()) throw new Exception("Need to be connected before subscribing messages");
 
                 string currentMsg = $"{msgType}|{eventType}|||{data}";
 
