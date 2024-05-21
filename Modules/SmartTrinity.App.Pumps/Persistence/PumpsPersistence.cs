@@ -11,14 +11,14 @@ namespace SmartTrinity.App.Pumps.Persistence
     {
         private static List<Pump> _pumps = new List<Pump>();
         public static DateTime LastUpdate { get; set; }
-        public static Dictionary<string, string> PumpWithAction = new Dictionary<string, string>();
+        public static Dictionary<int, PumpActions> PumpWithAction = new Dictionary<int, PumpActions>();
 
-        public static List<Pump> GetPumps()
+        public static List<Pump> Get()
         {
             return _pumps;
         }
 
-        public static Pump GetPump(int pumpId)
+        public static Pump Get(int pumpId)
         {
             bool exist = _pumps.Exists(x => x.PumpNo == pumpId);
             if (exist)
@@ -27,7 +27,7 @@ namespace SmartTrinity.App.Pumps.Persistence
             return null;
         }
 
-        public static void AddPump(int pumpId)
+        public static void Add(int pumpId)
         {
             _pumps.Add(new Pump
             {
@@ -40,7 +40,7 @@ namespace SmartTrinity.App.Pumps.Persistence
             });
         }
 
-        public static void UpdatePump(Pump pump)
+        public static void Update(Pump pump)
         {
             bool exist = _pumps.Exists(x => x.PumpNo == pump.PumpNo);
             if (exist)
@@ -55,18 +55,18 @@ namespace SmartTrinity.App.Pumps.Persistence
             _pumps = new List<Pump>();
         }
 
-        public static string GetPumpAction(string pump)
+        public static PumpActions GetAction(int pump)
         {
             try { return PumpWithAction[pump]; }
-            catch { return ""; }
+            catch { return PumpActions.DEAUTH; }
         }
 
-        public static void AddActionToPump(string pump, string action)
+        public static void AddAction(int pump, PumpActions action)
         {
             PumpWithAction[pump] = action;
         }
 
-        public static void RemovePumpAction(string pump)
+        public static void RemoveAction(int pump)
         {
             PumpWithAction.Remove(pump);
         }

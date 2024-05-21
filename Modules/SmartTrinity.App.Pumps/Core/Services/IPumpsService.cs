@@ -7,5 +7,6 @@ namespace SmartTrinity.App.Pumps.Core.Services
         Task<string> SendPresent(Preset preset);
         Task<string> ExecuteAction(PumpAction pumpAction);
         Task<string> UpdateServiceMode(ServiceMode pumpServiceMode);
+        void SetupPump(int pumpId);
     }
 }

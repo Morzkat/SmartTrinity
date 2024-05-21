@@ -11,17 +11,12 @@ namespace SmartTrinity.App.Pumps.Services
     public class PumpsService : IPumpsService
     {
         IPumpsUnitOfWork _pumpsUnitOfWork;
-        ISmartTrinityService _smartTrinityService;
         ICommunicationManager _communicationManager;
 
-        public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork, ICommunicationManager communicationManager, ISmartTrinityService smartTrinityService)
+        public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork, ICommunicationManager communicationManager)
         {
             _pumpsUnitOfWork = pumpsUnitOfWork;
-            _smartTrinityService = smartTrinityService;
             _communicationManager = communicationManager;
-
-            if (!_communicationManager.ClientIsConnected())
-                _smartTrinityService.Setup();
         }
 
         public async Task<string> ExecuteAction(PumpAction pumpAction)
@@ -30,8 +25,8 @@ namespace SmartTrinity.App.Pumps.Services
             {
                 SetPumpStatus(pumpAction.Pump, pumpAction.Action);
 
-                var p = PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString());
-                if (PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "MONEY_PRESET" || PumpsPersistence.GetPumpAction(pumpAction.Pump.ToString()) == "VOLUME_PRESET")
+                var action = PumpsPersistence.GetAction(pumpAction.Pump);
+                if (action == PumpActions.MONEY_PRESET || action == PumpActions.VOLUME_PRESET)
                     _communicationManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
                 else
                     _communicationManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToString().ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
@@ -44,13 +39,6 @@ namespace SmartTrinity.App.Pumps.Services
                 //_logger.LogError($"Error executing pump action: {e.Message}");
                 return $"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.Pump}.";
             }
-        }
-
-        private void SetPumpStatus(int pumpId, PumpActions action)
-        {
-            Pump pump = PumpsPersistence.GetPump(pumpId);
-            pump.SetAthoredStatus(action);
-            PumpsPersistence.UpdatePump(pump);
         }
 
         public async Task<string> SendPresent(Preset preset)
@@ -121,5 +109,23 @@ namespace SmartTrinity.App.Pumps.Services
                 return $"Error cambiando el modo de servicio del lado.";
             }
         }
+
+        public void SetupPump(int pumpId)
+        {
+            _communicationManager.SendMsg("POST", $"REQ_PUMP_STATUS_ID_{pumpId.ToString().LPad("0", 3)}", "");
+            _communicationManager.SendMsg("POST", $"REQ_PUMP_CAPABILITIES_ID_{pumpId.ToString().LPad("0", 3)}", "");
+            _communicationManager.SendMsg("POST", $"REQ_PUMP_GET_INFO_ID_{pumpId.ToString().LPad("0", 3)}", "");
+            _communicationManager.SendMsg("POST", $"REQ_PUMP_GET_ERROR_MSG_ID_{pumpId.ToString().LPad("0", 3)}", "");
+            _communicationManager.SendMsg("POST", $"REQ_PUMP_STATUS_ID_{pumpId.ToString().LPad("0", 3)}", "");
+            _communicationManager.SendMsg("POST", "REQ_GET_PUMP_SALES", $"PM={pumpId}|QT=12|");
+        }
+
+        private void SetPumpStatus(int pumpId, PumpActions action)
+        {
+            Pump pump = PumpsPersistence.Get(pumpId);
+            pump.SetAthoredStatus(action);
+            PumpsPersistence.Update(pump);
+        }
+
     }
 }
