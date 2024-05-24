@@ -23,13 +23,13 @@ namespace SmartTrinity.App.Pumps.Services
         {
             try
             {
-                SetPumpStatus(pumpAction.Pump, pumpAction.Action);
+                SetPumpStatus(pumpAction.PumpNo, pumpAction.Action);
 
-                var action = PumpsPersistence.GetAction(pumpAction.Pump);
+                var action = PumpsPersistence.GetAction(pumpAction.PumpNo);
                 if (action == PumpActions.MONEY_PRESET || action == PumpActions.VOLUME_PRESET)
-                    _communicationManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+                    _communicationManager.SendMsg("POST", $"REQ_PUMP_CLEAR_PRESET_ID_0{pumpAction.PumpNo.ToString().PadLeft(2, '0')}", "");
                 else
-                    _communicationManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToString().ToUpper()}_ID_0{pumpAction.Pump.ToString().PadLeft(2, '0')}", "");
+                    _communicationManager.SendMsg("POST", $"REQ_PUMP_{pumpAction.Action.ToString().ToUpper()}_ID_0{pumpAction.PumpNo.ToString().PadLeft(2, '0')}", "");
 
                 return "Accion ejecutada sobre el lado.";
                 //_smartPumpHub.Clients.All.SendAsync("PumpStatusChange", pump);
@@ -37,7 +37,7 @@ namespace SmartTrinity.App.Pumps.Services
             catch (Exception e)
             {
                 //_logger.LogError($"Error executing pump action: {e.Message}");
-                return $"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.Pump}.";
+                return $"Error ejecutando la accion {pumpAction.Action} sobre el lado {pumpAction.PumpNo}.";
             }
         }
 
@@ -53,20 +53,20 @@ namespace SmartTrinity.App.Pumps.Services
                 else
                     data += $"|VA={preset.Amount}";
 
-                if (preset.Grades != null)
-                {
-                    string grades = "";
+                //if (preset.Grades != null)
+                //{
+                //    string grades = "";
 
-                    foreach (var grade in preset.Grades)
-                    {
-                        if (grades.Equals(""))
-                            grades = $"{grade.Id}";
-                        else
-                            grades += $",{grade.Id}";
-                    }
+                //    foreach (var grade in preset.Grades)
+                //    {
+                //        if (grades.Equals(""))
+                //            grades = $"{grade.Id}";
+                //        else
+                //            grades += $",{grade.Id}";
+                //    }
 
-                    data += $"|GR={grades}";
-                }
+                //    data += $"|GR={grades}";
+                //}
 
                 data += "|";
 

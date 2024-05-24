@@ -21,7 +21,13 @@ namespace SmartTrinity.App.Api.Controllers
             _pumpsService = pumpsService;
         }
 
-        [HttpPost("Send/Preset")]
+        /// <summary>
+        /// Allow sent preset information to a pump.
+        /// </summary>
+        /// <param name="preset"></param>
+        /// <returns>String message indicating if the preset was applied it.</returns>
+        [HttpPost("Preset")]
+        [ProducesResponseType(typeof(string), 200)]
         public async Task<ActionResult> SendPreset(Preset preset)
         {
             try
@@ -34,7 +40,13 @@ namespace SmartTrinity.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Execute a action over a pump.
+        /// </summary>
+        /// <param name="pumpAction"></param>
+        /// <returns>String message indicating if the action was executed it.</returns>
         [HttpPost("Action")]
+        [ProducesResponseType(typeof(string), 200)]
         public async Task<ActionResult> ExecuteAction([FromBody] PumpAction pumpAction)
         {
             try
@@ -47,7 +59,13 @@ namespace SmartTrinity.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Update the service mode of a pump
+        /// </summary>
+        /// <param name="pumpServiceMode"></param>
+        /// <returns>String message indicating if the service mode was updated it.</returns>
         [HttpPut("ServicesModes")]
+        [ProducesResponseType(typeof(string), 200)]
         public async Task<ActionResult> UpdateServiceMode(ServiceMode pumpServiceMode)
         {
             try

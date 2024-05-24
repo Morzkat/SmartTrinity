@@ -15,7 +15,7 @@ namespace SmartTrinity.App.Pumps.Core.Models
         public int Type { get; set; }
         public int PumpNo { get; set; }
         public double Amount { get; set; }
-        public bool TankFull { get; set; }
-        public IList<Grade>? Grades { get; set; }
+        public bool TankFull { get; set; } = false;
+        //public IList<Grade>? Grades { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace SmartTrinity.App.Pumps.Core.Models
 
     public class PumpAction
     {
-        public int Pump { get; set; }
+        public int PumpNo { get; set; }
         public PumpActions Action { get; set; }
     }
 }

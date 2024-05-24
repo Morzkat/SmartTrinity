@@ -1,16 +1,12 @@
-﻿using SmartTrinity.App.Pumps.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using SmartTrinity.App.Services;
 using SmartTrinity.App.Extensions;
+using Microsoft.AspNetCore.SignalR;
+using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Persistence;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Core.Services;
 
 namespace SmartTrinity.App.Pumps.Services
 {
@@ -18,11 +14,14 @@ namespace SmartTrinity.App.Pumps.Services
     {
         private readonly IPumpsService _pumpsService;
         private readonly ICommunicationManager _communicationManager;
+        private readonly IHubContext<SmartTrinityHubService, ISmartTrinityHubService> _smartTrinityHubServce;
 
-        public MessageService(IPumpsService pumpsService, ICommunicationManager communicationManager)
+        public MessageService(IPumpsService pumpsService, ICommunicationManager communicationManager,
+            IHubContext<SmartTrinityHubService, ISmartTrinityHubService> smartTrinityHubServce)
         {
             _pumpsService = pumpsService;
             _communicationManager = communicationManager;
+            _smartTrinityHubServce = smartTrinityHubServce;
         }
 
         public void Process(string msgType, string msgData)
@@ -69,8 +68,6 @@ namespace SmartTrinity.App.Pumps.Services
                 if (PumpHosesIsEmpty(i))
                     _communicationManager.SendMsg("POST", "REQ_FCRT_GRADES_CONFIG", "");
             }
-
-            // return new NotifyPumpsToClient();
         }
 
         public void Process_EVT_PUMP_STATUS_CHANGE_ID(int pumpId, string msgData)
@@ -85,8 +82,27 @@ namespace SmartTrinity.App.Pumps.Services
             Enum.TryParse(data["SU"].Split("+")[0], out PumpActions action);
             PumpsPersistence.AddAction(pumpId, action);
             PumpsPersistence.Update(pump);
+            pump.SaleProgress = 0;
 
-            // return new NotifyPumpChangesToClient($"pump={pumpId}|{msgData.CleanMessageData()}".FromMsgDataToDictionary());
+            _smartTrinityHubServce.Clients.All.PumpStatusChangeNotification(pump);
+        }
+
+        public void Process_EVT_PUMP_DELIVERY_PROGRESS_ID(int pumpId, string msgData)
+        {
+            Dictionary<string, string> data = msgData.ClearMessage().ToDictionary();
+
+            Pump pump = PumpsPersistence.Get(pumpId);
+
+            double.TryParse(data["VO"], out double volume);
+            double.TryParse(data["PU"], out double salePrice);
+            double.TryParse(data["AMS"], out double saleProgress);
+
+            pump.Status = "FUELLING";
+            pump.Volume = volume;
+            pump.SalePrice = salePrice;
+            pump.SaleProgress = saleProgress;
+
+            _smartTrinityHubServce.Clients.All.PumpDeliveryProgressNotification(pump);
         }
 
         private bool PumpHosesIsEmpty(int pumpId)

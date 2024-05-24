@@ -68,6 +68,11 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection("ConsoleSettings"));
 
+builder.Services.AddSignalR();
+
+//Hosted service
+builder.Services.AddHostedService<TrinityBackgroundService>();
+
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -147,6 +152,8 @@ DapperDatabaseManager.Setup();
 app.UseSwagger();
 app.UseSwaggerUI();
 // }
+
+app.MapHub<SmartTrinityHubService>("/smartTrinityHub");
 
 app.UsePathBase(new PathString("/api"));
 app.UseHttpsRedirection();
