@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Api", "Sma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Pumps", "Modules\SmartTrinity.App.Pumps\SmartTrinity.App.Pumps.csproj", "{CD279389-6149-44B4-908F-C90E1BA9E3EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTrinity.App.Migrations", "SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj", "{63CE0F0B-5B6F-4278-AF9A-212966FE77E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{CD279389-6149-44B4-908F-C90E1BA9E3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD279389-6149-44B4-908F-C90E1BA9E3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD279389-6149-44B4-908F-C90E1BA9E3EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CE0F0B-5B6F-4278-AF9A-212966FE77E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CE0F0B-5B6F-4278-AF9A-212966FE77E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CE0F0B-5B6F-4278-AF9A-212966FE77E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CE0F0B-5B6F-4278-AF9A-212966FE77E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{7F17BB86-A145-4320-A7EE-3220C459AE8A} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 		{1B8C7BAF-B3D6-467D-AEA6-40FC6EA1753A} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 		{CD279389-6149-44B4-908F-C90E1BA9E3EB} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
+		{63CE0F0B-5B6F-4278-AF9A-212966FE77E5} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BDBF4D-C597-4D12-9932-71A25C98D3CE}
