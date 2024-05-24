@@ -60,6 +60,7 @@ namespace SmartTrinity.App.Services
             {
                 _client.Disconnect();
                 SetMessageParametersDefaultValues();
+                IsConnected = false;
             }
             catch (Exception e)
             {
@@ -71,7 +72,10 @@ namespace SmartTrinity.App.Services
 
         public bool ClientIsConnected()
         {
-            try { IsConnected = _client.IsConnected(); }
+            try
+            {
+                IsConnected = _client.IsConnected();
+            }
             catch (Exception) { IsConnected = false; }
 
             return IsConnected;
@@ -135,7 +139,7 @@ namespace SmartTrinity.App.Services
         {
             try
             {
-                if (!IsConnected) throw new Exception("Need to be connected before subscribing messages");
+                if (!ClientIsConnected()) throw new Exception("Need to be connected before subscribing messages");
 
                 string currentMsg = $"{msgType}|{eventType}|||{data}";
 
@@ -209,7 +213,6 @@ namespace SmartTrinity.App.Services
             TimeoutEcho = 30000L;
             LogTryConnect = false;
         }
-
 
         private int GetGeneration(int generation31)
         {

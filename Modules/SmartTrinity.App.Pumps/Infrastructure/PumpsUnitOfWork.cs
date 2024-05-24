@@ -10,6 +10,7 @@ namespace SmartTrinity.App.Pumps.Infrastructure
     public interface IPumpsUnitOfWork : IUnitOfWork
     {
         IPumpsRepository PumpsRepository { get; }
+        IGenericConfigValuesRepository GenericConfigValuesRepository { get; }
     }
 
     public class PumpsUnitOfWork : UnitOfWork, IPumpsUnitOfWork
@@ -18,10 +19,13 @@ namespace SmartTrinity.App.Pumps.Infrastructure
 
         public IPumpsRepository PumpsRepository { get; private set; }
 
+        public IGenericConfigValuesRepository GenericConfigValuesRepository { get; private set; }
+
         public PumpsUnitOfWork(IOptions<AppSettings> options) : base(options)
         {
             _appSettings = options.Value;
             PumpsRepository = new PumpsRepository(_connection, _transaction, options);
+            GenericConfigValuesRepository = new GenericConfigValuesRepository(_connection, _transaction);
         }
     }
 }

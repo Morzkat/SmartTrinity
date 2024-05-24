@@ -3,18 +3,27 @@ using SmartTrinity.App.Core.Services;
 using SmartTrinity.App.Core.Communication;
 using SmartTrinity.App.Core.Communication.Adapters.Tcp;
 using SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp;
+using Microsoft.Extensions.Options;
+using SmartTrinity.App.Core.Models;
+using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Services
 {
-    public class SmartTrinityService: ISmartTrinityService
+    public class SmartTrinityService : ISmartTrinityService
     {
+        private readonly ConsoleSettings _consoleSettings;
         private readonly ILogger<ISmartTrinityService> _logger;
         private readonly ICommunicationManager _communicationManager;
-        protected IConnectionParams _connectionParams = new TcpConnectionParams("148.0.250.200", 3011);
+        private readonly IMessageService _messageService;
+        protected IConnectionParams _connectionParams;
 
-        public SmartTrinityService(ILogger<ISmartTrinityService> logger, ICommunicationManager communicationManager)
+        public SmartTrinityService(ILogger<ISmartTrinityService> logger, ICommunicationManager communicationManager, IOptions<ConsoleSettings> consoleSettingsOptions,
+            IMessageService messageService)
         {
             _logger = logger;
+            _messageService = messageService;
+            _consoleSettings = consoleSettingsOptions.Value;
+            _connectionParams = new TcpConnectionParams(_consoleSettings.Host, _consoleSettings.Port);
             _communicationManager = communicationManager;
             _communicationManager.ConnectionParams = _connectionParams;
         }
@@ -26,12 +35,31 @@ namespace SmartTrinity.App.Services
             while (Thread.CurrentThread.IsAlive)
             {
                 _communicationManager.ReceiveSubscribedMessages();
-                //_serviceProcess.ProcessMessage(_messageManager.MsgType, _messageManager.MsgData);
+                _messageService.Process(_communicationManager.MsgType, _communicationManager.MsgData);
 
                 if (_communicationManager.MsgType.Equals("RES_FCRT_PUMPS_CONFIG"))
                     break;
             }
             SetupSubscriptionsToEvents();
+            LoginToService();
+        }
+
+        public async Task HandleClientAsync()
+        {
+            while (true)
+            {
+                await Task.Run(() =>
+                {
+                    if (_communicationManager.SocketHasData())
+                    {
+                        _communicationManager.ReceiveSubscribedMessages();
+                        _messageService.Process(_communicationManager.MsgType, _communicationManager.MsgData);
+                    }
+
+                    if (!_communicationManager.ClientIsConnected())
+                        Setup();
+                });
+            }
         }
 
         public void SetupRequestConfigurations()
@@ -55,6 +83,23 @@ namespace SmartTrinity.App.Services
             _communicationManager.Subscribe("EVT_GRADE_PRICE_CHANGE");
             _communicationManager.Subscribe("EVT_PUMP_DELIVERY_PROGRESS_ID_*");
             _communicationManager.Subscribe("EVT_PUMP_TOTALIZER_UPDATE_ID_*");
+        }
+
+        private void LoginToService()
+        {
+            string credentials = GetUserCredentials();
+            _communicationManager.SendMsg("POST", "REQ_SECU_LOGIN", credentials);
+        }
+
+        private string GetUserCredentials()
+        {
+            string user = _consoleSettings.Credentials.Username.RPad(" ", 25);
+            string pw = _consoleSettings.Credentials.Username.RPad(" ", 25);
+
+            char[] encryptedPw = pw.ToCharArray().EncryptMessage(25, user.ToCharArray(), 20);
+            string data = $"US=1|PW={encryptedPw.ConvertBinToHex(25)}|";
+
+            return data;
         }
 
         private static string GetComputerId()

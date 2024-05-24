@@ -88,5 +88,15 @@ namespace SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions
         {
             return System.Net.Dns.GetHostName().ToUpper();
         }
+
+        public static string ConvertBinToHex(this char[] binStr, int len)
+        {
+            char[] binToChar = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+            string retStr = "";
+            for (int i = 0; i < len; i++)
+                retStr = (new StringBuilder(retStr)).Append(binToChar[(int)((uint)(binStr[i] & 0xf0) >> 4)]).Append(binToChar[binStr[i] & 0xf]).ToString();
+
+            return retStr;
+        }
     }
 }

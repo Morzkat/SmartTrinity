@@ -17,13 +17,16 @@ namespace SmartTrinity.App.Pumps.Core.Models
         public double SaleProgress { get; set; }
         public bool IsAuthored { get { return _isAuthored; } }
 
-        public void SetAthoredStatus(string status)
+        public void SetAthoredStatus(PumpActions action)
         {
-            // HACK: Remove if| else if| else| statement and use approach more maintainable 
-            if (status == PumpActions.AUTH.ToString())
-                _isAuthored = true;
-            else if (status == PumpActions.DEAUTH.ToString())
-                _isAuthored = false;
+            _ = action switch
+            {
+                PumpActions.AUTH => _isAuthored = true,
+                PumpActions.DEAUTH => _isAuthored = false,
+                PumpActions.MONEY_PRESET => throw new NotImplementedException(),
+                PumpActions.VOLUME_PRESET => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 
@@ -39,7 +42,7 @@ namespace SmartTrinity.App.Pumps.Core.Models
 
     public class PumpAction
     {
-        public int Pump { get; set; }
+        public int PumpNo { get; set; }
         public PumpActions Action { get; set; }
     }
 }

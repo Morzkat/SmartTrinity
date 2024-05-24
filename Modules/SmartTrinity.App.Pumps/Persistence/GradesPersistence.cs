@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 
 namespace SmartTrinity.App.Pumps.Persistence
 {
-    public static class GradePersistence
+    public static class GradesPersistence
     {
         private static List<Grade> _grades = new List<Grade>();
 
-        public static Grade GetGrade(int gradeId)
+        public static Grade Get(int gradeId)
         {
             try { return _grades.Find(x => x.Id == gradeId); }
             catch { return null; }
         }
 
-        public static Grade GetGrade(string gradeDescripcion)
+        public static Grade Get(string gradeDescripcion)
         {
             try { return _grades.Find(x => x.Description == gradeDescripcion); }
             catch { return null; }
         }
 
-        public static IEnumerable<Grade> GetGrades() => _grades;
+        public static IEnumerable<Grade> Get() => _grades;
 
 
-        public static void AddGrade(Grade grade)
+        public static void Add(Grade grade)
         {
             _grades.Add(grade);
         }
 
-        public static void UpdateGrade(Grade grade)
+        public static void Update(Grade grade)
         {
             bool exist = _grades.Exists(g => g.Id == grade.Id);
             if (exist)

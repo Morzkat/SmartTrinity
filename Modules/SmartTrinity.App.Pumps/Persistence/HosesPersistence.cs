@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace SmartTrinity.App.Pumps.Persistence
 {
-    public static class HosePersistence
+    public static class HosesPersistence
     {
         private static List<Hose> _hoses = new List<Hose>();
         public static DateTime LastUpdate { get; set; }
 
-        public static List<Hose> GetHoses()
+        public static List<Hose> Get()
         {
             return _hoses;
         }
 
-        public static Hose GetHose(int hoseId)
+        public static Hose Get(int hoseId)
         {
             bool exist = _hoses.Exists(x => x.HoseId == hoseId);
             if (exist)
                 return _hoses.Find(x => x.HoseId == hoseId);
 
-            AddHose(hoseId);
-            return GetHose(hoseId);
+            Add(hoseId);
+            return Get(hoseId);
         }
 
-        public static void AddHose(int hoseId)
+        public static void Add(int hoseId)
         {
             bool exist = _hoses.Exists(x => x.HoseId == hoseId);
             if (!exist)
@@ -42,7 +42,7 @@ namespace SmartTrinity.App.Pumps.Persistence
             }
         }
 
-        public static void UpdateHose(Hose Hose)
+        public static void Update(Hose Hose)
         {
             bool exist = _hoses.Exists(x => x.HoseId == Hose.HoseId);
             if (exist)

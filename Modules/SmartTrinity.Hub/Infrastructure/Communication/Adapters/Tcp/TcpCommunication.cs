@@ -63,7 +63,37 @@ namespace SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp
 
         public bool IsConnected()
         {
-            return _socket != null && _socket.Connected;
+
+            try
+            {
+                if (_socket == null)
+                    return true;
+
+                var socektIsReadable = _socket.Poll(1000, SelectMode.SelectRead);
+                var socketAvailable = _socket.Available == 0;
+
+                if (socektIsReadable && socketAvailable)
+                    return false;
+
+                else
+                    return _socket.Connected;
+
+            }
+            catch (SocketException ex)
+            {
+                return false;
+            }
+
+            catch (ObjectDisposedException)
+            {
+                return false;
+            }
+
+            catch(Exception ex)
+            {
+                throw;
+            }
+
         }
 
         public char[] Receive()
