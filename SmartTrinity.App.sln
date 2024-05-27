@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Api", "Sma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Pumps", "Modules\SmartTrinity.App.Pumps\SmartTrinity.App.Pumps.csproj", "{CD279389-6149-44B4-908F-C90E1BA9E3EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTrinity.App.Migrations", "Modules\SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj", "{1AFF73C1-5C25-4580-A423-CA025C3A678C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Migrations", "Modules\SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj", "{1AFF73C1-5C25-4580-A423-CA025C3A678C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
