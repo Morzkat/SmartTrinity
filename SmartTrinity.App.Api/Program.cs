@@ -1,22 +1,26 @@
-using System.Text;
-using System.Reflection;
-using Microsoft.OpenApi.Models;
-using SmartTrinity.Core.Models;
-using SmartTrinity.Core.Database;
-using SmartTrinity.Core.Services;
-using SmartTrinity.App.Sales.Services;
-using Microsoft.IdentityModel.Tokens;
-using SmartTrinity.Infrastructure.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SmartTrinity.App.Sales.Infrastructure.Repositories;
-using SmartTrinity.Infrastructure.Database.UnitOfWork;
-using SmartTrinity.App.Api.Middlewares;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using SmartTrinity.App.Api.Middlewares;
 using SmartTrinity.App.Api.Services;
 using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Services;
 using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.Migrations.Core.Repositories;
+using SmartTrinity.App.Migrations.Infrastructure;
+using SmartTrinity.App.Migrations.Infrastructure.Repositories;
+using SmartTrinity.App.Sales.Infrastructure.Repositories;
+using SmartTrinity.App.Sales.Services;
+using SmartTrinity.App.Services;
+using SmartTrinity.Core.Database;
+using SmartTrinity.Core.Models;
+using SmartTrinity.Core.Services;
+using SmartTrinity.Infrastructure.Database;
+using SmartTrinity.Infrastructure.Database.UnitOfWork;
 using SmartTrinity.Shared.Services;
+using System.Reflection;
+using System.Text;
+using MigrationServices = SmartTrinity.App.Migrations.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,8 +71,12 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddScoped(typeof(ICustomerUnitOfWork), typeof(CustomerUnitOfWork));
+builder.Services.AddScoped(typeof(ICustomerRepository), typeof(CustomerRepository));
 builder.Services.AddTransient<ISalesService, SalesService>();
+builder.Services.AddTransient(typeof(MigrationServices.ISalesService),typeof( MigrationServices.SalesService));
 builder.Services.AddScoped<ISalesUnitOfWork, SalesUnitOfWork>();
+
 
 //Services:
 builder.Services.AddTransient<IUsersService, UsersService>();
@@ -76,6 +84,8 @@ builder.Services.AddTransient<IUsersService, UsersService>();
 //ComunicationManager
 builder.Services.AddSingleton<ICommunicationManager, CommunicateManagerService>();
 builder.Services.AddSingleton<ISmartTrinityService, SmartTrinityService>();
+
+
 builder.Services.AddSwaggerGen(options =>
 {
     // Set the comments path for the Swagger JSON and UI.**

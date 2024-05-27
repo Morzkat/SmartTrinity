@@ -1,23 +1,21 @@
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SmartTrinity.App.Sales.Services;
-using Microsoft.AspNetCore.Authorization;
-using SmartTrinity.App.Sales.Core.Models;
-using Asp.Versioning;
+using SmartTrinity.App.Migrations.Core.Models;
+using SmartTrinity.App.Migrations.Services;
 
-namespace  SmartTrinity.App.Api.Controllers
+namespace SmartTrinity.App.Api.Controllers
 {
-    //[Authorize]
-    [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/api/[controller]")]
-    public class SalesController : ControllerBase
+    [ApiController]
+    public class SalesWithStationIdController : ControllerBase
     {
-        private readonly ILogger<SalesController> _logger;
-        private readonly ISalesService _salesService;
 
-        public SalesController(ILogger<SalesController> logger, ISalesService salesService)
+        private readonly ISalesService _salesService;
+        
+        public SalesWithStationIdController(ISalesService salesService)
         {
-            _logger = logger;
             _salesService = salesService;
         }
 
@@ -27,23 +25,24 @@ namespace  SmartTrinity.App.Api.Controllers
         /// <response code="200">List of sales</response>
         /// <response code="500">Error getting sales</response>
         [HttpGet]
+        [Route("GetSalesWithStationIdAsync")]
         [ProducesResponseType(typeof(IEnumerable<Sale>), 200)]
         [ProducesResponseType(typeof(ErrorResponseDetails), 500)]
-        public async Task<ActionResult> GetSales()
+        public async Task<ActionResult> GetSalesWithStationIdAsync()
         {
             try
             {
-                return Ok(await _salesService.GetSales());
+                return Ok(await _salesService.GetSalesWithStationIdAsync());
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-    }
 
-    public class ErrorResponseDetails
-    {
-        public string Message { get; set; }
+        public class ErrorResponseDetails
+        {
+            public string Message { get; set; }
+        }
     }
 }

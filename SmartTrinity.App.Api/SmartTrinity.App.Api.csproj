@@ -14,6 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Modules\SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.App.Pumps\SmartTrinity.App.Pumps.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.Hub\SmartTrinity.App.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.Sales\SmartTrinity.App.Sales.csproj" />

@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SmartTrinity.Shared.Library" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartTrinity.Sales\SmartTrinity.App.Sales.csproj" />
+  </ItemGroup>
+
 </Project>
