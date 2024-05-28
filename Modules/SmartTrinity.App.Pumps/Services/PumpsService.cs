@@ -1,10 +1,12 @@
 ﻿using SmartTrinity.App.Core.Communication;
 using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
 using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.Pumps.Core.Dtos;
 using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Infrastructure;
 using SmartTrinity.App.Pumps.Persistence;
+using System.Diagnostics;
 
 namespace SmartTrinity.App.Pumps.Services
 {
@@ -17,6 +19,29 @@ namespace SmartTrinity.App.Pumps.Services
         {
             _pumpsUnitOfWork = pumpsUnitOfWork;
             _communicationManager = communicationManager;
+        }
+
+        public IEnumerable<PumpDto> GetPumps()
+        {
+            var pumpsDto = new List<PumpDto>();
+            var pumps = PumpsPersistence.Get();
+
+            foreach (var pump in pumps)
+            {
+                pumpsDto.Add(new PumpDto
+                {
+                    Grade = GetGradeDto(pump.Grade),
+                    PumpNo = pump.PumpNo,
+                    Status = pump.Status,
+                    Volume = pump.Volume,
+                    SalePrice = pump.SalePrice,
+                    PriceLevel = pump.PriceLevel,
+                    SaleProgress = pump.SaleProgress,
+                    Hoses = GetHoseDtos(pump.Hoses)
+                });
+            }
+
+            return pumpsDto;
         }
 
         public async Task<string> ExecuteAction(PumpAction pumpAction)
@@ -53,20 +78,20 @@ namespace SmartTrinity.App.Pumps.Services
                 else
                     data += $"|VA={preset.Amount}";
 
-                //if (preset.Grades != null)
-                //{
-                //    string grades = "";
+                if (preset.Grades != null)
+                {
+                    string grades = "";
 
-                //    foreach (var grade in preset.Grades)
-                //    {
-                //        if (grades.Equals(""))
-                //            grades = $"{grade.Id}";
-                //        else
-                //            grades += $",{grade.Id}";
-                //    }
+                    foreach (var grade in preset.Grades)
+                    {
+                        if (grades.Equals(""))
+                            grades = $"{grade.Id}";
+                        else
+                            grades += $",{grade.Id}";
+                    }
 
-                //    data += $"|GR={grades}";
-                //}
+                    data += $"|GR={grades}";
+                }
 
                 data += "|";
 
@@ -127,5 +152,66 @@ namespace SmartTrinity.App.Pumps.Services
             PumpsPersistence.Update(pump);
         }
 
+        private IEnumerable<GradePriceDto> GetPriceDtos(IEnumerable<GradePrice> prices)
+        {
+            var priceDtos = new List<GradePriceDto>();
+            foreach (var price in prices)
+            {
+                priceDtos.Add(new GradePriceDto
+                {
+                    Price = price.Price,
+                    PriceLevel = price.PriceLevel
+                });
+            }
+
+            return priceDtos;
+        }
+
+        private IEnumerable<HoseDto> GetHoseDtos(IEnumerable<Hose> hoses)
+        {
+            var hosesDtos = new List<HoseDto>();
+
+            foreach (var hose in hoses)
+            {
+                hosesDtos.Add(new HoseDto
+                {
+                    HoseId = hose.HoseId,
+                    Grades = GetGradeDtos(hose.Grades),
+                    TotalizerMoney = hose.TotalizerMoney,
+                    TotalizerVolume = hose.TotalizerVolume
+                });
+            }
+
+            return hosesDtos;
+        }
+
+        private GradeDto GetGradeDto(Grade grade)
+        {
+            if (grade == null)
+                return null;
+
+            return new GradeDto
+            {
+                Id = grade.Id,
+                RGB = grade.RGB,
+                Red = grade.Red,
+                Blue = grade.Blue,
+                Green = grade.Green,
+                Description = grade.Description,
+                Prices = GetPriceDtos(grade.Prices),
+            };
+        }
+
+        private IEnumerable<GradeDto> GetGradeDtos(IEnumerable<Grade> grades)
+        {
+            var gradesDto = new List<GradeDto>();
+
+            foreach (var grade in grades)
+            {
+                gradesDto.Add(GetGradeDto(grade));
+            }
+
+            return gradesDto;
+        }
     }
 }
