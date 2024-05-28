@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartTrinity.App.Pumps.Core.Dtos;
 using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Services;
 
@@ -22,13 +23,30 @@ namespace SmartTrinity.App.Api.Controllers
         }
 
         /// <summary>
+        /// Get all the pumps.
+        /// </summary>
+        /// <returns>A array with all the pumps with the information.</returns>
+        [HttpGet]
+        public ActionResult GetPumps()
+        {
+            try
+            {
+                return Ok(_pumpsService.GetPumps());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Allow sent preset information to a pump.
         /// </summary>
         /// <param name="preset"></param>
         /// <returns>String message indicating if the preset was applied it.</returns>
         [HttpPost("Preset")]
         [ProducesResponseType(typeof(string), 200)]
-        public async Task<ActionResult> SendPreset(Preset preset)
+        public async Task<ActionResult> SendPreset(PresetDto preset)
         {
             try
             {

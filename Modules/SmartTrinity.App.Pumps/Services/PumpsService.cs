@@ -1,12 +1,10 @@
 ﻿using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
-using SmartTrinity.App.Core.Services;
 using SmartTrinity.App.Pumps.Core.Dtos;
+using SmartTrinity.App.Pumps.Persistence;
 using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Infrastructure;
-using SmartTrinity.App.Pumps.Persistence;
-using System.Diagnostics;
+using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Pumps.Services
 {
@@ -66,7 +64,7 @@ namespace SmartTrinity.App.Pumps.Services
             }
         }
 
-        public async Task<string> SendPresent(Preset preset)
+        public async Task<string> SendPresent(PresetDto preset)
         {
             try
             {
