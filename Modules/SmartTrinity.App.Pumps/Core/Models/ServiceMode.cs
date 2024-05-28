@@ -14,8 +14,7 @@ namespace SmartTrinity.App.Pumps.Core.Models
 
     public class ServiceMode
     {
-        public int Id { get; set; }
-        public int Pump { get; set; }
+        public int PumpNo { get; set; }
         public ServiceModeTypes ServiceModeType { get; set; }
     }
 }

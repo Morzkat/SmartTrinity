@@ -3,6 +3,7 @@ using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Repositories;
 using SmartTrinity.Infrastructure.Database.Repositories;
 using System.Data;
+using static Dapper.SqlMapper;
 
 namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
 {
@@ -13,7 +14,7 @@ namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
 
         public GenericConfigValuesRepository(IDbConnection dbSet, IDbTransaction transaction) : base(dbSet, transaction)
         {
-            tableId = "id_d";
+            tableId = "id";
             tableName = "SSF_GENERIC_CONFIG_VALUES";
         }
 
@@ -21,6 +22,11 @@ namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
         {
             var entity = await SqlMapper.QueryFirstOrDefaultAsync<GenericConfigValues>(_dbSet, $"SELECT * FROM ssf_generic_config_values WHERE {tableId} = @id", new { id }, _transaction);
             return entity ?? new GenericConfigValues();
+        }
+
+        public async Task<GenericConfigValues> GetServiceModeByDeviceId(int id)
+        {
+            return await SqlMapper.QueryFirstOrDefaultAsync<GenericConfigValues>(_dbSet, $"SELECT * FROM ssf_generic_config_values WHERE {tableId} = 'ServiceModes' AND device_id = @id", new { id }, _transaction);
         }
 
         public override async Task<bool> Update(GenericConfigValues entity)
@@ -33,9 +39,15 @@ namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
 
         public async Task<bool> UpdatePumpServiceMode(ServiceMode serviceMode)
         {
-            GenericConfigValues configValues = await Get(serviceMode.Id);
+            GenericConfigValues configValues = await GetServiceModeByDeviceId(serviceMode.PumpNo);
+
+            if (configValues == null)
+                throw new Exception($"Pump with id:{serviceMode.PumpNo} not found, validate pump id.");
+
             configValues.ParamValue = serviceMode.ServiceModeType.ToString();
-            return await Update(configValues);
+            
+            int result = await ((IDbConnection)_dbSet).ExecuteAsync($"UPDATE ssf_generic_config_values SET parameter = @parameter, param_value = @paramValue WHERE {tableId} = 'ServiceModes' AND device_id = @deviceId", configValues, (IDbTransaction)_transaction);
+            return result > 0 ? true : false;
         }
     }
 }
