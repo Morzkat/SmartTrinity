@@ -12,6 +12,7 @@ namespace SmartTrinity.App.Pumps.Services
     {
         IPumpsUnitOfWork _pumpsUnitOfWork;
         ICommunicationManager _communicationManager;
+        private const string PUMP_STATUS_ERROR = "ERROR";
 
         public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork, ICommunicationManager communicationManager)
         {
@@ -68,6 +69,12 @@ namespace SmartTrinity.App.Pumps.Services
         {
             try
             {
+                var pump = PumpsPersistence.Get(preset.PumpNo);
+                if (pump == null)
+                    return $"Error enviando el 'Preset' al lado {preset.PumpNo}. No existe en el listado de pumps";
+                else if (pump.Status == PUMP_STATUS_ERROR)
+                    return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El pump esta en estado de error.";
+
                 string eventType = $"REQ_PUMP_PRESET_ID_{preset.PumpNo.ToString().LPad("0", 3)}";
                 string data = "TY=" + (preset.Type == 1 ? "MONEY" : "VOLUME");
 
@@ -82,10 +89,13 @@ namespace SmartTrinity.App.Pumps.Services
 
                     foreach (var grade in preset.Grades)
                     {
+                        if(!pump.Hoses.Any(h => h.Grades.Any(g => g.Id == grade)))
+                            return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
+
                         if (grades.Equals(""))
-                            grades = $"{grade.Id}";
+                            grades = $"{grade}";
                         else
-                            grades += $",{grade.Id}";
+                            grades += $",{grade}";
                     }
 
                     data += $"|GR={grades}";

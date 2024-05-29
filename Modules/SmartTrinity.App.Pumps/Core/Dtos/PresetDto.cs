@@ -11,7 +11,7 @@ namespace SmartTrinity.App.Pumps.Core.Dtos
         public int Type { get; set; }
         public int PumpNo { get; set; }
         public double Amount { get; set; }
-        public bool TankFull { get; set; } = false;
-        public IEnumerable<GradeDto>? Grades { get; set; }
+        public bool TankFull { get; set; };
+        public IEnumerable<int>? Grades { get; set; }
     }
 }
