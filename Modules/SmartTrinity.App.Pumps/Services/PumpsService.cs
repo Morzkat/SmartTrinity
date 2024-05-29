@@ -1,4 +1,5 @@
-﻿using SmartTrinity.App.Core.Communication;
+﻿using System.Text;
+using SmartTrinity.App.Core.Communication;
 using SmartTrinity.App.Pumps.Core.Dtos;
 using SmartTrinity.App.Pumps.Persistence;
 using SmartTrinity.App.Pumps.Core.Models;
@@ -85,22 +86,17 @@ namespace SmartTrinity.App.Pumps.Services
 
                 if (preset.Grades != null)
                 {
-                    string grades = "";
-
+                    var grades = new StringBuilder();
                     foreach (var grade in preset.Grades)
                     {
                         if(!pump.Hoses.Any(h => h.Grades.Any(g => g.Id == grade)))
                             return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
 
-                        if (grades.Equals(""))
-                            grades = $"{grade}";
-                        else
-                            grades += $",{grade}";
+                        grades.Append($"{grade},");
                     }
-
+                    grades.Length--;
                     data += $"|GR={grades}";
                 }
-
                 data += "|";
 
                 _communicationManager.SendMsg("POST", eventType, data);
