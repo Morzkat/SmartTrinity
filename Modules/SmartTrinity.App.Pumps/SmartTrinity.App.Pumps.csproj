@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartTrinity.Hub\SmartTrinity.App.csproj" />
+    <ProjectReference Include="..\SmartTrinity.App\SmartTrinity.App.csproj" />
   </ItemGroup>
 
 </Project>
