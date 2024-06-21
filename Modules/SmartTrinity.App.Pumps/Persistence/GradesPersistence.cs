@@ -41,21 +41,6 @@ namespace SmartTrinity.App.Pumps.Persistence
             }
         }
 
-        public static double GetSalePrice(int priceLevel, Grade grade)
-        {
-            //TODO: Use price level 1 by default when others price levels are 0.
-            double salePrice = 0.0;
-            bool exist = grade.Prices.Exists(p => p.PriceLevel == priceLevel);
-
-            if (exist)
-                salePrice = grade.Prices.Find(p => p.PriceLevel == priceLevel).Price;
-
-            if (salePrice == 0)
-                salePrice = grade.Prices[0].Price;
-
-            return salePrice;
-        }
-
         public static void RemovePersistence()
         {
             _grades = new List<Grade>();

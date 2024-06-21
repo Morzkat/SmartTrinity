@@ -202,7 +202,6 @@ namespace SmartTrinity.App.Pumps.Services
                 Blue = grade.Blue,
                 Green = grade.Green,
                 Description = grade.Description,
-                Prices = GetPriceDtos(grade.Prices),
             };
         }
 

@@ -1,8 +1,8 @@
 ﻿using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartTrinity.App.Pumps.Core.Dtos;
 using SmartTrinity.App.Pumps.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using SmartTrinity.App.Pumps.Core.Services;
 
 namespace SmartTrinity.App.Api.Controllers
@@ -94,7 +94,6 @@ namespace SmartTrinity.App.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

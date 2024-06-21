@@ -13,7 +13,6 @@ namespace SmartTrinity.App.Pumps.Core.Models
         public int Green { get; set; }
         public string RGB { get { return _rgb; } set { SetRGBColor(value); } }
         public string Description { get; set; }
-        public List<GradePrice> Prices { get; set; }
 
         public Grade()
         {
@@ -22,7 +21,6 @@ namespace SmartTrinity.App.Pumps.Core.Models
             Blue = 0;
             Green = 0;
             Description = "";
-            Prices = new List<GradePrice>();
         }
 
         private void SetRGBColor(string rgb)

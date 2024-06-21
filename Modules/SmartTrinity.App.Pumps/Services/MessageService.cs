@@ -162,7 +162,6 @@ namespace SmartTrinity.App.Pumps.Services
 
                             pump.Grade = grade;
                             pump.Hoses.Add(hose);
-                            pump.SalePrice = GradesPersistence.GetSalePrice(pump.PriceLevel, grade);
 
                             PumpsPersistence.Update(pump);
                         }
@@ -201,15 +200,6 @@ namespace SmartTrinity.App.Pumps.Services
                     {
                         int.TryParse(key.Substring(gradeLevel.Length), out int priceLevel);
                         double.TryParse(data[key], out double price);
-
-                        if (grade.Prices.Exists(p => p.Price == price && p.PriceLevel == priceLevel))
-                            continue;
-
-                        grade.Prices.Add(new GradePrice
-                        {
-                            Price = price,
-                            PriceLevel = priceLevel
-                        });
                     }
 
                     GradesPersistence.Update(grade);
