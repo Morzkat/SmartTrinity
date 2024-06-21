@@ -7,6 +7,7 @@ using SmartTrinity.App.Services;
 using SmartTrinity.Core.Database;
 using SmartTrinity.Core.Services;
 using SmartTrinity.Shared.Services;
+using SmartTrinity.App.Core.Models;
 using SmartTrinity.App.Api.Services;
 using Microsoft.IdentityModel.Tokens;
 using SmartTrinity.App.Core.Services;
@@ -20,9 +21,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
 using SmartTrinity.App.Sales.Infrastructure.Repositories;
 using SmartTrinity.App.Pumps.Infrastructure;
-using SmartTrinity.App.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -30,6 +31,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins(builder.Configuration.GetValue<string>("Clients:Frontend"));
+            policy.AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+});
 
 builder.Services.AddAuthentication(x =>
 {
@@ -85,6 +99,9 @@ builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IPumpsService, PumpsService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
+
+//Test services:
+builder.Services.AddTransient<IPumpsTestService, PumpsTestService>();
 
 //ComunicationManager
 builder.Services.AddSingleton<ICommunicationManager, CommunicateManagerService>();
@@ -145,6 +162,8 @@ var app = builder.Build();
 
 //Database setup
 DapperDatabaseManager.Setup();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())

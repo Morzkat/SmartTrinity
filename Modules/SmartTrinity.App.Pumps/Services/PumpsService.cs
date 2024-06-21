@@ -1,10 +1,11 @@
-﻿using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
-using SmartTrinity.App.Core.Services;
+﻿using System.Text;
+using SmartTrinity.App.Core.Communication;
+using SmartTrinity.App.Pumps.Core.Dtos;
+using SmartTrinity.App.Pumps.Persistence;
 using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Infrastructure;
-using SmartTrinity.App.Pumps.Persistence;
+using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Pumps.Services
 {
@@ -12,11 +13,35 @@ namespace SmartTrinity.App.Pumps.Services
     {
         IPumpsUnitOfWork _pumpsUnitOfWork;
         ICommunicationManager _communicationManager;
+        private const string PUMP_STATUS_ERROR = "ERROR";
 
         public PumpsService(IPumpsUnitOfWork pumpsUnitOfWork, ICommunicationManager communicationManager)
         {
             _pumpsUnitOfWork = pumpsUnitOfWork;
             _communicationManager = communicationManager;
+        }
+
+        public IEnumerable<PumpDto> GetPumps()
+        {
+            var pumpsDto = new List<PumpDto>();
+            var pumps = PumpsPersistence.Get();
+
+            foreach (var pump in pumps)
+            {
+                pumpsDto.Add(new PumpDto
+                {
+                    Grade = GetGradeDto(pump.Grade),
+                    PumpNo = pump.PumpNo,
+                    Status = pump.Status,
+                    Volume = pump.Volume,
+                    SalePrice = pump.SalePrice,
+                    PriceLevel = pump.PriceLevel,
+                    SaleProgress = pump.SaleProgress,
+                    Hoses = GetHoseDtos(pump.Hoses)
+                });
+            }
+
+            return pumpsDto;
         }
 
         public async Task<string> ExecuteAction(PumpAction pumpAction)
@@ -41,10 +66,16 @@ namespace SmartTrinity.App.Pumps.Services
             }
         }
 
-        public async Task<string> SendPresent(Preset preset)
+        public async Task<string> SendPresent(PresetDto preset)
         {
             try
             {
+                var pump = PumpsPersistence.Get(preset.PumpNo);
+                if (pump == null)
+                    return $"Error enviando el 'Preset' al lado {preset.PumpNo}. No existe en el listado de pumps";
+                else if (pump.Status == PUMP_STATUS_ERROR)
+                    return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El pump esta en estado de error.";
+
                 string eventType = $"REQ_PUMP_PRESET_ID_{preset.PumpNo.ToString().LPad("0", 3)}";
                 string data = "TY=" + (preset.Type == 1 ? "MONEY" : "VOLUME");
 
@@ -53,21 +84,19 @@ namespace SmartTrinity.App.Pumps.Services
                 else
                     data += $"|VA={preset.Amount}";
 
-                //if (preset.Grades != null)
-                //{
-                //    string grades = "";
+                if (preset.Grades != null)
+                {
+                    var grades = new StringBuilder();
+                    foreach (var grade in preset.Grades)
+                    {
+                        if(!pump.Hoses.Any(h => h.Grades.Any(g => g.Id == grade)))
+                            return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
 
-                //    foreach (var grade in preset.Grades)
-                //    {
-                //        if (grades.Equals(""))
-                //            grades = $"{grade.Id}";
-                //        else
-                //            grades += $",{grade.Id}";
-                //    }
-
-                //    data += $"|GR={grades}";
-                //}
-
+                        grades.Append($"{grade},");
+                    }
+                    grades.Length--;
+                    data += $"|GR={grades}";
+                }
                 data += "|";
 
                 _communicationManager.SendMsg("POST", eventType, data);
@@ -127,5 +156,65 @@ namespace SmartTrinity.App.Pumps.Services
             PumpsPersistence.Update(pump);
         }
 
+        private IEnumerable<GradePriceDto> GetPriceDtos(IEnumerable<GradePrice> prices)
+        {
+            var priceDtos = new List<GradePriceDto>();
+            foreach (var price in prices)
+            {
+                priceDtos.Add(new GradePriceDto
+                {
+                    Price = price.Price,
+                    PriceLevel = price.PriceLevel
+                });
+            }
+
+            return priceDtos;
+        }
+
+        private IEnumerable<HoseDto> GetHoseDtos(IEnumerable<Hose> hoses)
+        {
+            var hosesDtos = new List<HoseDto>();
+
+            foreach (var hose in hoses)
+            {
+                hosesDtos.Add(new HoseDto
+                {
+                    HoseId = hose.HoseId,
+                    Grades = GetGradeDtos(hose.Grades),
+                    TotalizerMoney = hose.TotalizerMoney,
+                    TotalizerVolume = hose.TotalizerVolume
+                });
+            }
+
+            return hosesDtos;
+        }
+
+        private GradeDto GetGradeDto(Grade grade)
+        {
+            if (grade == null)
+                return null;
+
+            return new GradeDto
+            {
+                Id = grade.Id,
+                RGB = grade.RGB,
+                Red = grade.Red,
+                Blue = grade.Blue,
+                Green = grade.Green,
+                Description = grade.Description,
+            };
+        }
+
+        private IEnumerable<GradeDto> GetGradeDtos(IEnumerable<Grade> grades)
+        {
+            var gradesDto = new List<GradeDto>();
+
+            foreach (var grade in grades)
+            {
+                gradesDto.Add(GetGradeDto(grade));
+            }
+
+            return gradesDto;
+        }
     }
 }
