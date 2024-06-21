@@ -6,6 +6,11 @@ namespace SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions
     {
         public static char[] EncryptMessage(this char[] inp, int inplen, char[] key, int keylen)
         {
+            return null;
+        }
+
+        public static char[] DecryptMessage(this char[] inp, int inplen, char[] key, int keylen)
+        {
             char[] SBox = new char[257];
             char[] SBox2 = new char[257];
             int j;
@@ -57,11 +62,6 @@ namespace SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions
             }
 
             return inp;
-        }
-
-        public static char[] DecryptMessage()
-        {
-            return null;
         }
 
         public static string LPad(this string valueToPad, string filler, int size)

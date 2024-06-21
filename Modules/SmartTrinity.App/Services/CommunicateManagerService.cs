@@ -90,11 +90,11 @@ namespace SmartTrinity.App.Services
             {
                 case '1':
                     key = $"{msgWithPadLeft}|1|{ILocalPort.ToString().LPad("0", 6)}";
-                    return inp.EncryptMessage(inplen, key.ToCharArray(), key.Length);
+                    return inp.DecryptMessage(inplen, key.ToCharArray(), key.Length);
 
                 case '2':
                     key = $"{msgWithPadLeft}|2|{IKey.ToString().LPad("0", 6)}";
-                    return inp.EncryptMessage(inplen, key.ToCharArray(), key.Length);
+                    return inp.DecryptMessage(inplen, key.ToCharArray(), key.Length);
             }
 
             return inp;
