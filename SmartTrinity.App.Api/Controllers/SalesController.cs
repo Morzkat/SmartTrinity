@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using SmartTrinity.App.Sales.Services;
-using Microsoft.AspNetCore.Authorization;
-using SmartTrinity.App.Sales.Core.Models;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
+using SmartTrinity.Shared.Core.Models;
+using SmartTrinity.Shared.Core.Services;
+using Microsoft.AspNetCore.Authorization;
+using SmartTrinity.App.Migrations.Core.Services;
 
-namespace  SmartTrinity.App.Api.Controllers
+namespace SmartTrinity.App.Api.Controllers
 {
     [Authorize]
     [ApiController]
@@ -14,11 +15,13 @@ namespace  SmartTrinity.App.Api.Controllers
     {
         private readonly ILogger<SalesController> _logger;
         private readonly ISalesService _salesService;
+        private readonly ISalesMigrator _salesMigrator;
 
-        public SalesController(ILogger<SalesController> logger, ISalesService salesService)
+        public SalesController(ILogger<SalesController> logger, ISalesService salesService, ISalesMigrator salesMigrator)
         {
             _logger = logger;
             _salesService = salesService;
+            _salesMigrator = salesMigrator;
         }
 
         /// <summary>
@@ -39,6 +42,14 @@ namespace  SmartTrinity.App.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("Test")]
+        public async Task<ActionResult> Test()
+        {
+            await _salesMigrator.MigrateSalesToCentral();
+            return Ok("Complete test...");
         }
     }
 

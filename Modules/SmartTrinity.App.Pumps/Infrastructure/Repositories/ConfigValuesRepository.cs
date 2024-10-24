@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using System.Data;
 using SmartTrinity.App.Pumps.Core.Models;
-using SmartTrinity.App.Pumps.Core.Repositories;
 using SmartTrinity.Infrastructure.Database.Repositories;
+using SmartTrinity.App.Pumps.Core.Database.Repositories;
 
 namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
 {

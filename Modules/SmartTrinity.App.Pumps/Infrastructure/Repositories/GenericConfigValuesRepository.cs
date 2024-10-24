@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using SmartTrinity.App.Pumps.Core.Models;
-using SmartTrinity.App.Pumps.Core.Repositories;
+using SmartTrinity.App.Pumps.Core.Database.Repositories;
 using SmartTrinity.Infrastructure.Database.Repositories;
 using System.Data;
 using static Dapper.SqlMapper;

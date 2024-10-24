@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SmartTrinity.App.Pumps.Core.Models;
-using SmartTrinity.App.Pumps.Core.Repositories;
+using SmartTrinity.App.Pumps.Core.Database.Repositories;
 using SmartTrinity.Core.Models;
 using SmartTrinity.Infrastructure.Database.Repositories;
 using System.Data;
