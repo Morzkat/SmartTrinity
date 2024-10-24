@@ -8,12 +8,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Modules\SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.App.Pumps\SmartTrinity.App.Pumps.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.App\SmartTrinity.App.csproj" />
 		<ProjectReference Include="..\Modules\SmartTrinity.Sales\SmartTrinity.App.Sales.csproj" />

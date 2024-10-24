@@ -11,16 +11,26 @@ using SmartTrinity.App.Core.Models;
 using SmartTrinity.App.Api.Services;
 using Microsoft.IdentityModel.Tokens;
 using SmartTrinity.App.Core.Services;
-using SmartTrinity.App.Sales.Services;
 using SmartTrinity.App.Pumps.Services;
 using SmartTrinity.App.Api.Middlewares;
+using SmartTrinity.App.Migrations.Core;
+using SmartTrinity.Shared.Core.Services;
 using SmartTrinity.App.Core.Communication;
 using SmartTrinity.Infrastructure.Database;
 using SmartTrinity.App.Pumps.Core.Services;
+using SmartTrinity.App.Pumps.Infrastructure;
+using SmartTrinity.App.Migrations.Core.Models;
+using SmartTrinity.App.Migrations.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
 using SmartTrinity.App.Sales.Infrastructure.Repositories;
-using SmartTrinity.App.Pumps.Infrastructure;
+using SmartTrinity.Shared.Infrastructure.Database;
+using SmartTrinity.Shared.Core.Database;
+using SmartTrinity.App.Migrations.Core.Services;
+using SmartTrinity.App.Migrations.Services;
+using SmartTrinity.App.Pumps.Core.Database;
+using SmartTrinity.App.FuelStation.Infrastructure;
+using SmartTrinity.App.FuelStation.Core.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -79,19 +89,24 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+//Settings
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection("ConsoleSettings"));
+builder.Services.Configure<MigratorSettings>(builder.Configuration.GetSection("MigratorSettings"));
 
 builder.Services.AddSignalR();
 
 //Hosted service
 builder.Services.AddHostedService<TrinityBackgroundService>();
+builder.Services.AddTransient<ISalesMigrator, SalesMigrator>();
 
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ISalesUnitOfWork, SalesUnitOfWork>();
 builder.Services.AddTransient<IPumpsUnitOfWork, PumpsUnitOfWork>();
+builder.Services.AddTransient<IStationUnitOfWork, StationUnitOfWork>();
+builder.Services.AddTransient<ISalesMigratorUnitOfWork, SalesMigratorUnitOfWork>();
 
 //Services:
 builder.Services.AddTransient<IJwtService, JwtService>();
