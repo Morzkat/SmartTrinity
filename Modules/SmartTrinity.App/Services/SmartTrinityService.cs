@@ -30,6 +30,9 @@ namespace SmartTrinity.App.Services
 
         public void Setup()
         {
+            if (!_consoleSettings.Enable)
+                return;
+
             _communicationManager.Connect();
             SetupRequestConfigurations();
             while (Thread.CurrentThread.IsAlive)
@@ -46,6 +49,9 @@ namespace SmartTrinity.App.Services
 
         public async Task HandleClientAsync()
         {
+            if (!_consoleSettings.Enable)
+                return;
+
             while (true)
             {
                 await Task.Run(() =>
