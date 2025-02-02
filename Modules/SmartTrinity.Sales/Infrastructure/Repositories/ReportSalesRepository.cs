@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using SmartTrinity.Shared.Core.Models;
 using SmartTrinity.App.Sales.Core.Models;
 using SmartTrinity.App.Sales.Core.Repositories;
-using SmartTrinity.Infrastructure.Database.Repositories;
+using SmartTrinity.Shared.Infrastructure.Database.Repositories;
 
 namespace SmartTrinity.App.Sales.Infrastructure.Repositories
 {
@@ -33,7 +33,7 @@ namespace SmartTrinity.App.Sales.Infrastructure.Repositories
             return sales.Count == 0 ? 0 : (int)sales[0].Id;
         }
 
-        public async Task<object> GetReportSalesFromId(int saleId)
+        public async Task<List<Sale>> GetReportSalesFromId(int saleId)
         {
             var parameters = new { saleId, limit = 100 };
             StringBuilder query = new StringBuilder("SELECT sales.sale_id as Id, sales.pump_id, sales.hose_id, sales.grade_id, ")

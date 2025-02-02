@@ -48,7 +48,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetValue<string>("Clients:Frontend"));
+            policy.WithOrigins(builder.Configuration.GetSection("Clients:Frontend").Get<string[]>());
+            policy.AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+
+            policy.WithOrigins(builder.Configuration.GetSection("Clients:Backend").Get<string[]>());
             policy.AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -98,7 +103,7 @@ builder.Services.AddSignalR();
 
 //Hosted service
 builder.Services.AddHostedService<TrinityBackgroundService>();
-builder.Services.AddTransient<ISalesMigrator, SalesMigrator>();
+//builder.Services.AddTransient<ISalesMigrator, SalesMigrator>();
 
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.

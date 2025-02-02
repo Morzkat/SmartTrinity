@@ -13,8 +13,8 @@ namespace SmartTrinity.App.Api.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _smartTrinityService.Setup();
-            await _smartTrinityService.HandleClientAsync();
+            //_smartTrinityService.Setup();
+            //await _smartTrinityService.HandleClientAsync();
         }
     }
 }

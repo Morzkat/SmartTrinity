@@ -9,6 +9,7 @@ using SmartTrinity.Infrastructure.Database.UnitOfWork;
 using SmartTrinity.App.Migrations.Infrastructure.Repositories;
 using SmartTrinity.App.FuelStation.Core.Database.Repositories;
 using SmartTrinity.App.FuelStation.Infrastructure.Repositories;
+using SmartTrinity.App.Payments.Core.Database.Repositories;
 
 namespace SmartTrinity.App.Migrations.Infrastructure
 {
@@ -20,6 +21,8 @@ namespace SmartTrinity.App.Migrations.Infrastructure
 
         public IStationRepository StationRepository { get; private set; }
         public ISalesMigratorRepository SalesMigratorRepository { get; private set; }
+
+        public IPaymentRepository PaymentRepository { get; private set; }
 
         public SalesMigratorUnitOfWork(IOptions<AppSettings> appSettings) : base(appSettings)
         {

@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App", "Modules
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Migrations", "Modules\SmartTrinity.App.Migrations\SmartTrinity.App.Migrations.csproj", "{7FDC3384-A1EC-45E1-A619-3224353B67E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.Payments", "Modules\SmartTrinity.App.Payments\SmartTrinity.App.Payments.csproj", "{19D7AA66-7CCB-4684-805F-8638E9FBB63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartTrinity.App.FuelStation", "Modules\SmartTrinity.App.FuelStation\SmartTrinity.App.FuelStation.csproj", "{730703CD-1E88-453E-87F2-001847212D77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTrinity.App.FuelStation", "Modules\SmartTrinity.App.FuelStation\SmartTrinity.App.FuelStation.csproj", "{730703CD-1E88-453E-87F2-001847212D77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTrinity.App.Payments", "Modules\SmartTrinity.App.Payments\SmartTrinity.App.Payments.csproj", "{4B12A195-120E-489D-8D65-E958BB518601}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,14 +45,14 @@ Global
 		{7FDC3384-A1EC-45E1-A619-3224353B67E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FDC3384-A1EC-45E1-A619-3224353B67E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FDC3384-A1EC-45E1-A619-3224353B67E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19D7AA66-7CCB-4684-805F-8638E9FBB63C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19D7AA66-7CCB-4684-805F-8638E9FBB63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19D7AA66-7CCB-4684-805F-8638E9FBB63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19D7AA66-7CCB-4684-805F-8638E9FBB63C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{730703CD-1E88-453E-87F2-001847212D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{730703CD-1E88-453E-87F2-001847212D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{730703CD-1E88-453E-87F2-001847212D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{730703CD-1E88-453E-87F2-001847212D77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B12A195-120E-489D-8D65-E958BB518601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B12A195-120E-489D-8D65-E958BB518601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B12A195-120E-489D-8D65-E958BB518601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B12A195-120E-489D-8D65-E958BB518601}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,8 +62,8 @@ Global
 		{CD279389-6149-44B4-908F-C90E1BA9E3EB} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 		{EA7A23CE-A559-4A76-BC3C-B56CD0BD2F36} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 		{7FDC3384-A1EC-45E1-A619-3224353B67E4} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
-		{19D7AA66-7CCB-4684-805F-8638E9FBB63C} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 		{730703CD-1E88-453E-87F2-001847212D77} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
+		{4B12A195-120E-489D-8D65-E958BB518601} = {BA327A9C-82F0-4BB8-A95B-9E223C7FA1F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BDBF4D-C597-4D12-9932-71A25C98D3CE}

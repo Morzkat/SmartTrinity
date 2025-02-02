@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using SmartTrinity.Core.Models;
 using SmartTrinity.App.FuelStation.Core.Models;
-using SmartTrinity.Infrastructure.Database.Repositories;
 using SmartTrinity.App.FuelStation.Core.Database.Repositories;
 using Dapper;
+using SmartTrinity.Shared.Infrastructure.Database.Repositories;
 
 namespace SmartTrinity.App.FuelStation.Infrastructure.Repositories
 {

@@ -3,6 +3,7 @@ using SmartTrinity.Shared.Core.Database;
 using SmartTrinity.App.FuelStation.Core.Models;
 using SmartTrinity.App.Migrations.Core.Services;
 using SmartTrinity.App.FuelStation.Core.Database;
+using SmartTrinity.App.Payments.Core.Database.Repositories;
 
 namespace SmartTrinity.App.Migrations.Services
 {
@@ -11,11 +12,13 @@ namespace SmartTrinity.App.Migrations.Services
         private readonly ISalesUnitOfWork _salesUnitOfWork;
         private readonly ISalesMigratorUnitOfWork _salesMigratorUnitOfWork;
         private readonly IStationUnitOfWork _stationUnitOfWork;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public SalesMigrator(ISalesUnitOfWork salesUnitOfWork, ISalesMigratorUnitOfWork salesMigratorUnitOfWork, IStationUnitOfWork stationUnitOfWork)
+        public SalesMigrator(ISalesUnitOfWork salesUnitOfWork, ISalesMigratorUnitOfWork salesMigratorUnitOfWork, IStationUnitOfWork stationUnitOfWork, IPaymentRepository paymentRepository)
         {
             _salesUnitOfWork = salesUnitOfWork;
             _stationUnitOfWork = stationUnitOfWork;
+            _paymentRepository = paymentRepository;
             _salesMigratorUnitOfWork = salesMigratorUnitOfWork;
         }
 
@@ -26,9 +29,9 @@ namespace SmartTrinity.App.Migrations.Services
 
         public async Task MigrateSalesToCentral()
         {
+            var station = await GetDestinationStation();
             var lastSaleId = await _salesMigratorUnitOfWork.SalesMigratorRepository.GetLastSaleId();
             var sales = await _salesUnitOfWork.SalesRepository.GetSalesFromId(lastSaleId);
-            var station = await GetDestinationStation();
 
             var addSalesToCentralServerTasks = new List<Task>();
 
@@ -40,6 +43,15 @@ namespace SmartTrinity.App.Migrations.Services
             }
 
             await Task.WhenAll(addSalesToCentralServerTasks);
+        }
+
+        public async Task MigratePaymentsToCentral()
+        {
+            var station = await GetDestinationStation();
+            var lastPaymentId = await _salesMigratorUnitOfWork.PaymentRepository.GetLastPaymentId();
+            var payments = await _paymentRepository.GetPaymentsFromId(lastPaymentId);
+
+            // _salesMigratorUnitOfWork.PaymentRepository.Add
         }
 
         private async Task<Station> GetDestinationStation()
