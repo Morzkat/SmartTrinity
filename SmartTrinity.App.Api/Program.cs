@@ -31,6 +31,7 @@ using SmartTrinity.App.Migrations.Services;
 using SmartTrinity.App.Pumps.Core.Database;
 using SmartTrinity.App.FuelStation.Infrastructure;
 using SmartTrinity.App.FuelStation.Core.Database;
+using SmartTrinity.App.Sales.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -112,6 +113,7 @@ builder.Services.AddTransient<ISalesUnitOfWork, SalesUnitOfWork>();
 builder.Services.AddTransient<IPumpsUnitOfWork, PumpsUnitOfWork>();
 builder.Services.AddTransient<IStationUnitOfWork, StationUnitOfWork>();
 builder.Services.AddTransient<ISalesMigratorUnitOfWork, SalesMigratorUnitOfWork>();
+builder.Services.AddTransient<ISmartSalesUnitOfWork, SmartSalesUnitOfWork>();
 
 //Services:
 builder.Services.AddTransient<IJwtService, JwtService>();
@@ -119,6 +121,7 @@ builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IPumpsService, PumpsService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<ISmartSalesService, SmartSalesService>();
 
 //Test services:
 builder.Services.AddTransient<IPumpsTestService, PumpsTestService>();

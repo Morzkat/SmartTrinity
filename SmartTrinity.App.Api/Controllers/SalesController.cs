@@ -4,6 +4,8 @@ using SmartTrinity.Shared.Core.Models;
 using SmartTrinity.Shared.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using SmartTrinity.App.Migrations.Core.Services;
+using SmartTrinity.App.Sales.Services;
+using SmartTrinity.App.Sales.Core.Models.Filters;
 
 namespace SmartTrinity.App.Api.Controllers
 {
@@ -16,12 +18,14 @@ namespace SmartTrinity.App.Api.Controllers
         private readonly ILogger<SalesController> _logger;
         private readonly ISalesService _salesService;
         private readonly ISalesMigrator _salesMigrator;
+        private readonly ISmartSalesService _smartSalesService;
 
-        public SalesController(ILogger<SalesController> logger, ISalesService salesService, ISalesMigrator salesMigrator)
+        public SalesController(ILogger<SalesController> logger, ISalesService salesService, ISmartSalesService smartSalesService)
         {
             _logger = logger;
             _salesService = salesService;
-            _salesMigrator = salesMigrator;
+            //_salesMigrator = salesMigrator;
+            _smartSalesService = smartSalesService;
         }
 
         /// <summary>
@@ -32,11 +36,11 @@ namespace SmartTrinity.App.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Sale>), 200)]
         [ProducesResponseType(typeof(ErrorResponseDetails), 500)]
-        public async Task<ActionResult> GetSales()
+        public async Task<ActionResult> GetSales([FromQuery] SaleQueryFilter saleQueryFilter)
         {
             try
             {
-                return Ok(await _salesService.GetSales());
+                return Ok(await _smartSalesService.GetSales(saleQueryFilter));
             }
             catch (Exception ex)
             {

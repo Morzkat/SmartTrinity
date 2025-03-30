@@ -100,7 +100,7 @@ namespace SmartTrinity.App.Services
         private string GetUserCredentials()
         {
             string user = _consoleSettings.Credentials.Username.RPad(" ", 25);
-            string pw = _consoleSettings.Credentials.Username.RPad(" ", 25);
+            string pw = _consoleSettings.Credentials.Password.RPad(" ", 25);
 
             char[] encryptedPw = pw.ToCharArray().EncryptMessage(25, user.ToCharArray(), 20);
             string data = $"US=1|PW={encryptedPw.ConvertBinToHex(25)}|";
