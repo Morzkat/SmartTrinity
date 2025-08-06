@@ -18,14 +18,7 @@ namespace SmartTrinity.App.Pumps.Persistence
             return _pumps;
         }
 
-        public static Pump Get(int pumpId)
-        {
-            bool exist = _pumps.Exists(x => x.PumpNo == pumpId);
-            if (exist)
-                return _pumps.Find(x => x.PumpNo == pumpId);
-
-            return null;
-        }
+        public static Pump? Get(int pumpId) => _pumps.FirstOrDefault(p => p.PumpNo == pumpId);
 
         public static void Add(int pumpId)
         {

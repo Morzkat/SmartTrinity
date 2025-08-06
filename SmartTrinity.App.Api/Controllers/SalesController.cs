@@ -9,7 +9,7 @@ using SmartTrinity.App.Sales.Core.Models.Filters;
 
 namespace SmartTrinity.App.Api.Controllers
 {
-    [Authorize]
+  //  [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/api/[controller]")]

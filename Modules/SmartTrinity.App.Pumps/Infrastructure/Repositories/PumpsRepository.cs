@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Data;
+using SmartTrinity.Core.Models;
+using Microsoft.Extensions.Options;
 using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Pumps.Core.Database.Repositories;
-using SmartTrinity.Core.Models;
-using System.Data;
 using SmartTrinity.Shared.Infrastructure.Database.Repositories;
 
 namespace SmartTrinity.App.Pumps.Infrastructure.Repositories

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System.Data;
 using System.Text;
+using System.Dynamic;
 using SmartTrinity.Core.Models;
 using Microsoft.Extensions.Options;
 using SmartTrinity.Shared.Core.Models;
@@ -24,32 +25,43 @@ namespace SmartTrinity.App.Sales.Infrastructure.Repositories
         public async Task<IEnumerable<Sale>> GetSales(SaleQueryFilter queryFilters)
         {
             var filters = new StringBuilder();
-            object param = new
+            dynamic param = new ExpandoObject();
+            param.limit = queryFilters.Limit.HasValue ? queryFilters.Limit : _appSettings.TrinitySettings.SalesLimitPerRequest;
+            var orderBy = "ORDER BY " + queryFilters.OrderBy switch
             {
-                SaleId = queryFilters?.SaleId,
-                StartDate = queryFilters?.StartDate.Value.ToString("dd/MM/yyyy"),
-                EndDate = queryFilters?.EndDate.Value.ToString("dd/MM/yyyy"),
-                PumpId = queryFilters?.PumpId,
-                HoseId = queryFilters?.HoseId,
-                limit = _appSettings.TrinitySettings.SalesLimitPerRequest
+                OrderByColumns.SaleId => "sales.sale_id",
+                OrderByColumns.PumpId => "sales.pump_id",
+                OrderByColumns.HoseId => "sales.hose_id",
+                OrderByColumns.GradeId => "sales.grade_id",
+                _ => "sales.sale_id"
             };
-
+                
             if (queryFilters.SaleId.HasValue && queryFilters.SaleId.Value > 0)
             {
-                filters.Append($" AND sales.sale_id = @SaleId");
+                filters.Append($" AND sales.sale_id >= @SaleId");
+                param.SaleId = queryFilters?.SaleId;
             }
 
             if (queryFilters.PumpId.HasValue)
+            {
                 filters.Append($" AND sales.pump_id = @PumpId");
+                param.PumpId = queryFilters?.PumpId;
+            }
 
             if (queryFilters.HoseId.HasValue)
+            {
                 filters.Append($" AND sales.hose_id = @HoseId");
+                param.HoseId = queryFilters?.HoseId;
+            }
 
             if (queryFilters.StartDate.HasValue && queryFilters.EndDate.HasValue)
             {
+                param.StartDate = queryFilters?.StartDate.Value.ToString("dd/MM/yyyy");
+                param.EndDate = queryFilters?.EndDate.Value.ToString("dd/MM/yyyy");
                 filters.Append($" AND (sales.start_date::DATE >= to_date(@StartDate, 'DD/MM/YYYY') AND sales.end_date::DATE <= to_date(@EndDate, 'DD/MM/YYYY') )");
             }
-
+            orderBy += ((IDictionary<String, Object>)param).Count > 1 ? "" : " DESC";
+           
             var query = new StringBuilder("SELECT sales.sale_id as Id, sales.pump_id, sales.hose_id, sales.grade_id, ")
                 .Append("sales.volume, sales.money, sales.ppu, sales.initial_volume, sales.final_volume, sales.start_date, sales.start_time, ")
                 .Append("sales.preset_amount, sales.start_time, sales.end_time, sales.level, sales.sale_type, ")
@@ -60,7 +72,7 @@ namespace SmartTrinity.App.Sales.Infrastructure.Repositories
                 .Append("INNER JOIN SSF_LADO_MANGUERA manguera ON ")
                 .Append("sales.pump_id = manguera.pump_id AND sales.hose_id = manguera.hose_id ")
                 .Append($"WHERE 1=1 {filters} ")
-                .Append("ORDER BY sales.sale_id DESC LIMIT @limit ");
+                .Append($" {orderBy} DESC LIMIT @limit");
 
             List<Sale> sales = await SqlMapper.QueryAsync<Sale>(_dbSet, query.ToString(), param: param, transaction: _transaction);
 

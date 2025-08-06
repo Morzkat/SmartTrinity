@@ -32,12 +32,16 @@ using SmartTrinity.App.Pumps.Core.Database;
 using SmartTrinity.App.FuelStation.Infrastructure;
 using SmartTrinity.App.FuelStation.Core.Database;
 using SmartTrinity.App.Sales.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -96,9 +100,9 @@ builder.Services.AddApiVersioning(options =>
 });
 
 //Settings
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection("ConsoleSettings"));
-builder.Services.Configure<MigratorSettings>(builder.Configuration.GetSection("MigratorSettings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection(nameof(ConsoleSettings)));
+builder.Services.Configure<MigratorSettings>(builder.Configuration.GetSection(nameof(MigratorSettings)));
 
 builder.Services.AddSignalR();
 

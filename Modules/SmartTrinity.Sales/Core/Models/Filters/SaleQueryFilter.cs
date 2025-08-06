@@ -8,5 +8,15 @@ namespace SmartTrinity.App.Sales.Core.Models.Filters
         public DateTime? EndDate { get; set; }
         public int? PumpId { get; set; }
         public int? HoseId { get; set; }
+        public int? Limit { get; set; }
+        public OrderByColumns? OrderBy { get; set; }
+    }
+
+    public enum OrderByColumns
+    {
+        SaleId,
+        PumpId,
+        HoseId,
+        GradeId
     }
 }
