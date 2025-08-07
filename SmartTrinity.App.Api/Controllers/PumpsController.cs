@@ -7,7 +7,7 @@ using SmartTrinity.App.Pumps.Core.Services;
 
 namespace SmartTrinity.App.Api.Controllers
 {
-   // [Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/api/[controller]")]

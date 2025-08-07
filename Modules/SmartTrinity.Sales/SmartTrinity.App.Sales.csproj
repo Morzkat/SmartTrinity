@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SmartTrinity.Shared.Library" Version="1.0.10" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SmartTrinity.App.Payments\SmartTrinity.App.Payments.csproj" />
   </ItemGroup>
 
