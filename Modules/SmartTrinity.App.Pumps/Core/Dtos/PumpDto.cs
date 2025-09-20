@@ -3,7 +3,6 @@
     public record PumpDto
     {
         public int PumpNo { get; set; }
-        public GradeDto Grade { get; set; }
         public string Status { get; set; }
         public double Volume { get; set; }
         public int PriceLevel { get; set; }

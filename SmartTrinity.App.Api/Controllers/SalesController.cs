@@ -9,7 +9,7 @@ using SmartTrinity.App.Sales.Core.Models.Filters;
 
 namespace SmartTrinity.App.Api.Controllers
 {
-  //  [Authorize]
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/api/[controller]")]
@@ -17,14 +17,12 @@ namespace SmartTrinity.App.Api.Controllers
     {
         private readonly ILogger<SalesController> _logger;
         private readonly ISalesService _salesService;
-        private readonly ISalesMigrator _salesMigrator;
         private readonly ISmartSalesService _smartSalesService;
 
         public SalesController(ILogger<SalesController> logger, ISalesService salesService, ISmartSalesService smartSalesService)
         {
             _logger = logger;
             _salesService = salesService;
-            //_salesMigrator = salesMigrator;
             _smartSalesService = smartSalesService;
         }
 
@@ -48,13 +46,6 @@ namespace SmartTrinity.App.Api.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpGet("Test")]
-        public async Task<ActionResult> Test()
-        {
-            await _salesMigrator.MigrateSalesToCentral();
-            return Ok("Complete test...");
-        }
     }
 
     public class ErrorResponseDetails

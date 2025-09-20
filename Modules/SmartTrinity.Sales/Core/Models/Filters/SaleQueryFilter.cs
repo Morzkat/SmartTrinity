@@ -10,6 +10,7 @@ namespace SmartTrinity.App.Sales.Core.Models.Filters
         public int? HoseId { get; set; }
         public int? Limit { get; set; }
         public OrderByColumns? OrderBy { get; set; }
+        public OrderDirection? OrderDirection { get; set; } = Filters.OrderDirection.Desc;
     }
 
     public enum OrderByColumns
@@ -18,5 +19,11 @@ namespace SmartTrinity.App.Sales.Core.Models.Filters
         PumpId,
         HoseId,
         GradeId
+    }
+
+    public enum OrderDirection
+    {
+        Asc,
+        Desc
     }
 }

@@ -16,7 +16,6 @@ namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
         public PumpsRepository(IDbConnection connection, IDbTransaction transaction, IOptions<AppSettings> appSettings) : base(connection, transaction)
         {
             tableId = "sale_id";
-            //TODO: Validate the table name
             tableName = "SSF_PUMP_SALES";
             Connection = connection;
             Transaction = transaction;

@@ -115,7 +115,6 @@ namespace SmartTrinity.App.Services
 
                 aMsg = CryptMessage(tempCrypt, aMsg, bufferSize, 0);
                 _client.LastReply = new string(CryptMessage(tempCrypt, _client.LastReply.ToCharArray(), bufferSize, 0));
-                //SetLastReplyToPersistence(_client.LastReply);
 
                 string msg = new string(aMsg);
                 string Smsg = msg.Substring(0, msg.Length - 1);
@@ -164,7 +163,6 @@ namespace SmartTrinity.App.Services
 
         public void SendSecureMsg(string eventType, string data)
         {
-            // TODO: Create logic for send secure msg
             SendMsg("POST", eventType, data);
         }
 

@@ -28,7 +28,6 @@ namespace SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp
             IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse(_params.Host), _params.Port);
             _socket = new Socket(serverAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             _socket.Connect(serverAddress);
-            // Tools.CurrentSocketPort = ((IPEndPoint)_socket.LocalEndPoint).Port;
         }
 
         public void Disconnect()
@@ -183,7 +182,6 @@ namespace SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp
             _params = connectionParams;
         }
 
-        // TODO: Implement logic for read from socket continuously. 
         public bool SocketHasData()
         {
             try { return _socket.Available > 0 ? true : false; }

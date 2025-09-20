@@ -33,16 +33,6 @@ namespace SmartTrinity.App.Pumps.Persistence
             });
         }
 
-        public static void Update(Pump pump)
-        {
-            bool exist = _pumps.Exists(x => x.PumpNo == pump.PumpNo);
-            if (exist)
-            {
-                int index = _pumps.FindIndex(p => p.PumpNo == pump.PumpNo);
-                _pumps[index] = pump;
-            }
-        }
-
         public static void RemovePersistence()
         {
             _pumps = new List<Pump>();

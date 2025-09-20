@@ -3,10 +3,6 @@
     public record GradeDto
     {
         public int Id { get; set; }
-        public int Red { get; set; }
-        public int Blue { get; set; }
-        public int Green { get; set; }
-        public string RGB { get; set; }
         public string Description { get; set; }
         public IEnumerable<GradePriceDto> Prices { get; set; }
     }

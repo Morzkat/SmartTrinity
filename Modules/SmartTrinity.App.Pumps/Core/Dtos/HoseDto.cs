@@ -5,6 +5,6 @@
         public int HoseId { get; set; }
         public double TotalizerMoney { get; set; }
         public double TotalizerVolume { get; set; }
-        public IEnumerable<GradeDto> Grades { get; set; }
+        public GradeDto Grade { get; set; }
     }
 }

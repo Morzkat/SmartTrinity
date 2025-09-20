@@ -30,7 +30,6 @@ namespace SmartTrinity.App.Pumps.Services
             {
                 pumpsDto.Add(new PumpDto
                 {
-                    Grade = GetGradeDto(pump.Grade),
                     PumpNo = pump.PumpNo,
                     Status = pump.Status,
                     Volume = pump.Volume,
@@ -89,8 +88,9 @@ namespace SmartTrinity.App.Pumps.Services
                     var grades = new StringBuilder();
                     foreach (var grade in preset.Grades)
                     {
-                        if(!pump.Hoses.Any(h => h.Grades.Any(g => g.Id == grade)))
-                            return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
+                        //TODO: Validate that the grade exists in the pump hoses
+                        // if (!pump.Hoses.Any(h => h.Grade.Description == preset.GradeToString(grade)))
+                        //     return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
 
                         grades.Append($"{grade},");
                     }
@@ -153,7 +153,6 @@ namespace SmartTrinity.App.Pumps.Services
         {
             Pump pump = PumpsPersistence.Get(pumpId);
             pump.SetAthoredStatus(action);
-            PumpsPersistence.Update(pump);
         }
 
         private IEnumerable<GradePriceDto> GetPriceDtos(IEnumerable<GradePrice> prices)
@@ -180,13 +179,13 @@ namespace SmartTrinity.App.Pumps.Services
                 hosesDtos.Add(new HoseDto
                 {
                     HoseId = hose.HoseId,
-                    Grades = GetGradeDtos(hose.Grades),
+                    Grade = GetGradeDto(hose.Grade),
                     TotalizerMoney = hose.TotalizerMoney,
                     TotalizerVolume = hose.TotalizerVolume
                 });
             }
 
-            return hosesDtos;
+            return hosesDtos.OrderBy(h => h.HoseId);
         }
 
         private GradeDto GetGradeDto(Grade grade)
@@ -197,24 +196,8 @@ namespace SmartTrinity.App.Pumps.Services
             return new GradeDto
             {
                 Id = grade.Id,
-                RGB = grade.RGB,
-                Red = grade.Red,
-                Blue = grade.Blue,
-                Green = grade.Green,
                 Description = grade.Description,
             };
-        }
-
-        private IEnumerable<GradeDto> GetGradeDtos(IEnumerable<Grade> grades)
-        {
-            var gradesDto = new List<GradeDto>();
-
-            foreach (var grade in grades)
-            {
-                gradesDto.Add(GetGradeDto(grade));
-            }
-
-            return gradesDto;
         }
     }
 }
