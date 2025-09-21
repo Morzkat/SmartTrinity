@@ -5,7 +5,7 @@ using SmartTrinity.App.Pumps.Core.Models;
 using SmartTrinity.App.Core.Communication;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Core.Database;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Pumps.Services
 {
@@ -89,9 +89,9 @@ namespace SmartTrinity.App.Pumps.Services
                     foreach (var grade in preset.Grades)
                     {
                         //TODO: Validate that the grade exists in the pump hoses
-                        // if (!pump.Hoses.Any(h => h.Grade.Description == preset.GradeToString(grade)))
-                        //     return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
-
+                        if (!pump.Hoses.Any(h => h.Grade != null && h.Grade.Id == grade))
+                            return $"Error enviando el 'Preset' al lado {preset.PumpNo}. El grade no esta asociado al lado.";
+                        
                         grades.Append($"{grade},");
                     }
                     grades.Length--;

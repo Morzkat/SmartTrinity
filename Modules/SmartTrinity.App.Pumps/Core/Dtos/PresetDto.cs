@@ -12,7 +12,7 @@ namespace SmartTrinity.App.Pumps.Core.Dtos
         public int PumpNo { get; set; }
         public double Amount { get; set; }
         public bool TankFull { get; set; }
-        public IEnumerable<FuelTypes>? Grades { get; set; }
+        public IEnumerable<int>? Grades { get; set; }
 
         public string GradeToString (FuelTypes grade)
         {

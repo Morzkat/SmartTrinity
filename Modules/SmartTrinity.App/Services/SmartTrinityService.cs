@@ -5,7 +5,7 @@ using SmartTrinity.App.Core.Communication.Adapters.Tcp;
 using SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp;
 using Microsoft.Extensions.Options;
 using SmartTrinity.App.Core.Models;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Services
 {

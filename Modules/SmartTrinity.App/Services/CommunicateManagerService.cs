@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartTrinity.App.Core.Communication;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
 using SmartTrinity.App.Core.Communication.Adapters.Tcp;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Services
 {

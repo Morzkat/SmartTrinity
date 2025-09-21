@@ -2,7 +2,7 @@
 using SmartTrinity.App.Pumps.Persistence;
 using SmartTrinity.App.Pumps.Core.Services;
 using SmartTrinity.App.Pumps.Core.Database;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Pumps.Services
 {
