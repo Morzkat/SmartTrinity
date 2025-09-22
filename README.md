@@ -89,8 +89,8 @@ Mermaid - High-level architecture
 ```mermaid
 graph LR
 	Client[Client Applications]
-	API[SmartTrinity.App.Api\n(ASP.NET Core Web API)]
-	Subgraph Modules
+	API["SmartTrinity.App.Api<br/> (ASP.NET Core Web API)"]
+	subgraph Modules
 		Pumps[SmartTrinity.App.Pumps]
 		Sales[SmartTrinity.Sales]
 		Prices[SmartTrinity.App.Prices]
@@ -117,19 +117,19 @@ Mermaid - Data flow (request example)
 
 ```mermaid
 sequenceDiagram
-		participant C as Client
-		participant A as API
-		participant S as Sales Module
-		participant DB as Database
+  participant C as Client
+  participant A as API
+  participant S as Sales Module
+  participant DB as Database
 
-		C->>A: POST /api/sales (JWT)
-		A->>S: Validate + Map request
-		S->>DB: Insert sale record
-		DB-->>S: OK
-		S-->>A: Sale created
-		A-->>C: 201 Created
+  C->>A: POST /api/sales (JWT)
+  A->>S: Validate + Map request
+  S->>DB: Insert sale record
+  DB-->>S: OK
+  S-->>A: Sale created
+  A-->>C: 201 Created
 
-		Note over A,S: Background service may consume/produce additional data
+  Note over A,S: Background service may consume/produce additional data
 ```
 
 ASCII fallback - high-level
