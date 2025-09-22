@@ -1,4 +1,5 @@
 {
+    // VS Code tasks for building and running the API project
     "version": "2.0.0",
     "tasks": [
         {
@@ -11,31 +12,27 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
-            "label": "publish",
+            "label": "run",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/SmartTrinity.App.Api/SmartTrinity.App.Api.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
                 "run",
                 "--project",
                 "${workspaceFolder}/SmartTrinity.App.Api/SmartTrinity.App.Api.csproj"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
         }
     ]
 }
