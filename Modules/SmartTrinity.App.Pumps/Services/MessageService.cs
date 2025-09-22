@@ -91,7 +91,6 @@ namespace SmartTrinity.App.Pumps.Services
             pump.Status = data["ST"];
             Enum.TryParse(data["SU"].Split("+")[0], out PumpActions action);
             PumpsPersistence.AddAction(pumpId, action);
-            PumpsPersistence.Update(pump);
             pump.SaleProgress = 0;
 
             _smartTrinityHubServce.Clients.All.PumpStatusChangeNotification(pump);
@@ -135,8 +134,6 @@ namespace SmartTrinity.App.Pumps.Services
                 {
                     if (key.Equals(HOSES))
                     {
-                        int.TryParse(data[HOSES], out int hoseId);
-                        HosesPersistence.Add(hoseId);
                         continue;
                     }
                     else if (key.EndsWith(GRADE))
@@ -147,23 +144,17 @@ namespace SmartTrinity.App.Pumps.Services
                         double.TryParse(data[HOSE + hoseId + VOLUME_TOTALIZER], out double volumeTotalizer);
 
                         var grade = GradesPersistence.Get(gradeId);
-                        var hose = HosesPersistence.Get(hoseId);
 
                         if (grade != null)
                         {
-                            var hoseHasGrade = hose.Grades.Any(g => g.Description == grade.Description);
+                            pump.Hoses.Add(new Hose
+                            {
+                                HoseId = hoseId,
+                                Grade = grade,
+                                TotalizerMoney = moneyTotalizer,
+                                TotalizerVolume = volumeTotalizer
+                            });
 
-                            if (!hoseHasGrade)
-                                hose.Grades.Add(grade);
-
-                            hose.TotalizerMoney = moneyTotalizer;
-                            hose.TotalizerVolume = volumeTotalizer;
-                            HosesPersistence.Update(hose);
-
-                            pump.Grade = grade;
-                            pump.Hoses.Add(hose);
-
-                            PumpsPersistence.Update(pump);
                         }
                     }
                 }
@@ -175,7 +166,7 @@ namespace SmartTrinity.App.Pumps.Services
             var data = msgData.ToDictionary();
             foreach (var key in data.Keys)
             {
-                if (!(key.Equals("GRADES")) && key.StartsWith("G"))
+                if (!key.Equals("GRADES") && key.StartsWith("G"))
                 {
                     string strGrade = key.Substring(1, 3);
                     string gradeNumber = $"G{strGrade}GNR";
@@ -192,9 +183,6 @@ namespace SmartTrinity.App.Pumps.Services
                     //HACK:Look for a better way to do this proccess.
                     if (key.EndsWith(DESCRIPTION))
                         grade.Description = data[key];
-
-                    else if (key.EndsWith(COLOR))
-                        grade.RGB = data[key];
 
                     else if (key.StartsWith(gradeLevel) && !key.EndsWith(PRICE_LEVELS))
                     {

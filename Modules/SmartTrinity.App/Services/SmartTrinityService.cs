@@ -5,7 +5,7 @@ using SmartTrinity.App.Core.Communication.Adapters.Tcp;
 using SmartTrinity.App.Infrastructure.Communication.Adapaters.Tcp;
 using Microsoft.Extensions.Options;
 using SmartTrinity.App.Core.Models;
-using SmartTrinity.App.Core.Communication.Adapaters.Tcp.Extensions;
+using SmartTrinity.App.Core.Communication.Adapters.Tcp.Extensions;
 
 namespace SmartTrinity.App.Services
 {
@@ -30,6 +30,9 @@ namespace SmartTrinity.App.Services
 
         public void Setup()
         {
+            if (!_consoleSettings.Enable)
+                return;
+
             _communicationManager.Connect();
             SetupRequestConfigurations();
             while (Thread.CurrentThread.IsAlive)
@@ -46,6 +49,9 @@ namespace SmartTrinity.App.Services
 
         public async Task HandleClientAsync()
         {
+            if (!_consoleSettings.Enable)
+                return;
+
             while (true)
             {
                 await Task.Run(() =>
@@ -94,7 +100,7 @@ namespace SmartTrinity.App.Services
         private string GetUserCredentials()
         {
             string user = _consoleSettings.Credentials.Username.RPad(" ", 25);
-            string pw = _consoleSettings.Credentials.Username.RPad(" ", 25);
+            string pw = _consoleSettings.Credentials.Password.RPad(" ", 25);
 
             char[] encryptedPw = pw.ToCharArray().EncryptMessage(25, user.ToCharArray(), 20);
             string data = $"US=1|PW={encryptedPw.ConvertBinToHex(25)}|";

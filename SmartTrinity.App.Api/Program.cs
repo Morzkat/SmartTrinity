@@ -1,44 +1,66 @@
-using System.Text;
 using Asp.Versioning;
-using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SmartTrinity.Core.Models;
+using Serilog;
+using SmartTrinity.App.Api.Middlewares;
+using SmartTrinity.App.Api.Services;
+using SmartTrinity.App.Core.Communication;
+using SmartTrinity.App.Core.Models;
+using SmartTrinity.App.Core.Services;
+using SmartTrinity.App.FuelStation.Core.Database;
+using SmartTrinity.App.FuelStation.Infrastructure;
+using SmartTrinity.App.Migrations.Core;
+using SmartTrinity.App.Migrations.Core.Models;
+using SmartTrinity.App.Migrations.Infrastructure;
+using SmartTrinity.App.Pumps.Core.Database;
+using SmartTrinity.App.Pumps.Core.Services;
+using SmartTrinity.App.Pumps.Infrastructure;
+using SmartTrinity.App.Pumps.Services;
+using SmartTrinity.App.Sales.Services;
 using SmartTrinity.App.Services;
 using SmartTrinity.Core.Database;
+using SmartTrinity.Core.Models;
 using SmartTrinity.Core.Services;
-using SmartTrinity.Shared.Services;
-using SmartTrinity.App.Core.Models;
-using SmartTrinity.App.Api.Services;
-using Microsoft.IdentityModel.Tokens;
-using SmartTrinity.App.Core.Services;
-using SmartTrinity.App.Sales.Services;
-using SmartTrinity.App.Pumps.Services;
-using SmartTrinity.App.Api.Middlewares;
-using SmartTrinity.App.Core.Communication;
 using SmartTrinity.Infrastructure.Database;
-using SmartTrinity.App.Pumps.Core.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
-using SmartTrinity.App.Sales.Infrastructure.Repositories;
-using SmartTrinity.App.Pumps.Infrastructure;
+using SmartTrinity.Shared.Core.Database;
+using SmartTrinity.Shared.Core.Services;
+using SmartTrinity.Shared.Infrastructure.Database;
+using SmartTrinity.Shared.Services;
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetValue<string>("Clients:Frontend"));
+            policy.WithOrigins(builder.Configuration.GetSection("Clients:Frontend").Get<string[]>());
+            policy.AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+
+            policy.WithOrigins(builder.Configuration.GetSection("Clients:Backend").Get<string[]>());
             policy.AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -79,19 +101,25 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection("ConsoleSettings"));
+//Settings
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+builder.Services.Configure<ConsoleSettings>(builder.Configuration.GetSection(nameof(ConsoleSettings)));
+builder.Services.Configure<MigratorSettings>(builder.Configuration.GetSection(nameof(MigratorSettings)));
 
 builder.Services.AddSignalR();
 
 //Hosted service
 builder.Services.AddHostedService<TrinityBackgroundService>();
+//builder.Services.AddTransient<ISalesMigrator, SalesMigrator>();
 
 //DI Setup
 //Hack: Create a extension method for inject all dependencies related to shared services.
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ISalesUnitOfWork, SalesUnitOfWork>();
 builder.Services.AddTransient<IPumpsUnitOfWork, PumpsUnitOfWork>();
+builder.Services.AddTransient<IStationUnitOfWork, StationUnitOfWork>();
+builder.Services.AddTransient<ISalesMigratorUnitOfWork, SalesMigratorUnitOfWork>();
+builder.Services.AddTransient<ISmartSalesUnitOfWork, SmartSalesUnitOfWork>();
 
 //Services:
 builder.Services.AddTransient<IJwtService, JwtService>();
@@ -99,11 +127,12 @@ builder.Services.AddTransient<ISalesService, SalesService>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IPumpsService, PumpsService>();
 builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<ISmartSalesService, SmartSalesService>();
 
 //Test services:
 builder.Services.AddTransient<IPumpsTestService, PumpsTestService>();
 
-//ComunicationManager
+//CommunicationManager
 builder.Services.AddSingleton<ICommunicationManager, CommunicateManagerService>();
 builder.Services.AddSingleton<ISmartTrinityService, SmartTrinityService>();
 builder.Services.AddSwaggerGen(options =>
@@ -165,12 +194,8 @@ DapperDatabaseManager.Setup();
 
 app.UseCors(MyAllowSpecificOrigins);
 
-// Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
 app.UseSwagger();
 app.UseSwaggerUI();
-// }
 
 app.MapHub<SmartTrinityHubService>("/smartTrinityHub");
 
@@ -182,4 +207,6 @@ app.UseMiddleware<JwtMiddleware>();
 
 app.MapControllers();
 
+Log.Information("SmartTrinity.App.Api started.");
 app.Run();
+

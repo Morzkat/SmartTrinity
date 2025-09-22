@@ -18,14 +18,7 @@ namespace SmartTrinity.App.Pumps.Persistence
             return _pumps;
         }
 
-        public static Pump Get(int pumpId)
-        {
-            bool exist = _pumps.Exists(x => x.PumpNo == pumpId);
-            if (exist)
-                return _pumps.Find(x => x.PumpNo == pumpId);
-
-            return null;
-        }
+        public static Pump? Get(int pumpId) => _pumps.FirstOrDefault(p => p.PumpNo == pumpId);
 
         public static void Add(int pumpId)
         {
@@ -38,16 +31,6 @@ namespace SmartTrinity.App.Pumps.Persistence
                 SaleProgress = 0.0,
                 Hoses = new List<Hose>()
             });
-        }
-
-        public static void Update(Pump pump)
-        {
-            bool exist = _pumps.Exists(x => x.PumpNo == pump.PumpNo);
-            if (exist)
-            {
-                int index = _pumps.FindIndex(p => p.PumpNo == pump.PumpNo);
-                _pumps[index] = pump;
-            }
         }
 
         public static void RemovePersistence()

@@ -5,6 +5,7 @@
         public int HoseId { get; set; }
         public double TotalizerMoney { get; set; }
         public double TotalizerVolume { get; set; }
-        public IList<Grade> Grades { get; set; }
+        public Grade Grade { get; set; }
+
     }
 }

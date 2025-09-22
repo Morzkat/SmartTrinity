@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Options;
-using SmartTrinity.App.Pumps.Core.Models;
-using SmartTrinity.App.Pumps.Core.Repositories;
+﻿using System.Data;
 using SmartTrinity.Core.Models;
-using SmartTrinity.Infrastructure.Database.Repositories;
-using System.Data;
+using Microsoft.Extensions.Options;
+using SmartTrinity.App.Pumps.Core.Models;
+using SmartTrinity.App.Pumps.Core.Database.Repositories;
+using SmartTrinity.Shared.Infrastructure.Database.Repositories;
 
 namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
 {
@@ -16,7 +16,6 @@ namespace SmartTrinity.App.Pumps.Infrastructure.Repositories
         public PumpsRepository(IDbConnection connection, IDbTransaction transaction, IOptions<AppSettings> appSettings) : base(connection, transaction)
         {
             tableId = "sale_id";
-            //TODO: Validate the table name
             tableName = "SSF_PUMP_SALES";
             Connection = connection;
             Transaction = transaction;

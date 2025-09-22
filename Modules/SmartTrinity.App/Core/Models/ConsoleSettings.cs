@@ -10,7 +10,8 @@ namespace SmartTrinity.App.Core.Models
     {
         public int Port { get; set; }
         public string Host { get; set; }
-        public Credentials Credentials { get; set; }    
+        public Credentials Credentials { get; set; }
+        public bool Enable { get; set; }
     }
 
     public class Credentials

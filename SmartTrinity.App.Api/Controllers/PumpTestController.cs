@@ -9,7 +9,7 @@ namespace SmartTrinity.App.Api.Controllers
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("v{version:apiVersion}/api/Pump/Test")]
+    [Route("v{version:apiVersion}/api/Pumps/Test")]
     public class PumpTestController : ControllerBase
     {
         private readonly IPumpsTestService _pumpsService;

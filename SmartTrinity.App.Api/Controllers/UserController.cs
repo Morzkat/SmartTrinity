@@ -26,7 +26,7 @@ namespace  SmartTrinity.App.Api.Controllers
         /// <response code="401">Error authenticating user</response>
         /// <response code="500">Server errorr</response>
         [HttpPost]
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
+        [ProducesResponseType(typeof(UserDTO), 200)]
         [ProducesResponseType(typeof(ErrorResponseDetails), 500)]
         public async Task<ActionResult> Authenticate([FromBody] UserLoginDTO userLoginDTO)
         {

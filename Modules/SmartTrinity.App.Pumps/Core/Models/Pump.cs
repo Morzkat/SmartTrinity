@@ -4,11 +4,9 @@ namespace SmartTrinity.App.Pumps.Core.Models
 {
     public class Pump: BaseEntity
     {
-        // TODO: Ask if is necessary a config for this.
         private bool _isAuthored = true;
 
         public int PumpNo { get; set; }
-        public Grade Grade { get; set; }
         public string Status { get; set; }
         public double Volume { get; set; }
         public int PriceLevel { get; set; }

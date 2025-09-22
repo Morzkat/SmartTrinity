@@ -1,18 +1,12 @@
-﻿using Microsoft.Extensions.Options;
-using SmartTrinity.App.Pumps.Core.Repositories;
-using SmartTrinity.App.Pumps.Infrastructure.Repositories;
-using SmartTrinity.Core.Database;
-using SmartTrinity.Core.Models;
+﻿using SmartTrinity.Core.Models;
+using Microsoft.Extensions.Options;
+using SmartTrinity.App.Pumps.Core.Database;
+using SmartTrinity.App.Pumps.Core.Database.Repositories;
 using SmartTrinity.Infrastructure.Database.UnitOfWork;
+using SmartTrinity.App.Pumps.Infrastructure.Repositories;
 
 namespace SmartTrinity.App.Pumps.Infrastructure
 {
-    public interface IPumpsUnitOfWork : IUnitOfWork
-    {
-        IPumpsRepository PumpsRepository { get; }
-        IGenericConfigValuesRepository GenericConfigValuesRepository { get; }
-    }
-
     public class PumpsUnitOfWork : UnitOfWork, IPumpsUnitOfWork
     {
         private readonly AppSettings _appSettings;
